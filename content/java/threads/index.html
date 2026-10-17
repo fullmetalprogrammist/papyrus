@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>source</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #2b91af;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #2b91af;  padding-left: 4px; }
+    div.sourceCode
+      { color: #000000; background-color: #ffffff; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #2b91af; font-style: italic; } /* Annotation */
+    code span.at { color: #808080; } /* Attribute */
+    code span.bn { color: #000000; } /* BaseN */
+    code span.bu { color: #0000ff; } /* BuiltIn */
+    code span.cf { color: #8f08c4; } /* ControlFlow */
+    code span.ch { color: #a31515; } /* Char */
+    code span.cn { color: #000000; } /* Constant */
+    code span.co { color: #008000; } /* Comment */
+    code span.cv { color: #008000; font-weight: bold; } /* CommentVar */
+    code span.do { color: #008000; font-style: italic; } /* Documentation */
+    code span.dt { color: #2b91af; } /* DataType */
+    code span.dv { color: #000000; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #000000; } /* Float */
+    code span.fu { color: #000000; } /* Function */
+    code span.im { color: #0000ff; } /* Import */
+    code span.in { color: #2b91af; font-style: italic; } /* Information */
+    code span.kw { color: #0000ff; } /* Keyword */
+    code span.op { color: #000000; } /* Operator */
+    code span.ot { color: #000000; } /* Other */
+    code span.pp { color: #808080; } /* Preprocessor */
+    code span.sc { color: #a31515; } /* SpecialChar */
+    code span.ss { color: #a31515; } /* SpecialString */
+    code span.st { color: #a31515; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #a31515; } /* VerbatimString */
+    code span.wa { color: #808080; font-weight: bold; } /* Warning */
+  </style>
+
+  <!-- ============= ============= Мои стили и скрипты ============= ============= -->
+  <!-- Должны подключать тут, чтобы перекрыть дефолты пандока -->
+  <link rel="stylesheet" href="/papyrus/styles/article-page.css">
+  <script src="/papyrus/scripts/oglavlenie.js" defer></script>
+  <script src="/papyrus/scripts/source-code-expand-collapse.js" defer></script>
+  <!-- ============= ============= =================== ============= ============= -->
+
+</head>
+<body>
+<div class="layout">
+<div id="oglavlenie"></div>
+<div class="content">
+<h1 id="процесс-и-поток---что-такое">Процесс и поток - что такое</h1>
+<h2 id="ментальная-модель-процесса-и-потока">Ментальная модель процесса
+и потока</h2>
+<ul>
+<li>Процессы и потоки в каждой ОС реализованы по-разному, нет смысла
+лишний раз думать об их реальном устройстве, лучше думать о них
+концептуально.</li>
+<li>Концептуально <code>процесс</code> - это выполняющаяся программа,
+которой выделен свой участок памяти (память процесса)
+<ul>
+<li>Процессы изолированы друг от друга на уровне ОС. Могут общаться
+только через специальные механизмы ОС (<code>IPC</code> - Inter-Process
+Communication). Межпроцессное взаимодействие к многопоточке не
+относится.</li>
+</ul></li>
+<li><code>Поток</code> концептуально - это “рабочая единица”, которая
+выполняет код. Когда создается процесс, тогда создается и поток, в
+котором выполняется функция main.
+<ul>
+<li>В main можно создать другие потоки - получится многопоточная
+программа.</li>
+</ul></li>
+<li>ОС переключает потоки - поток работает какое-то время, потом
+приостанавливается, начинает работать другой поток и так по кругу. ОС
+выделяет потоку квант времени и отправляет его работать. Когда квант
+исчерпан, управление возвращается к ОС, она выбирает следующий поток,
+дает ему квант и отправляет работать. И т.д.</li>
+</ul>
+<figure>
+<img src="img/process-threads-mental.drawio.svg"
+alt="Ментальная модель процесса и потоков" />
+<figcaption aria-hidden="true">Ментальная модель процесса и
+потоков</figcaption>
+</figure>
+<h2 id="куча-и-стек">Куча и стек</h2>
+<ul>
+<li>У процесса есть <code>куча</code> (heap) - это область памяти, в
+которой хранятся ссылочные типы данных. Например, сделали new
+ArrayList() - объект списка хранится в куче.</li>
+<li>У каждого потока есть персональный <code>стек</code> - это область
+памяти, в которой хранятся агрументы, передаваемые в функции, и
+локальные переменные функций. Очевидно, эта область памяти находится в
+границах памяти процесса.
+<ul>
+<li>Например, в main создали несколько переменных - они хранятся в стеке
+потока.</li>
+</ul></li>
+<li>Т.о. куча - одна на все потоки, а стек у каждого потока - свой.
+<ul>
+<li>В стеке хранятся примитивные типы данных, а на объектные хранятся
+ссылки, потому что как уже говорилось, объекты создаются в куче.
+Соответственно, когда у разных потоков есть ссылка на один и тот же
+объект в куче и они его как-то меняют, то возникают проблемы
+многопоточности.</li>
+</ul></li>
+</ul>
+<h1 id="описываем-код-потока">Описываем код потока</h1>
+<h2 id="класс-thread">Класс Thread</h2>
+<ul>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/Thread.html</li>
+<li>Класс Thread лежит в основе многопоточности в джаве. Все остальные
+механизмы в итоге сводятся так или иначе к нему.</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyThread <span class="kw">extends</span> <span class="bu">Thread</span> <span class="op">{</span>  <span class="co">// &lt;-- Наследуемся от Thread</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span>  <span class="co">// &lt;-- Сюда пишем код, который хотим выполнять в потоке</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Поток: &quot;</span> <span class="op">+</span> <span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">getName</span><span class="op">());</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Наследование от Thread - один из, но не лучший способ пользоваться
+многопоточкой.
+<ul>
+<li>Потому что
+<ul>
+<li>Из-за того что в джаве нет множественного наследования,
+наследоваться от Thread может быть неудобно. Хочешь расширить
+бизнес-логику через наследование + сделать код многопоточным, получаешь
+облом, потому что наследоваться можно только от одного класса.</li>
+<li>“Голый” Thread
+<ul>
+<li>Не умеет возвращать результат работы.</li>
+<li>Не умеет соединяться в цепочки.</li>
+<li>Много чего еще не умеет.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>Но тем не менее он основа всего и все остальное является
+разнообразной накруткой поверх него.</li>
+</ul>
+<h2 id="функциональный-интерфейс-runnable">Функциональный интерфейс
+Runnable</h2>
+<ul>
+<li>Концептуально Runnable - это “задача без результата”.</li>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/Runnable.html</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyTask <span class="kw">implements</span> <span class="bu">Runnable</span> <span class="op">{</span>  <span class="co">// &lt;-- Через интерфейс удобнее добавлять многопоточность классу</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span>  <span class="co">// &lt;-- Тоже реализуем метод run</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Поток: &quot;</span> <span class="op">+</span> <span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">getName</span><span class="op">());</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Runnable vs Thread
+<ul>
+<li>В джаве нет множественного наследования, поэтому если мы хотим
+выстроить через наследование бизнес-логику, то многопоточность внедрять
+в эту структуру через наследование будет не удобно. А интерфейсов классу
+можно добавлять сколько хочешь, поэтому добавление многопоточности
+классу через реализацию Runnable зачастую удобнее, чем через
+наследование от Thread.</li>
+<li>Сам Thread тоже реализует Runnable. Метод run у треда именно от
+этого интерфейса.</li>
+</ul></li>
+</ul>
+<h2 id="функциональный-интерфейс-callable">Функциональный интерфейс
+Callable</h2>
+<ul>
+<li>Концептуально Callable - это “задача с результатом”.</li>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/Callable.html</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyTask <span class="kw">implements</span> <span class="bu">Callable</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> <span class="op">{</span>  <span class="co">// &lt;-- Указываем тип результата</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">Integer</span> <span class="fu">call</span><span class="op">()</span> <span class="kw">throws</span> <span class="bu">Exception</span> <span class="op">{</span>  <span class="co">// &lt;-- Вместо run тут call</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">23</span><span class="op">;</span>  <span class="co">// &lt;-- Можно вернуть результат</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Thread и Runnable не предполагают возврат результата. Поэтому если
+нужно что-то вычислить в потоке и вернуть результат - пользуемся
+<code>Callable</code>.</li>
+<li>В этом конспекте я его упомянул просто чтобы было. Подробно писать
+здесь о нем не буду, сделаю это в отдельном конспекте.</li>
+<li>TODO:
+<ul>
+<li>throws Exception тут зачем?</li>
+</ul></li>
+</ul>
+<h2 id="оформление-кода-через-лямбду">Оформление кода через лямбду</h2>
+<ul>
+<li>Для описания тела потока не обязательно писать отдельный класс,
+можно воспользоваться лямбдами.</li>
+<li>Лямбды и Thread</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Thread</span> t <span class="op">=</span> <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="op">{</span>  <span class="co">// &lt;-- Передаем лямбду в конструктор</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Поток: &quot;</span> <span class="op">+</span> <span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">getName</span><span class="op">());</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">});</span></span></code></pre></div>
+<ul>
+<li>Лямбды и Runnable  Callable:</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Runnable</span> task <span class="op">=</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">getName</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; runnable выполняется.&quot;</span><span class="op">);</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Callable</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> task <span class="op">=</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">getName</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; callable выполняется.&quot;</span><span class="op">);</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">&quot;23 - Nichts ist so wie es scheint&quot;</span><span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<ul>
+<li>Лямбду можно передавать в любые места, где ожидается Runnable или
+Callable.</li>
+</ul>
+<h1 id="запускаем-поток-в-работу">Запускаем поток в работу</h1>
+<h2 id="метод-.start">Метод .start()</h2>
+<ul>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/Thread.html#start()</li>
+<li>В самом базовом случае, чтобы запустить поток, мы создаем экземпляр
+Thread и вызываем на нем метод <code>.start()</code>:</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Demo <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Thread</span> t <span class="op">=</span> <span class="kw">new</span> <span class="fu">MyThread</span><span class="op">();</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        t<span class="op">.</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyThread <span class="kw">extends</span> <span class="bu">Thread</span> <span class="op">{</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Я работаю&quot;</span><span class="op">);</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Повторно запускать поток нельзя. Один экземпляр - один поток. Когда
+метод run отработал до конца, поток уничтожается.</li>
+</ul>
+<h2 id="важное-отличие-методов-run-и-start">Важное отличие методов run()
+и start()</h2>
+<ul>
+<li>Метод <code>run()</code> - это просто обычный метод. Если его
+вызвать, то код просто выполнится в текущем потоке, как и любой другой
+обычный метод.</li>
+<li>Метод <code>start()</code> содержит всю многопоточную “обвязку”. Его
+вызов создает новый поток и выполняет в нем код, описанный в методе
+run.</li>
+<li>Поэтому запускать поток надо именно через start().</li>
+</ul>
+<h2 id="другие-способы-запуска">Другие способы запуска</h2>
+<ul>
+<li>Кроме “ручного” запуска через .start() существуют и другие способы
+запуска потоков. О них будут отдельные конспекты.
+<ul>
+<li>Например
+<ul>
+<li>Запуск через пул.</li>
+<li>Запуск через CompletableFuture.</li>
+</ul></li>
+<li>Чтобы не перегружать базовый конспект, все подобные вещи я напишу в
+отдельных, а здесь просто упоминания оставлю, чтобы было примерно
+понятно, про что еще можно почитать.</li>
+</ul></li>
+</ul>
+<h2 id="пример-с-runnable">Пример с Runnable</h2>
+<ul>
+<li>Непосредственно саму по себе runnable-задачу запустить нельзя,
+потому что Runnable это просто интерфейс, он нужен только для описания
+задачи и не обладает механиками создания потока.</li>
+<li>Поэтому для выполнения задачи мы либо передаем ее в Thread, либо в
+пул потоков, либо еще куда-то где принимают Runnable.
+<ul>
+<li>Например, через Thread:</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Demo <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Thread</span> t <span class="op">=</span> <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>            <span class="kw">new</span> <span class="fu">MyRunnableTask</span><span class="op">()</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">);</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        t<span class="op">.</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyRunnableTask <span class="kw">implements</span> <span class="bu">Runnable</span> <span class="op">{</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;runnable задача работает&quot;</span><span class="op">);</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>То же самое через лямбду:</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Demo <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Thread</span> t <span class="op">=</span> <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;runnable задача работает&quot;</span><span class="op">);</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        t<span class="op">.</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="пример-с-callable">Пример с Callable</h2>
+<ul>
+<li>Пример просто для “расширения кругозора”, он сильно забегает вперед,
+но в целом прикольный, поэтому решил не выбрасывать.</li>
+<li>Callable-задачи обычно запускают с помощью пула.</li>
+<li>Запустить Callable непосредственно через Thread так же, как мы
+сделали с Runnable, не выйдет.
+<ul>
+<li>Дело в том, что Thread работает исключительно с Runnable.</li>
+<li>Но поскольку все механизмы многопоточки под капотом все равно
+сводятся к использованию Thread, то и Callable, и все остальное в итоге
+является просто хитрой оберткой над базированным Runnable.</li>
+<li>Очень примерно это можно представить как-то так:</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Callable</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> task <span class="op">=</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dv">23</span><span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">FutureTask</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> futureTask <span class="op">=</span> <span class="kw">new</span> <span class="bu">FutureTask</span><span class="op">&lt;&gt;(</span>task<span class="op">);</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">Thread</span> thread <span class="op">=</span> <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(</span>futureTask<span class="op">);</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>thread<span class="op">.</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">Integer</span> result <span class="op">=</span> futureTask<span class="op">.</span><span class="fu">get</span><span class="op">();</span></span></code></pre></div>
+<ul>
+<li>Если интересно, вот дока по <a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/FutureTask.html">FutureTask</a>.
+Этот класс реализует и Runnable, и Future, поэтому его можно и в тред
+передать, и результат получить.</li>
+</ul>
+<h1 id="разновидности-потоков">Разновидности потоков</h1>
+<h2 id="нативные-и-виртуальные-потоки">Нативные и виртуальные
+потоки</h2>
+<ul>
+<li>Нативные потоки - это настоящие потоки ОС, которые JVM создает и
+управляет через механизмы самой ОС.</li>
+<li>Виртуальные потоки появились в Java 21. Эти потоки JVM создает и
+управляет самостоятельно, без ОС.
+<ul>
+<li>Конечно они выполняются внутри реальных потоков ОС, но сами по себе
+являются просто какими-то программными сущностями внутри JVM, которые
+она хитро монтирует  размонтирует туда-сюда на реальные потоки.</li>
+</ul></li>
+<li>Грубо говоря, если создать просто 100 обычных инстансов Thread, то
+это будет 100 нативных потоков ОС, т.е. отношение “созданные нами потоки
+: потоки ОС” будет 1:1. А если создать 100 виртуальных потоков, то это
+отношение не будет 1:1, все это само распределится грамотнее и
+аккуратнее. Поэтому виртуальных потоков можно создавать гораздо больше,
+чем нативных.</li>
+<li>По умолчанию когда мы создаем поток через <code>new Thread()</code>
+он нативный. Виртуальный можно создать например через
+<code>Thread.ofVirtual()</code> или
+<code>Thread.startVirtualThread()</code>.</li>
+<li>TODO: объяснение годится для самого стартового понимания, там есть
+разные нюансы, явление <code>pinning</code>, критические секции в коде
+влияют на производительность и т.д. В моменте разобраться просто
+невозможно, стоит к этой теме вернуться предметно на конкретной проблеме
+ задаче, иначе вейст времени будет пытаться разобраться
+“абстрактно”.</li>
+</ul>
+<h2 id="daemon-и-не-daemon-user-потоки">daemon и не-daemon (user)
+потоки</h2>
+<ul>
+<li><code>user thread</code> (или “не-daemon”) потоки - это потоки,
+которые концептуально предназначены для выполнения полезной
+“бизнес-работы”.
+<ul>
+<li>JVM не завершается, пока есть работающие юзер-треды. Она дожидается,
+пока они доработают.</li>
+</ul></li>
+<li><code>daemon</code> потоки - это потоки, которые концептуально
+являются вспомогательными, “обслуживающими”.
+<ul>
+<li>Демонов JVM не дожидается. Демоны могут прерваться внезапно, поэтому
+в них нельзя напрямую открывать ресурсы, потому что они могут быть не
+закрыты корректно.</li>
+</ul></li>
+<li>TODO: вписать реальные примеры, когда попадется хороший и наглядный,
+безо всякого этого “логирования, мониторинга” и прочего нейробреда.</li>
+</ul>
+<h1 id="жизненный-цикл-потоков">Жизненный цикл потоков</h1>
+<figure>
+<img src="img/process-lifecycle.excalidraw.svg"
+alt="Жизненный цикл потока" />
+<figcaption aria-hidden="true">Жизненный цикл потока</figcaption>
+</figure>
+<ul>
+<li>TODO: мб еще добавить на картинку методы, при которых переход
+происходит?</li>
+<li>Состояния
+<ul>
+<li><code>new</code> - поток просто создан через new и его еще не
+запускали.</li>
+<li><code>runnable</code> - когда на потоке вызвали .start(). Причем
+физически поток мог еще не начать работу, а просто сидит ждет выделения
+ресурсов, но состояние уже runnable.</li>
+<li><code>blocked</code> - когда поток пытается захватить монитор
+(входит в syncronized-участок кода), а монитор уже занят.</li>
+<li><code>terminated</code> - метод run выполнился, т.о. поток
+завершился и подлежит уничтожению.</li>
+<li><code>waiting</code> - TODO</li>
+<li><code>time_waiting</code> - TODO</li>
+</ul></li>
+<li>Детали
+<ul>
+<li>blocked и waiting на уровне ОС это одно и то же. Отличаются они в
+JVM, как маркеры причины ожидания.</li>
+</ul></li>
+</ul>
+<h1 id="взаимодействие-с-потоком">Взаимодействие с потоком</h1>
+<h2 id="прерывание-выполнения">Прерывание выполнения</h2>
+<ul>
+<li>Метод <code>.interrupt()</code> у объекта потока. Он устанавливает
+флаг прерывания <code>isInterrupted</code> в true.
+<ul>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/Thread.html#interrupt()</li>
+<li>Сам по себе ни вызов метода, ни установка флага поток не прерывают,
+это просто как сигнал “давай заканчивай”, а мы уже внутри кода потока
+сами должны этот флаг проверять и если он установлен, то завершать
+поток.
+<ul>
+<li>Под завершением потока подразумевается, по сути, выполнить до конца
+метод run. Например, если у нас поток крутит бесконечный цикл, в котором
+выбирает сообщения из очереди, то мы просто доделываем очередной шаг
+цикла и выходим из него через break например. Ну и выполняем
+классическую “очистку ресурсов” и т.д. Или если в потоке не цикл, а
+просто какая-то тяжелая долгая работа, состоящая из нескольких шагов, то
+можно например после каждого шага можем проверять флаг и если он
+установлен, то не делать остальные шаги. В общем, “завершить поток” это
+не какая-то магия, а просто дать методу run завершиться.</li>
+</ul></li>
+<li>Методы вроде sleep(), wait(), join() переводят поток в состояние
+ожидания. Если вызвать .interrupt() на потоке, который в этот момент
+“отдыхает”, то эти методы выбрасывают исключение
+<code>InterruptedException</code>. Оно проверяемое, поэтому компилятор
+заставит обработать либо пробросить.
+<ul>
+<li>При возникновении этого исключения флаг прерывания сбрасывается в
+false. Обычно его надо после отлова исключения руками вернуть в true,
+чтобы вызывающий код, который приказал потоку прерваться, видел что
+поток прерван.
+<ul>
+<li>TODO: Почему исключение сбрасывает флаг? Надо как-нибудь
+заморочиться и логику такого решения понять. Она довольно призрачная,
+вроде бы и понятно, но смутно. Пока просто как факт.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="дождаться-завершения-потока">Дождаться завершения потока</h2>
+<ul>
+<li>Метод <code>.join()</code> у объекта потока. Есть перегрузка с
+указанием времени, сколько ждать.
+<ul>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/Thread.html#join()</li>
+<li>Если в потоке T вызывать <code>P.join()</code>, тогда T будет ждать,
+пока закончится P.
+<ul>
+<li>T переходит в состояние WAITING или TIMED_WAITING.</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="подождать-уведомить">Подождать-уведомить</h2>
+<ul>
+<li><p><code>.wait()</code>, <code>.notify()</code>,
+<code>.notifyAll()</code></p>
+<ul>
+<li>Это методы Object, а не инстанса треда.</li>
+<li>Они связаны с темой syncronized-секций (sync далее для
+краткости).</li>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/Object.html#wait()</li>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/Object.html#notify()</li>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/Object.html#notifyAll()</li>
+</ul></li>
+<li><p>wait() надо вызывать на объекте-мониторе обязательно изнутри
+sync.</p>
+<ul>
+<li>Потому что когда поток заходит в sync, он захватывает монитор, а
+вызов wait() подразумевает что монитор должен быть захвачен. Тогда поток
+атомарно отпустит монитор и станет WAITING.</li>
+<li>wait() положено вызывать внутри цикла while с условием ухода в
+ожидание. Потому что возможны “спонтанные” пробуждения потока и он
+должен в таком случае снова уйти в ожидание. Через if так не получится
+сделать.</li>
+</ul></li>
+<li><p>notify() и notifyAll() надо вызывать на том же мониторе, на
+котором вызывали wait().</p>
+<ul>
+<li>notify() будит один из ожидающих потоков (случайный).</li>
+<li>notifyAll() будит все ожидающие потоки.</li>
+</ul></li>
+<li><p>Вызов notify() может сделать deadlock, поэтому предпочтительнее
+вызывать notifyAll().</p>
+<ul>
+<li>Как может получиться дедлок?
+<ul>
+<li>Например, есть два продюсера и один консюмер. Консюмер уходит в
+ожидание когда очередь пуста (т.к. ему нечего обрабатывать), а продюсеры
+- когда заполнена (некуда класть). Предположим, мы оказываемся в
+ситуации, когда консюмер и один из продюсеров ждут, а второй продюсер
+работает. Он положил данные в последний слот очереди и вызвал notify(),
+который разбудил случайного “ждуна” и этим ждуном оказался первый
+продюсер, а не консюмер. Тогда проснувшийся продюсер увитит, что очередь
+заполнена и уйдет в ожидание. И другой продюсер тоже уйдет в ожидание, а
+консюмер так и не проснулся - дедлок.
+<ul>
+<li>🤔 Тут важна модель мышления: если думать последовательно, то будет
+не понятно, как вообще может получиться ситуация, когда один продюсер и
+консюмер спят, а другой продюсер работает. В многопоточке
+последовательности четкой нет, в том и суть. “Раз в год и палка
+стреляет” - тут такой же принцип, если ситуация может случиться, она
+обязательно случится, хоть изредка, но случится. Поэтому лучше думать
+именно ситуациями - “возможна ли ситуация дедлока? да, возможна:
+продюсер и консюмер ждут, другой продюсер работает, дает уведомление -
+просыпается не консюмер, а продюсер -&gt; сообщения не читаются, очердь
+заполняется -&gt; продюсеры ждут и консюмер ждет = дедлок”.</li>
+</ul></li>
+<li>В общем тут проблема в том, что на одном и тот же мониторе ожидание
+идет по двум разным условиям, но “пользователи” монитора этих условий не
+различают.</li>
+</ul></li>
+<li>Вызов notifyAll() позволяет избежать дедлока, потому что пробудятся
+все ждуны, каждый проверит условие и если что, заново уйдет ждать, а тот
+кому положено работать, гарантированно будет работать. Будить всех это
+дольше, зато надежне.</li>
+</ul></li>
+<li><p>“Голые” wait-notify считаются лоу-левел api, для повседневной
+практики есть средства удобнее.</p></li>
+<li><p>Пример с возможным дедлоком:</p></li>
+</ul>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> NotifyBugDemo <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">final</span> <span class="bu">Object</span> lock <span class="op">=</span> <span class="kw">new</span> <span class="bu">Object</span><span class="op">();</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="bu">Integer</span> item <span class="op">=</span> <span class="kw">null</span><span class="op">;</span>   <span class="co">// буфер на 1 элемент</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ---------- PRODUCER ----------</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="kw">class</span> Producer <span class="kw">implements</span> <span class="bu">Runnable</span> <span class="op">{</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> id<span class="op">;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">Producer</span><span class="op">(</span><span class="dt">int</span> id<span class="op">)</span> <span class="op">{</span> <span class="kw">this</span><span class="op">.</span><span class="fu">id</span> <span class="op">=</span> id<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">@Override</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>                <span class="cf">while</span> <span class="op">(</span><span class="kw">true</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                    <span class="kw">synchronized</span> <span class="op">(</span>lock<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>                        <span class="co">// ждём, пока буфер освободится</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">while</span> <span class="op">(</span>item <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;P&quot;</span> <span class="op">+</span> id <span class="op">+</span> <span class="st">&quot;: буфер занят, wait()&quot;</span><span class="op">);</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>                            lock<span class="op">.</span><span class="fu">wait</span><span class="op">();</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>                        item <span class="op">=</span> id<span class="op">;</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;P&quot;</span> <span class="op">+</span> id <span class="op">+</span> <span class="st">&quot;: положил &quot;</span> <span class="op">+</span> id<span class="op">);</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>                        lock<span class="op">.</span><span class="fu">notify</span><span class="op">();</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">Thread</span><span class="op">.</span><span class="fu">sleep</span><span class="op">(</span><span class="dv">300</span><span class="op">);</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">InterruptedException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>                <span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">interrupt</span><span class="op">();</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ---------- CONSUMER ----------</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="kw">class</span> Consumer <span class="kw">implements</span> <span class="bu">Runnable</span> <span class="op">{</span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>        <span class="at">@Override</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>                <span class="cf">while</span> <span class="op">(</span><span class="kw">true</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>                    <span class="kw">synchronized</span> <span class="op">(</span>lock<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>                        <span class="co">// ждём, пока появятся данные</span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">while</span> <span class="op">(</span>item <span class="op">==</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>                            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;C : пусто, wait()&quot;</span><span class="op">);</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>                            lock<span class="op">.</span><span class="fu">wait</span><span class="op">();</span></span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;C : забрал &quot;</span> <span class="op">+</span> item<span class="op">);</span></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>                        item <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>                        lock<span class="op">.</span><span class="fu">notify</span><span class="op">();</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">Thread</span><span class="op">.</span><span class="fu">sleep</span><span class="op">(</span><span class="dv">300</span><span class="op">);</span></span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">InterruptedException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>                <span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">interrupt</span><span class="op">();</span></span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>        <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Producer</span><span class="op">(</span><span class="dv">1</span><span class="op">),</span> <span class="st">&quot;P1&quot;</span><span class="op">).</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>        <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Producer</span><span class="op">(</span><span class="dv">2</span><span class="op">),</span> <span class="st">&quot;P2&quot;</span><span class="op">).</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a>        <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Consumer</span><span class="op">(),</span>  <span class="st">&quot;C&quot;</span><span class="op">).</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Как бы это же можно было сделать без угрозы дедлока:</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">LinkedList</span><span class="op">;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Queue</span><span class="op">;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">concurrent</span><span class="op">.</span><span class="im">locks</span><span class="op">.</span><span class="im">Condition</span><span class="op">;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">concurrent</span><span class="op">.</span><span class="im">locks</span><span class="op">.</span><span class="im">ReentrantLock</span><span class="op">;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ConditionDemo <span class="op">{</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">final</span> <span class="dt">int</span> CAPACITY <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">final</span> <span class="bu">ReentrantLock</span> lock <span class="op">=</span> <span class="kw">new</span> <span class="bu">ReentrantLock</span><span class="op">();</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">final</span> <span class="bu">Condition</span> notFull  <span class="op">=</span> lock<span class="op">.</span><span class="fu">newCondition</span><span class="op">();</span>  <span class="co">// ждут Producer&#39;ы</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">final</span> <span class="bu">Condition</span> notEmpty <span class="op">=</span> lock<span class="op">.</span><span class="fu">newCondition</span><span class="op">();</span>  <span class="co">// ждёт Consumer</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">final</span> <span class="bu">Queue</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> buffer <span class="op">=</span> <span class="kw">new</span> <span class="bu">LinkedList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ---------- PRODUCER ----------</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="kw">class</span> Producer <span class="kw">implements</span> <span class="bu">Runnable</span> <span class="op">{</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> id<span class="op">;</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">Producer</span><span class="op">(</span><span class="dt">int</span> id<span class="op">)</span> <span class="op">{</span> <span class="kw">this</span><span class="op">.</span><span class="fu">id</span> <span class="op">=</span> id<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">@Override</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>                <span class="cf">while</span> <span class="op">(</span><span class="kw">true</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>                    lock<span class="op">.</span><span class="fu">lock</span><span class="op">();</span>                    <span class="co">// захватываем замок</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>                        <span class="co">// ждём, пока буфер НЕ полон — в СВОЕЙ очереди notFull</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">while</span> <span class="op">(</span>buffer<span class="op">.</span><span class="fu">size</span><span class="op">()</span> <span class="op">==</span> CAPACITY<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>                            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;P&quot;</span> <span class="op">+</span> id <span class="op">+</span> <span class="st">&quot;: полон, await(notFull)&quot;</span><span class="op">);</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>                            notFull<span class="op">.</span><span class="fu">await</span><span class="op">();</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>                        buffer<span class="op">.</span><span class="fu">add</span><span class="op">(</span>id<span class="op">);</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;P&quot;</span> <span class="op">+</span> id <span class="op">+</span> <span class="st">&quot;: положил &quot;</span> <span class="op">+</span> id <span class="op">+</span> <span class="st">&quot;, size=&quot;</span> <span class="op">+</span> buffer<span class="op">.</span><span class="fu">size</span><span class="op">());</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>                        <span class="co">// будим ТОЛЬКО тех, кто ждёт &quot;не пусто&quot; (Consumer&#39;ов)</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>                        notEmpty<span class="op">.</span><span class="fu">signalAll</span><span class="op">();</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span> <span class="cf">finally</span> <span class="op">{</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>                        lock<span class="op">.</span><span class="fu">unlock</span><span class="op">();</span>              <span class="co">// обязательно в finally</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">Thread</span><span class="op">.</span><span class="fu">sleep</span><span class="op">(</span><span class="dv">300</span><span class="op">);</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">InterruptedException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>                <span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">interrupt</span><span class="op">();</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ---------- CONSUMER ----------</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="kw">class</span> Consumer <span class="kw">implements</span> <span class="bu">Runnable</span> <span class="op">{</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>        <span class="at">@Override</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>                <span class="cf">while</span> <span class="op">(</span><span class="kw">true</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>                    lock<span class="op">.</span><span class="fu">lock</span><span class="op">();</span></span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>                        <span class="co">// ждём, пока буфер НЕ пуст — в СВОЕЙ очереди notEmpty</span></span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">while</span> <span class="op">(</span>buffer<span class="op">.</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>                            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;C : пусто, await(notEmpty)&quot;</span><span class="op">);</span></span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>                            notEmpty<span class="op">.</span><span class="fu">await</span><span class="op">();</span></span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">int</span> value <span class="op">=</span> buffer<span class="op">.</span><span class="fu">poll</span><span class="op">();</span></span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;C : забрал &quot;</span> <span class="op">+</span> value <span class="op">+</span> <span class="st">&quot;, size=&quot;</span> <span class="op">+</span> buffer<span class="op">.</span><span class="fu">size</span><span class="op">());</span></span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>                        <span class="co">// будим ТОЛЬКО тех, кто ждёт &quot;не полон&quot; (Producer&#39;ов)</span></span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>                        notFull<span class="op">.</span><span class="fu">signalAll</span><span class="op">();</span></span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span> <span class="cf">finally</span> <span class="op">{</span></span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>                        lock<span class="op">.</span><span class="fu">unlock</span><span class="op">();</span></span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span></span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">Thread</span><span class="op">.</span><span class="fu">sleep</span><span class="op">(</span><span class="dv">300</span><span class="op">);</span></span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">InterruptedException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>                <span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">interrupt</span><span class="op">();</span></span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>        <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Producer</span><span class="op">(</span><span class="dv">1</span><span class="op">)).</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>        <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Producer</span><span class="op">(</span><span class="dv">2</span><span class="op">)).</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>        <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Consumer</span><span class="op">()).</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>LinkedList не потокобезопасен, но в данном случае это ок, потому что
+вся работа явно защищена через lock.</li>
+</ul>
+<h2 id="sleep">sleep</h2>
+<ul>
+<li>TODO:</li>
+</ul>
+<h1 id="исключения-в-потоках">Исключения в потоках</h1>
+<ul>
+<li>Исключения не пробрасываются в родительский поток
+<ul>
+<li>Если в потоке происходит исключение и мы его там не ловим, то оно
+выводится в System.err (стандартный поток вывода ошибок) и поток
+завершается.</li>
+<li>Т.е. в “родительский” поток исключение не пробрасывается ни при
+каких обстоятельствах, нет такой механики.</li>
+</ul></li>
+<li>Обработчик непойманных исключений
+<ul>
+<li>На объект потока можно повесить обработчик, который будет вызываться
+при возникновении непойманного исключения
+<ul>
+<li><code>t.setUncaughtExceptionHandler((thread, ex) -&gt; { })</code></li>
+</ul></li>
+<li>Можно задать универсальный обработчик для всех потоков разом
+<ul>
+<li><code>Thread.setDefaultUncaughtExceptionHandler((thread, ex) -&gt; { })</code></li>
+</ul></li>
+</ul></li>
+<li></li>
+</ul>
+<h2 id="исключения-в-пулах-future">Исключения в пулах, Future</h2>
+<ul>
+<li>Обработчики непойманных исключений не срабатывают для потоков,
+которые выполняются в пуле.
+<ul>
+<li>Это потому что пулы возвращают нам Future, а Future сам
+перехватывает непойманное исключение и сохраняет в себе.</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode java"><code class="sourceCode java"></code></pre></div>
+<h2 id="todo">TODO</h2>
+<ul>
+<li>ThreadPoolExecutor.afterExecute</li>
+</ul>
+<h1 id="пулы-потоков">Пулы потоков</h1>
+<h2 id="зачем-нужны-пулы">Зачем нужны пулы</h2>
+<ul>
+<li>Каждый раз создавать новый поток - накладно, потому что
+задействуются механизмы ОС, выделяется  освобождается память и т.д.
+Поэтому эффективнее использовать пулы потоков. Поток берется из пула, в
+нем выполняется задача, после этого поток возвращается в пул.</li>
+<li>Пулы позволяют контролировать количество потоков, очереди задач и
+т.д. В общем, пулы - это более продвинутый способ работы с потоками,
+нежели “голый” запуск.</li>
+<li>TODO: Дополнительные вещи, вроде когда все потоки заняты,
+очередь</li>
+</ul>
+<h2 id="иерархия-интерфейсов-и-классов">Иерархия интерфейсов и
+классов</h2>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 41%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr>
+<th>Интерфейс</th>
+<th>Возможности</th>
+<th>Дока</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Executor</code></td>
+<td>🔸Интерфейс с единственным методом execute(). Его базовая задача -
+отвязать выполнение задачи от явного создания потока. Т.е. вместо того
+чтобы сами морочиться с созданием потока, мы просто отправляем задачу в
+Executor и он сам все создает. 🔸Выполнение самое простецкое - “отправил
+и забыл”, без возможности получить результат, без возврата Future.
+🔸Отправить на выполнение умеет только одну задачу.</td>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/Executor.html">Читать</a></td>
+</tr>
+<tr>
+<td><code>ExecutorService</code></td>
+<td>🔸Продвинутое расширение Executor’а. 🔸Позволяет отправлять
+несколько задач на выполнение. 🔸При отправке задачи на выполнение
+возвращает нам Future, что позволяет нам взаимодействовать с
+выполняющимися задачами.</td>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ExecutorService.html">Читать</a></td>
+</tr>
+<tr>
+<td><code>ScheduledExecutorService</code></td>
+<td>🔸 TODO</td>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html">Читать</a></td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img src="img/pool-hierarhy.drawio.svg" alt="pool-hierarhy.drawio" />
+<figcaption aria-hidden="true">pool-hierarhy.drawio</figcaption>
+</figure>
+<h2 id="создаем-пул">Создаем пул</h2>
+<h3 id="executors---готовые-пулы-потоков">Executors - готовые пулы
+потоков</h3>
+<ul>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/Executors.html</li>
+<li>В классе <code>Executors</code> много статических методов, которые
+возвращают преднастроенные пулы, например:</li>
+</ul>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">ExecutorService</span> pool <span class="op">=</span> <span class="bu">Executors</span><span class="op">.</span><span class="fu">newFixedThreadPool</span><span class="op">(</span><span class="dv">4</span><span class="op">);</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">ExecutorService</span> pool <span class="op">=</span> <span class="bu">Executors</span><span class="op">.</span><span class="fu">newCachedThreadPool</span><span class="op">();</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">ExecutorService</span> pool <span class="op">=</span> <span class="bu">Executors</span><span class="op">.</span><span class="fu">newSingleThreadExecutor</span><span class="op">();</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">// и т.д., там много разных, выбираем какой надо</span></span></code></pre></div>
+<ul>
+<li>Обзор имеющихся готовых пулов сделаю в отдельном разделе про
+настройку пула.</li>
+<li>Все они по сути просто создают пулы из показанных на схеме классов,
+передавая в них определенные параметры.</li>
+</ul>
+<h3 id="создание-пула-самостоятельно">Создание пула самостоятельно</h3>
+<ul>
+<li>Если настройки готовых пулов нам не подходят, можно создать пул
+самостоятельно из классов:</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr>
+<th>Классы</th>
+<th>Документация</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ThreadPoolExecutor</code></td>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html">Читать</a></td>
+</tr>
+<tr>
+<td><code>ForkJoinPool</code></td>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ForkJoinPool.html">Читать</a></td>
+</tr>
+<tr>
+<td><code>ScheduledThreadPoolExecutor</code></td>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ScheduledThreadPoolExecutor.html">Читать</a></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Делать это приходится, похоже, не так уж редко. TODO: правда
+разбираться в этом сейчас я, конечно же, не буду.</li>
+<li>Пример создания пула самостоятельно:</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">ThreadPoolExecutor</span> executor <span class="op">=</span> <span class="kw">new</span> <span class="bu">ThreadPoolExecutor</span><span class="op">(</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">4</span><span class="op">,</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">8</span><span class="op">,</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">60L</span><span class="op">,</span> <span class="bu">TimeUnit</span><span class="op">.</span><span class="fu">SECONDS</span><span class="op">,</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">new</span> <span class="bu">ArrayBlockingQueue</span><span class="op">&lt;&gt;(</span><span class="dv">100</span><span class="op">),</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">new</span> <span class="fu">ThreadFactoryBuilder</span><span class="op">().</span><span class="fu">setNameFormat</span><span class="op">(</span><span class="st">&quot;img-resize-%d&quot;</span><span class="op">).</span><span class="fu">build</span><span class="op">(),</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">new</span> <span class="bu">ThreadPoolExecutor</span><span class="op">.</span><span class="fu">CallerRunsPolicy</span><span class="op">()</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<ul>
+<li>Краткое описание параметров - в отдельном разделе про настройки
+пула.</li>
+</ul>
+<h2 id="отправляем-задачу-в-пул">Отправляем задачу в пул</h2>
+<ul>
+<li><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ExecutorService.html#submit(java.lang.Runnable)">submit</a></li>
+</ul>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Future</span><span class="op">&lt;?&gt;</span> future <span class="op">=</span> pool<span class="op">.</span><span class="fu">submit</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">getName</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; runnable выполняется в пуле.&quot;</span><span class="op">);</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="op">});</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Future</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> future <span class="op">=</span> pool<span class="op">.</span><span class="fu">submit</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">getName</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; callable выполняется в пуле.&quot;</span><span class="op">);</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">23</span><span class="op">;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="op">});</span></span></code></pre></div>
+<ul>
+<li>TODO: вероятно тут можно отправлять по одной задаче, а можно пачку?
+через invokeAll?</li>
+</ul>
+<h2 id="закрыть-пул">Закрыть пул</h2>
+<ul>
+<li>TODO:</li>
+</ul>
+<h1 id="настройки-пула">Настройки пула</h1>
+<h2 id="threadpoolexecutor">ThreadPoolExecutor</h2>
+<ul>
+<li><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html#%3Cinit%3E(int,int,long,java.util.concurrent.TimeUnit,java.util.concurrent.BlockingQueue,java.util.concurrent.ThreadFactory,java.util.concurrent.RejectedExecutionHandler)">Конструктор
+со всеми доступными параметрами</a></li>
+</ul>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">ThreadPoolExecutor</span> executor <span class="op">=</span> <span class="kw">new</span> <span class="bu">ThreadPoolExecutor</span><span class="op">(</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="op">,</span>  <span class="co">// corePoolSize</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span><span class="op">,</span>  <span class="co">// maximumPoolSize</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0L</span><span class="op">,</span> <span class="co">// keepAliveTime</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">TimeUnit</span><span class="op">.</span><span class="fu">MILLISECONDS</span><span class="op">,</span>  <span class="co">// unit</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">new</span> <span class="bu">ArrayBlockingQueue</span><span class="op">&lt;&gt;(</span><span class="dv">2</span><span class="op">),</span>  <span class="co">// workQueue</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">null</span><span class="op">,</span>  <span class="co">// threadFactory</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">new</span> <span class="bu">ThreadPoolExecutor</span><span class="op">.</span><span class="fu">AbortPolicy</span><span class="op">()</span>  <span class="co">// handler</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<h3 id="простые-настройки">Простые настройки</h3>
+<ul>
+<li><code>corePoolSize</code> - количество потоков, которые всегда
+остаются в пуле, даже если простаивают.</li>
+<li><code>maximumPoolSize</code> - максимальное количество потоков в
+пуле.</li>
+<li><code>keepAliveTime</code> - время, после которого простаивающие
+потоки будут уничтожены.</li>
+<li><code>unit</code> - единицы времени для keepAliveTIme.</li>
+<li><code>threadFactory</code> - фабрика создания потоков, позволяет
+например задать имена потокам и разные другие полезные вещи.</li>
+</ul>
+<h3 id="настройка-workqueue">Настройка workQueue</h3>
+<ul>
+<li><code>workQueue</code> - это инстанс очереди, которая используется
+для хранения поступающих задач, когда количество созданных потоков в
+пуле добралось до corePoolSize.</li>
+<li>У пула есть внутренний счетчик workerCount, который хранит
+количество созданных потоков. Когда этот счетчик становится &gt;=
+corePoolSize, тогда именно от выбранного типа очереди зависит, что будет
+происходить дальше.
+<ul>
+<li>Если очередь приняла задачу, тогда новый поток не создается. Если не
+приняла - тогда пул пытается создать новый поток, если еще не достигнут
+maximumPoolSize. Ну а если он достигнут, получается что пул не может
+обработать задачу и тогда срабатывает <code>handler</code> - последняя
+настройка - который определит, что делать с такой задачей.</li>
+</ul></li>
+<li>Некоторые типичные инстансы для workQueue (все они должны
+реализовать интерфейс BlockingQueue):
+<ul>
+<li><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/SynchronousQueue.html">SynchronousQueue</a>
+- очередь не хранит ни одной задачи, пул быстро растет до
+maximumPoolSize.
+<ul>
+<li>P.S. Можно почитать по какому принципу работает эта очередь, я
+что-то сходу не понял.</li>
+</ul></li>
+<li><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/LinkedBlockingQueue.html">LinkedBlockingQueue</a>
+- эта очередь не имеет размера, поэтому задачи кладутся в нее
+бесконечно, пока хватит физической памяти. Так что количество потоков
+никогда не превысит corePoolSize.</li>
+<li><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>
+- очередь с фиксированным размером. Работает описанный выше алгоритм
+“приняла - храним, не приняла - новый поток, нельзя новый поток -
+handler”.</li>
+</ul></li>
+<li>Думаю что создание и настройка собственного пула потянет на
+отдельную полноценную тему, так что тут просто обзорно оставлю.</li>
+<li>TODO: мб нарисовать это блок-схемой, когда словами разберусь?</li>
+</ul>
+<h3 id="настройка-handler-принцип-backpressure">Настройка handler,
+принцип backpressure</h3>
+<ul>
+<li><code>RejectedExecutionHandler handler</code> - параметр задает, что
+делать в ситуации, когда пул не может принять задачу.
+<ul>
+<li>Например, очередь переполнена + потоков уже создано максимум, или
+пул пытается закрыться (shutdown).</li>
+</ul></li>
+<li>Есть несколько предустановленных политик
+<ul>
+<li><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.AbortPolicy.html">AbortPolicy</a>
+- дефолт, выбрасывает исключение RejectedExecutionException.</li>
+<li><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.CallerRunsPolicy.html">CallerRunsPolicy</a>
+- задачу будет выполнять поток, который попытался отправить ее в пул
+(пул как бы говорит “я не могу, сам выполняй!”).</li>
+<li><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.DiscardPolicy.html">DiscardPolicy</a>
+- задача просто выбрасывается безо всяких исключений или других
+сигналов.</li>
+<li><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.DiscardOldestPolicy.html">DiscardOldestPolicy</a>
+- из очереди выбрасывается самая старая задача, а новая
+добавляется.</li>
+</ul></li>
+<li>Типичные проблемы:
+<ul>
+<li>Если отбрасывать задачи, получаем потерю данных.</li>
+<li>Если копить задачи в безлимитной очереди, получаем OOM
+(OutOfMemory).</li>
+</ul></li>
+<li>Принцип <code>backpressure</code>
+<ul>
+<li>Эти проблемы возникают из-за того, что поставщик задач генерит
+больше задач, чем потребитель (пул) может обработать.</li>
+<li>Поэтому при перегрузке пула логичнее всего затормозить поставщика,
+чтобы он перестал давать задачи. Это называется backpressure.</li>
+<li>Для этого мы можем написать свою политику: реализуем интерфейс
+RejectedExecutionHandler, отдаем реализацию в пул и радуемся. Как именно
+сделать такое управляемое торможение поставщика - отдельная тема.</li>
+</ul></li>
+</ul>
+<h2 id="обзор-готовых-пулов">Обзор готовых пулов</h2>
+<ul>
+<li>У всех готовых пулов есть общие характеристики:
+<ul>
+<li>Они используют политику AbortPolicy при невозможности принять
+задачу.</li>
+<li>Они создают не-daemon потоки.</li>
+<li>У создаваемых потоков нормальный приоритет.</li>
+<li>Имена потокам даются в виде pool-N-thread-M.</li>
+<li>Почти все пулы используют неограниченную очередь для сообщений.
+Поэтому они не годятся для работы под нагрузкой, можно получить
+OOM.</li>
+<li>Многие пулы по умолчанию используют нативные потоки ОС.
+<ul>
+<li>Но у многих методов создания пулов есть версия с параметром
+threadFactory. Это позволяет нам передать фабрику, в которой мы можем
+создавать виртуальные потоки вместо нативных.</li>
+</ul></li>
+</ul></li>
+<li>Обзор пулов:</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Метод  пул</th>
+<th>Описание пула</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/Executors.html#newFixedThreadPool(int)">newFixedThreadPool(n)</a></td>
+<td>🔸 Пул с фиксированным количеством потоков. Больше чем указано, их
+не будет создано. Если все потоки заняты, задачи помещаются в очередь.
+🔸 Но после создания пула количество потоков в нем можно вручную
+изменить.</td>
+</tr>
+<tr>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/Executors.html#newWorkStealingPool(int)">newWorkStealingPool(parallelism)</a></td>
+<td>TODO, что-то связанное с ForkJoinPool, нет гарантий порядка
+выполнения</td>
+</tr>
+<tr>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/Executors.html#newSingleThreadExecutor()">newSingleThreadExecutor</a></td>
+<td>Пул с единственным потоком. Отличается от newFixedThreadPool(1) тем
+что тут невозможно после создания пула никак изменить руками количество
+потоков, потому что возвращается не “настоящий” пул, а обертка и она
+такой возможности не дает.</td>
+</tr>
+<tr>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/Executors.html#newCachedThreadPool()">newCachedThreadPool</a></td>
+<td>Пул с динамическим количеством потоков. Задачи в очереди не
+хранятся, поэтому если задача приходит, а все потоки заняты, то
+создается новый. Если свободный поток простаивает 60 сек, то он
+уничтожается.</td>
+</tr>
+<tr>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/Executors.html#newThreadPerTaskExecutor(java.util.concurrent.ThreadFactory)">newThreadPerTaskExecutor(threadFactory)</a></td>
+<td>🔸 Этот пул создает для каждой пришедшей задачи новый поток. От
+newCachedThreadPool отличается тем, что не кэширует потоки. Как только
+поток выполнил задачу, он уничтожается. 🔸 Особенность в том, что тут мы
+обязаны передать фабрику создания потоков. Легенды гласят, что метод был
+создан для упрощения перехода на виртуальные потоки.</td>
+</tr>
+<tr>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/Executors.html#newVirtualThreadPerTaskExecutor()">newVirtualThreadPerTaskExecutor</a></td>
+<td>То же самое что newThreadPerTaskExecutor, но только за нас уже
+передают готовую фабрику виртуальных потоков.</td>
+</tr>
+<tr>
+<td>TODO: есть еще несколько</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>TODO: что по гарантиям порядка выполнения задач? пулы дают его?</p>
+<h1 id="фабрика-потоков">Фабрика потоков</h1>
+<ul>
+<li>Фабрика представлена функциональным интерфейсом
+<code>ThreadFactory</code>, с единственным методом newThread.</li>
+<li>Мы можем написать класс, реализующий этот интерфейс, и передать его
+инстанс туда, где требуется фабрика, например в пул. Тогда он для
+создания потока будет пользоваться этой фабрикой.
+<ul>
+<li>Фабрика сама по себе, вне этого контекста, как какая-то
+самостоятельная сущность не используется.</li>
+</ul></li>
+<li>Можно не писать отдельный класс, а воспользоваться лямбдой.</li>
+<li>TODO:
+<ul>
+<li>у фабрики много возможностей, от простых вещей, вроде задания имени,
+до более продвинутых вроде обработчиков исключений, daemon - не-daemon и
+т.д. Там достаточно много вещей, которые можно сделать. Потом
+вписать.</li>
+<li>Одной из важнейших возможностей является создание в фабрике не
+нативного потока ОС, а виртуального. Такую фабрику можно использовать
+при создании пула потоков и тогда он будет пользоваться виртуальными
+потоками.</li>
+</ul></li>
+</ul>
+<h1 id="future-completablefuture">Future, CompletableFuture</h1>
+<h2 id="иерархия-интерфейсов-и-классов-1">Иерархия интерфейсов и
+классов</h2>
+<ul>
+<li>P.S. Иерархия не полная, только самое базированное, что понял на
+данный момент.</li>
+</ul>
+<figure>
+<img src="img/task-result-hierarchy.drawio.svg"
+alt="task-result-hierarchy.drawio" />
+<figcaption aria-hidden="true">task-result-hierarchy.drawio</figcaption>
+</figure>
+<table>
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 43%" />
+<col style="width: 43%" />
+</colgroup>
+<thead>
+<tr>
+<th>Интерфейс</th>
+<th>Возможности</th>
+<th>Дока</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Future</code></td>
+<td>🔸Базовые возможности для взаимодействия с отправленной в работу
+задачей: проверить состояние (завершена  отменена); получить результат;
+отменить</td>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/Future.html">Читать</a></td>
+</tr>
+<tr>
+<td><code>CompletionStage</code></td>
+<td>🔸Дает возможности по выстраиванию цепочек обработки, вроде “после
+выполнения задачи выполнить вот эту, после нее эту и т.д.”</td>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/CompletionStage.html">Читать</a></td>
+</tr>
+<tr>
+<td><code>RunnableFuture</code></td>
+<td>TODO</td>
+<td><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/RunnableFuture.html">Читать</a></td>
+</tr>
+</tbody>
+</table>
+<p>TODO: как отмена работает?</p>
+<h2 id="future---интерфейс">Future - интерфейс</h2>
+<ul>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/Future.html</li>
+<li><code>Future</code> - это интерфейс, который позволяет работать с
+запущенной задачей.
+<ul>
+<li>Например, дождаться окончания выполнения, получить результат.</li>
+<li>Когда мы отправляем задачу в пул, например через submit, то получаем
+в ответ Future.</li>
+<li></li>
+</ul></li>
+</ul>
+<h2 id="completablefuture">CompletableFuture</h2>
+<ul>
+<li>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/CompletableFuture.html</li>
+<li>Умеет запускать задачи в работу. Для этого может пользоваться своим
+дефолтным пулом (TODO: что это за пул?) или мы можем сами ему передать
+наш пул.</li>
+</ul>
+<h1 id="примеры-проблем-многопоточности">Примеры проблем
+многопоточности</h1>
+<h2 id="shared-counter-неатомарность-операций">shared counter,
+неатомарность операций</h2>
+<ul>
+<li>В чем проблема
+<ul>
+<li>Есть объект counter с int-полем value (значение)</li>
+<li>Создается несколько потоков, у всех есть ссылка на этот counter, и
+они выполняют увеличение значения в цикле</li>
+<li>Наивно ожидается что если 10 потоков сделают 1000 увеличений,
+конечное значение будет 10_000
+<ul>
+<li>Но это не так</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Counter <span class="op">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> value <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">increment</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        value<span class="op">++;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">get</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> value<span class="op">;</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Main <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="kw">throws</span> <span class="bu">InterruptedException</span> <span class="op">{</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        Counter counter <span class="op">=</span> <span class="kw">new</span> <span class="fu">Counter</span><span class="op">();</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Thread</span><span class="op">[]</span> threads <span class="op">=</span> <span class="kw">new</span> <span class="bu">Thread</span><span class="op">[</span><span class="dv">10</span><span class="op">];</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> threads<span class="op">.</span><span class="fu">length</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>            threads<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> <span class="dv">1000</span><span class="op">;</span> j<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                    counter<span class="op">.</span><span class="fu">increment</span><span class="op">();</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>            <span class="op">});</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="bu">Thread</span> thread <span class="op">:</span> threads<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>            thread<span class="op">.</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="bu">Thread</span> thread <span class="op">:</span> threads<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>            thread<span class="op">.</span><span class="fu">join</span><span class="op">();</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>counter<span class="op">.</span><span class="fu">get</span><span class="op">());</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Почему не получается 10_000
+<ul>
+<li>Увеличение значения (value++, value += 1, value = value + 1 и т.д.,
+не важно) - не атомарная операция. Т.е. она состоит из трех операций -
+“взять текущее значение”, “вычислить новое”, “записать вместо
+старого”.</li>
+<li>Поскольку квант времени может закончится в любой момент, то поток
+может не успеть записать результат. Соответственно, когда он вернется к
+работе, то запишет значение, которое вычислил в прошлый раз, и т.о.
+перезапишет результаты других потоков, которые работали после него.
+Поэтому часть “увеличений” счетчика и теряется.</li>
+<li>Эта проблема называется <code>race condition</code></li>
+<li>TODO: стоит ли здесь сделать рисунок? Вроде бы для меня этот момент
+сейчас очевиден. Мб потом, когда делать нечего будет или выяснится, что
+забыл.</li>
+</ul></li>
+</ul>
+<h2 id="ready-флаг-гарантии-видимости-изменений">ready-флаг, гарантии
+видимости изменений</h2>
+<ul>
+<li>Суть проблемы
+<ul>
+<li>Наивно ожидаем увидеть 42, но возможны проблемы:
+<ul>
+<li>Видим 0</li>
+<li>Ничего не видим, второй поток ничего не вывел</li>
+</ul></li>
+<li>P.S. Хоть миллион раз запусти, эти проблемы могут не возникнуть, но
+это не доказывает, что их потенциально нет</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Main <span class="op">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="kw">throws</span> <span class="bu">InterruptedException</span> <span class="op">{</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">State</span> state <span class="op">=</span> <span class="kw">new</span> <span class="bu">State</span><span class="op">();</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Thread</span> writer <span class="op">=</span> <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>            state<span class="op">.</span><span class="fu">number</span> <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>            state<span class="op">.</span><span class="fu">ready</span> <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Thread</span> reader <span class="op">=</span> <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>state<span class="op">.</span><span class="fu">ready</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>state<span class="op">.</span><span class="fu">number</span><span class="op">);</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>        writer<span class="op">.</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>        reader<span class="op">.</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>        writer<span class="op">.</span><span class="fu">join</span><span class="op">();</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>        reader<span class="op">.</span><span class="fu">join</span><span class="op">();</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="bu">State</span> <span class="op">{</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> number <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">boolean</span> ready <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Почему проблемы
+<ul>
+<li>Потому что если не использовать специальные средства для работы с
+многопоточностью, то JVM не гарантирует видимость изменений, которые
+разные потоки делают над одними и теми же данными.
+<ul>
+<li>Это единственное приемлемое объяснение. Вся остальная чепуха насчет
+“реордеринга команд из-за оптимизаций”, “кэширование” - вносит только
+путаницу, это попытки грубо объяснить очень низкоуровневые технические
+детали реализации, которые только извращают мышление, не давая реальной
+пользы.</li>
+</ul></li>
+<li>Фактически это значит что если один поток записал number = 42 и
+ready = true, то другой поток может эти значения либо не увидеть вообще,
+либо увидеть частично. В общем, так и так получится ненадежная
+каша.</li>
+<li>Чтобы таких проблем не было, нужна happens-before гарантия.</li>
+</ul></li>
+</ul>
+<h1 id="happens-before-гарантия">happens-before гарантия</h1>
+<ul>
+<li><code>happens-before</code> (“происходит перед”) связано с
+видимостью изменений данных, которые потоки вносят в общие данные.</li>
+<li>Абстрактно сформулировать можно так: “Если действие А происходит
+перед действием B, тогда действие B видит изменения, которые сделало
+действие А, причем ровно в том же порядке”.</li>
+<li>Многие многопоточные фишки дают happens-before гарантию.</li>
+<li>Дб понятнее на конкретном примере: запись в volatile-поле
+“происходит перед” чтением из этого поля. На практике это значит, что
+если один поток пишет в volatile-поле, то другой поток гарантированно
+прочитает актуальное записанное значение. Без этой гарантии он может
+прочитать старое значение и никогда не увидеть новое.</li>
+</ul>
+<h1 id="volatile---хочу-актуальное-значение">volatile - хочу актуальное
+значение</h1>
+<ul>
+<li><code>volatile</code>
+<ul>
+<li>Что дает
+<ul>
+<li>Гарантию видимости актуального значения</li>
+</ul></li>
+<li>Чего не дает
+<ul>
+<li>атомарности операциям</li>
+</ul></li>
+<li>К чему применяется
+<ul>
+<li>только к полям класса</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Worker <span class="kw">implements</span> <span class="bu">Runnable</span> <span class="op">{</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">volatile</span> <span class="dt">boolean</span> running <span class="op">=</span> <span class="kw">true</span><span class="op">;</span>  <span class="co">// &lt;-- volatile</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Worker: начал работу&quot;</span><span class="op">);</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span>running<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Worker: работаю...&quot;</span><span class="op">);</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>                <span class="bu">Thread</span><span class="op">.</span><span class="fu">sleep</span><span class="op">(</span><span class="dv">500</span><span class="op">);</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">InterruptedException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>                <span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">interrupt</span><span class="op">();</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Worker: остановлен&quot;</span><span class="op">);</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">stop</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>        running <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Main <span class="op">{</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="kw">throws</span> <span class="bu">InterruptedException</span> <span class="op">{</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        Worker worker <span class="op">=</span> <span class="kw">new</span> <span class="fu">Worker</span><span class="op">();</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Thread</span> thread <span class="op">=</span> <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(</span>worker<span class="op">);</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        thread<span class="op">.</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Thread</span><span class="op">.</span><span class="fu">sleep</span><span class="op">(</span><span class="dv">3000</span><span class="op">);</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Main: останавливаю Worker&quot;</span><span class="op">);</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        worker<span class="op">.</span><span class="fu">stop</span><span class="op">();</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>        thread<span class="op">.</span><span class="fu">join</span><span class="op">();</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Main: программа завершена&quot;</span><span class="op">);</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Объяснение
+<ul>
+<li>Создаем новый поток, в котором работает воркер</li>
+<li>Потом из главного потока (в котором main выполняется), вызываем
+метод воркера, который пишет false в volatile-поле</li>
+<li>Цикл while видит false и завершается. Когда run() метод доходит до
+конца, то в данном случае поток завершается.</li>
+<li>Суть в том, что false пишется из главного потока, а читается из
+другого. Без volatile этот поток мог бы не увидеть изменение поля
+running и не остановился бы. volatile дает гарантию видимости
+актуального значения.</li>
+</ul></li>
+</ul>
+<h1 id="syncronized---туалет-занят-ждите">syncronized - туалет занят,
+ждите</h1>
+<ul>
+<li><code>syncronized</code> - это ключевое слово, им можно помечать
+методы:</li>
+</ul>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> BankAccount <span class="op">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">volatile</span> <span class="dt">int</span> balance<span class="op">;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">BankAccount</span><span class="op">(</span><span class="dt">int</span> balance<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">balance</span> <span class="op">=</span> balance<span class="op">;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">synchronized</span> <span class="dt">void</span> <span class="fu">withdraw</span><span class="op">(</span><span class="dt">int</span> amount<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>balance <span class="op">&gt;=</span> amount<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>            balance <span class="op">-=</span> amount<span class="op">;</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="bu">Thread</span><span class="op">.</span><span class="fu">currentThread</span><span class="op">().</span><span class="fu">getName</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; снял &quot;</span> <span class="op">+</span> amount<span class="op">);</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Недостаточно средств&quot;</span><span class="op">);</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">synchronized</span> <span class="dt">void</span> <span class="fu">deposit</span><span class="op">(</span><span class="dt">int</span> amount<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>        balance <span class="op">+=</span> amount<span class="op">;</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">getBalance</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> balance<span class="op">;</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="kw">throws</span> <span class="bu">InterruptedException</span> <span class="op">{</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>        BankAccount account <span class="op">=</span> <span class="kw">new</span> <span class="fu">BankAccount</span><span class="op">(</span><span class="dv">1000</span><span class="op">);</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Runnable</span> task <span class="op">=</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>            account<span class="op">.</span><span class="fu">withdraw</span><span class="op">(</span><span class="dv">700</span><span class="op">);</span></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">};</span></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Thread</span> t1 <span class="op">=</span> <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(</span>task<span class="op">,</span> <span class="st">&quot;Thread-1&quot;</span><span class="op">);</span></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Thread</span> t2 <span class="op">=</span> <span class="kw">new</span> <span class="bu">Thread</span><span class="op">(</span>task<span class="op">,</span> <span class="st">&quot;Thread-2&quot;</span><span class="op">);</span></span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>        t1<span class="op">.</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>        t2<span class="op">.</span><span class="fu">start</span><span class="op">();</span></span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>        t1<span class="op">.</span><span class="fu">join</span><span class="op">();</span></span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a>        t2<span class="op">.</span><span class="fu">join</span><span class="op">();</span></span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Итоговый баланс: &quot;</span> <span class="op">+</span> account<span class="op">.</span><span class="fu">getBalance</span><span class="op">());</span></span>
+<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>можно помечать блоки кода:</li>
+</ul>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> PriceService <span class="op">{</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">Object</span> lock <span class="op">=</span> <span class="kw">new</span> <span class="bu">Object</span><span class="op">();</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">Map</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">&gt;</span> cache <span class="op">=</span> <span class="kw">new</span> <span class="bu">HashMap</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">getPrice</span><span class="op">(</span><span class="bu">String</span> productId<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Быстрая проверка кэша — блокируем только доступ к Map</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">synchronized</span> <span class="op">(</span>lock<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>            <span class="bu">Integer</span> cachedPrice <span class="op">=</span> cache<span class="op">.</span><span class="fu">get</span><span class="op">(</span>productId<span class="op">);</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>cachedPrice <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> cachedPrice<span class="op">;</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Долгая операция выполняется БЕЗ блокировки</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> price <span class="op">=</span> <span class="fu">loadPriceFromDatabase</span><span class="op">(</span>productId<span class="op">);</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Снова короткий участок под блокировкой</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">synchronized</span> <span class="op">(</span>lock<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>            cache<span class="op">.</span><span class="fu">put</span><span class="op">(</span>productId<span class="op">,</span> price<span class="op">);</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> price<span class="op">;</span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> <span class="fu">loadPriceFromDatabase</span><span class="op">(</span><span class="bu">String</span> productId<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Представим, что здесь запрос к БД занимает 500 мс</span></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">100</span><span class="op">;</span></span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="зачем-нужно">Зачем нужно</h2>
+<ul>
+<li>syncronized дает потоку монополию на участок кода - пока он
+полностью не выполнит syncronized-секцию, все остальные потоки, которые
+попробуют выполнить этот код, зависнут в ожидании.</li>
+<li>у каждого объекта есть <code>монитор</code>. syncronized захватывает
+этот монитор. если syncronized применяется к методу целиком, то это
+равнозначно syncronized (this), т.е. захватить монитор текущего объекта.
+<ul>
+<li>когда монитор освобождается, ОС берет один из зависших на нем
+потоков и ставит в работу.</li>
+</ul></li>
+<li>когда syncronized используется с блоком кода, то обычно делают
+отдельный объект для захвата, а не this.
+<ul>
+<li>Это не позволяет внешнему коду случайно заблокировать секцию в
+PriceService. Например, какой-то внешний код взял и использовал объект
+PriceService для своей секции, которая вообще не имеет отношения к
+секциям внутри price service. Тогда если кто-то вызовет getPrice, то
+залипнет, потому что монитор price service’а занят.</li>
+</ul></li>
+<li>syncronized-блоки надо делать как можно меньше. Вся работа, которая
+не требует синхронизации, должна выполняться без нее, чтобы лишний раз
+не вешать потоки.</li>
+</ul>
+<h1 id="примитивы-синхронизации">Примитивы синхронизации</h1>
+<h2 id="mutex-монитор">mutex  монитор</h2>
+<ul>
+<li><code>mutex</code> - (от mutual exclusion, взаимное исключение) -
+это примитив синхронизации, который подразумевает, что захватить его
+может только один поток. Если другой поток пытается захватить его, то
+уходит в блокировку, пока мьютекс не освободится.</li>
+<li><code>монитор</code> - чем-то отличается от мьютекса вроде, но я не
+понял чем. Но по сути одно и то же - только один поток может захватить
+монитор, остальные блокируются до тех пор, пока монитор
+освободится.</li>
+</ul>
+<h1 id="что-почитать">📖 Что почитать</h1>
+<ul>
+<li>https://habr.com/ru/articles/802113/</li>
+</ul>
+<h1 id="todo-1">TODO</h1>
+<ul>
+<li>Методы эти посмотреть <del>join(), wait(), notify()</del>, lock(),
+yield(), sleep(), unlock(), stop(), <del>iterrupt()</del></li>
+</ul>
+<h2 id="wait-notify">wait  notify</h2>
+<ul>
+<li>Продвинутое ожидание  уведомление</li>
+</ul>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span> <span class="dt">final</span> <span class="bu">ReentrantLock</span> lock <span class="op">=</span> <span class="kw">new</span> <span class="bu">ReentrantLock</span><span class="op">();</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span> <span class="dt">final</span> <span class="bu">Condition</span> notFull  <span class="op">=</span> lock<span class="op">.</span><span class="fu">newCondition</span><span class="op">();</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span> <span class="dt">final</span> <span class="bu">Condition</span> notEmpty <span class="op">=</span> lock<span class="op">.</span><span class="fu">newCondition</span><span class="op">();</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Producer:</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>lock<span class="op">.</span><span class="fu">lock</span><span class="op">();</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>buffer<span class="op">.</span><span class="fu">size</span><span class="op">()</span> <span class="op">==</span> CAPACITY<span class="op">)</span> notFull<span class="op">.</span><span class="fu">await</span><span class="op">();</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    buffer<span class="op">.</span><span class="fu">add</span><span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    notEmpty<span class="op">.</span><span class="fu">signalAll</span><span class="op">();</span>   <span class="co">// будим только ждущих &quot;не пусто&quot;</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">finally</span> <span class="op">{</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    lock<span class="op">.</span><span class="fu">unlock</span><span class="op">();</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Сейчас <code>wait()</code>/<code>notify()</code> считаются
+низкоуровневым API. Обычно используют:</p>
+<ul>
+<li><p><code>java.util.concurrent.locks.Condition</code>
+(<code>await()</code>/<code>signal()</code>)</p></li>
+<li><p><code>BlockingQueue</code>, <code>CountDownLatch</code>,
+<code>Semaphore</code> и др.</p></li>
+<li><p><code>CompletableFuture</code></p></li>
+<li><p><del>Способы объявить поток</del></p>
+<ul>
+<li><del>Наследование от класса <code>Thread</code></del></li>
+<li><del>Реализация <em>функциональных</em> интерфейсов
+<code>Runnable</code> или <code>Callable</code></del></li>
+<li><del>Лямбды</del></li>
+</ul></li>
+<li><p><del>Запуск потока</del></p>
+<ul>
+<li><del>“Голый” запуск</del></li>
+<li><del>Пулы потоков, интерфейс ExecutorService</del></li>
+</ul></li>
+<li><p>Исключения в потоках</p>
+<ul>
+<li>TODO</li>
+</ul></li>
+<li><p>Возврат значения из потока</p></li>
+<li><p><del>Виды потоков</del></p>
+<ul>
+<li><del>daemon и “не-daemon” (“пользовательские”)</del></li>
+<li><del>Виртуальные потоки</del></li>
+</ul></li>
+<li><p>Приоритет потоков</p></li>
+<li><p><del>Жизненный цикл потоков</del></p></li>
+<li><p>Дополнительные вещи</p>
+<ul>
+<li>ForkJoinPool</li>
+<li>Виртуальные потоки</li>
+<li>sleep() метод потока</li>
+<li>isAlive(), getName(), setName(), setPriority(), getPriority()</li>
+<li>yield()</li>
+<li>Future, CompletableFuture, ScheduledFuture, CompletionService</li>
+<li>FutureTask,</li>
+<li><del>ExecutorService</del></li>
+<li>отмена задач  потока</li>
+<li><del>ThreadFactory</del></li>
+<li>ThreadGroup??? - устаревшая хрень, но можно упомянуть для истории,
+чтобы явно знать что оно не нужно уже.</li>
+<li>Что можно сделать непосредственно с потоком, его методы вроде join,
+sleep и т.д.</li>
+<li>Асинхронные задачи что подразумевают тут? Это что-то отличающееся от
+многопоточки?</li>
+</ul></li>
+<li><p>TODO</p>
+<ul>
+<li>Project Loom</li>
+</ul></li>
+<li><p>Синхронизаторы (возможно в отдельном конспекте лучше?)</p>
+<ul>
+<li><p><code>CountDownLatch</code> — ждать N событий</p>
+<p><code>CyclicBarrier</code> — синхронная точка для N потоков</p>
+<p><code>Semaphore</code> — ограничение доступа к ресурсу</p>
+<p><code>Phaser</code> — более гибкий barrier</p>
+<p><code>Exchanger</code> — обмен данными между двумя потоками</p></li>
+</ul></li>
+<li><p>Locks</p>
+<ul>
+<li><pre><code>ReentrantLock`, `ReentrantReadWriteLock</code></pre>
+<p><code>StampedLock</code> (Java 8) — оптимистичные чтения</p>
+<p><code>Condition</code> — аналог wait/notify</p></li>
+</ul></li>
+</ul>
+<div class="nav-menu">
+  <button id="toTop" class="nav-btn" type="button" aria-label="Наверх">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+  <button id="toHome" class="nav-btn" type="button" aria-label="Домой">
+    <span class="material-symbols-outlined">home</span>
+  </button>
+</div>
+</div>
+</div>
+<script>
+  document.getElementById('toTop').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
+
+  document.getElementById('toHome').addEventListener('click', function () {
+    window.location.href = '/';
+  });
+</script>
+</body>
+</html>

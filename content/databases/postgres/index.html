@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>postgres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+
+  <!-- ============= ============= Мои стили и скрипты ============= ============= -->
+  <!-- Должны подключать тут, чтобы перекрыть дефолты пандока -->
+  <link rel="stylesheet" href="/papyrus/styles/article-page.css">
+  <script src="/papyrus/scripts/oglavlenie.js" defer></script>
+  <script src="/papyrus/scripts/source-code-expand-collapse.js" defer></script>
+  <!-- ============= ============= =================== ============= ============= -->
+
+</head>
+<body>
+<div class="layout">
+<div id="oglavlenie"></div>
+<div class="content">
+<h1 id="уровни-изоляции-транзакций">Уровни изоляции транзакций</h1>
+<ul>
+<li><a
+href="https://postgrespro.ru/docs/postgrespro/18/mvcc">postgrespro.ru
+про изоляцию</a></li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 11%" />
+<col style="width: 43%" />
+<col style="width: 7%" />
+<col style="width: 13%" />
+<col style="width: 8%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>Уровень</th>
+<th>Комментарий</th>
+<th>Dirtry Read</th>
+<th>Non-repeatable Read</th>
+<th>Phantom Read</th>
+<th>Serialization Anomaly</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read Uncommitted</td>
+<td>В Postgres работает так же как Read Committed</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Read Committed</td>
+<td>🔸Снапшот перед каждым оператором внутри транзакции. 🔸При конфликте
+перечитывает строку и пользуется актуальной.</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Repeatable Read</td>
+<td>🔸Снапшот только перед первым оператором транзакции. 🔸При конфликте
+транзакция бросает ошибку 40001.</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Serializable</td>
+<td>Снапшот тоже только перед первым оператором транзакции.</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>
+<h2 id="mvcc">MVCC</h2>
+<ul>
+<li><code>MVCC</code> - Multi-Version Concurrency Control, это
+неблокирующий механизм управления конкурирующим доступом к данным.
+<ul>
+<li>Работает на основе снапшотов и версий строк.</li>
+<li>Чтение не блокирует запись, а запись не блокирует чтение за счет
+того, что вместо изменений оригинальных строк создаются их новые версии.
+Т.о. “оригинальные” и “измененные” строки существуют одновременно, а то
+какую именно из них видит транзакция, определяется внутренними
+механизмами (как именно - не особо важно).</li>
+</ul></li>
+<li>Если понимать, в какой момент создается снапшот, тогда становится
+ясно, что видит транзакция на каждом уровне изоляции.
+<ul>
+<li>Снапшоты делаются в двух моментах:
+<ul>
+<li>Снапшот перед каждым оператором внутри транзакции Т1 (используется в
+Read Committed). Поэтому логично, что если другая транзакция закоммитит,
+то очередной оператор в Т1 увидит эти изменения. Поэтому возможно
+неповторяющееся чтение и фантомы.
+<ul>
+<li>При конфликтах обновлений Т1 перечитывает данные, т.о. получает
+изменения внесенные другой транзакцией, и использует их в своей
+работе.</li>
+</ul></li>
+<li>Снапшот только перед первым оператором транзакции Т1 (используется в
+Repeatable Read и Serializable). Поэтому если другая транзакция
+коммитит, то Т1 этих изменений не видит. Поэтому тут невозможно
+неповторяющееся чтение и фантомы.
+<ul>
+<li>При конфликтах обновлений транзакция выбрасывает ошибку и нам надо
+пробовать ее повторить. Перечитать данные, чтобы получить актуальные,
+она не может принципиально, потому что снапшот перед транзакцией
+предполагает что она должна видеть данные именно в таком неизменном
+виде. А если уж они изменились, извольте начать транзакцию заново с
+новым снапшотом. Поэтому может потребоваться несколько попыток повторно
+выполнить транзакцию, прежде чем удастся.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>Что почитать
+<ul>
+<li><a
+href="https://planetscale.com/blog/postgresql-mvcc#mvcc">planetscale.com</a></li>
+</ul></li>
+</ul>
+<div class="nav-menu">
+  <button id="toTop" class="nav-btn" type="button" aria-label="Наверх">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+  <button id="toHome" class="nav-btn" type="button" aria-label="Домой">
+    <span class="material-symbols-outlined">home</span>
+  </button>
+</div>
+</div>
+</div>
+<script>
+  document.getElementById('toTop').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
+
+  document.getElementById('toHome').addEventListener('click', function () {
+    window.location.href = '/papyrus';
+  });
+</script>
+</body>
+</html>

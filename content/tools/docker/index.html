@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Что такое докер, образ и контейнер</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+
+  <!-- ============= ============= Мои стили и скрипты ============= ============= -->
+  <!-- Должны подключать тут, чтобы перекрыть дефолты пандока -->
+  <link rel="stylesheet" href="/papyrus/styles/article-page.css">
+  <script src="/papyrus/scripts/oglavlenie.js" defer></script>
+  <script src="/papyrus/scripts/source-code-expand-collapse.js" defer></script>
+  <!-- ============= ============= =================== ============= ============= -->
+
+</head>
+<body>
+<div class="layout">
+<div id="oglavlenie"></div>
+<div class="content">
+<h1 id="что-такое-докер">Что такое докер</h1>
+<ul>
+<li>докер - это платформа для создания и запуска контейнеров.
+<ul>
+<li>технически докер - это несколько независимых процессов в ОС, которые
+работают сообща.</li>
+</ul></li>
+<li>докер - не полностью самостоятельная технология.
+<ul>
+<li>он базируется на механизмах ОС линукс.</li>
+<li>поэтому он может работать только на линуксе, либо на других ОС,
+которые могут линукс эмулировать (например технология WSL на винде)</li>
+</ul></li>
+</ul>
+<h1 id="контейнеризация-и-виртуализация">Контейнеризация и
+виртуализация</h1>
+<ul>
+<li><code>Виртуализация</code> -</li>
+<li><code>Контейнеризация</code> -</li>
+</ul>
+<h1 id="что-такое-образ-и-контейнер">Что такое образ и контейнер</h1>
+<h2 id="концептуально">Концептуально</h2>
+<ul>
+<li><code>Образ</code> - это неизменяемый “дистрибутив”, в котором
+находится программа и все ее зависимости (библиотеки, настройки и
+т.д.)</li>
+<li>При запуске образа создается <code>контейнер</code>.</li>
+<li>Контейнер можно запускать повторно и между запусками он сохраняет
+свое состояние.
+<ul>
+<li>Например, можно добавить в БД данные, остановить контейнер,
+запустить снова, и данные с прошлой работы там будут.</li>
+</ul></li>
+</ul>
+<h2 id="технически">Технически</h2>
+<ul>
+<li>Контейнеризация строится на базовых механизмах ядра линукса:
+<ul>
+<li><code>cgroups</code> - механизм ограничения ресурсов для процесса
+(cpu, память, сеть и т.д.)
+<ul>
+<li>процесс либо не получает больше ресурсов, чем ему положено, либо в
+каких-то ситуациях ОС просто может его убить</li>
+</ul></li>
+<li><code>namespace</code> - механизм ограничения видимости для процесса
+<ul>
+<li>видимость можно ограничивать для разных вещей
+<ul>
+<li>например на другие процессы, на точки монтирования
+<ul>
+<li>по умолчанию, когда ограничений нет, процесс видит все другие
+процессы и всю файловую систему. Но если поместить его в неймспейсы с
+этими типами ограничений, то он например не будет видеть другие процессы
+и будет видеть не всю файловую систему, а только фрагмент</li>
+</ul></li>
+<li>и т.д. - есть больше видов ограничений видимости, но это не важно,
+важна только суть - ограниченная видимость для процесса как бы помещает
+его в изолированное пространство, за пределами которого он ничего не
+видит и соответственно не может влиять на это</li>
+</ul></li>
+</ul></li>
+<li>“группы” и “неймспейсы” - это метаинформация, привязанная к
+процессу, на основе которой ядро ориентируется, что давать  не давать
+ показывать  не показывать процессу</li>
+</ul></li>
+<li><code>контейнер</code> - это процесс, для которого заданы
+ограничения ресурсов и ограничение видимости
+<ul>
+<li>фактически роль докера при “поднятии контейнера из образа” - это
+дать ядру ОС команду запустить процесс с ограничениями
+<ul>
+<li>этот процесс будет - то что мы пишем в CMD для образа</li>
+</ul></li>
+</ul></li>
+<li>контейнер и неймспейсы
+<ul>
+<li>контейнер находится одновременно в нескольких неймспейсах разных
+типов, но всегда только в одном неймспейсе конкретного типа
+<ul>
+<li>например
+<ul>
+<li>все контейнеры находятся в разных pid-неймспейсах, за счет чего не
+видят друг друга</li>
+<li>но несколько контейнеров могут находиться в одном net-неймспейсе, за
+счет чего они как бы оказываются в одной сети и могут обмениваться
+информацией</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h1 id="полезные-факты">Полезные факты</h1>
+<h2 id="ментальная-картина-запуска-контейнера-из-образа">Ментальная
+картина запуска контейнера из образа</h2>
+<ul>
+<li>ментальная картина запуска контейнера из образа
+<ul>
+<li>образ представлен архивом</li>
+<li>образ можно визуализировать себе как самостоятельную файловую
+систему (как например флешку)</li>
+<li>в ней хранятся бинарники программ и их зависимостей
+<ul>
+<li>грубо говоря, в образе postgres будет бинарник постгри и всех ее
+зависимостей</li>
+<li>в образе с jvm будет бинарник этой jvm</li>
+<li>и т.д. для всех остальных случаев</li>
+</ul></li>
+<li>“поднять контейнер из образа” фактически означает следующее (грубо и
+приблизительно)
+<ul>
+<li>ОС монтирует файловую систему образа к себе в какую-то точку</li>
+<li>на хостовой ОС запускается процесс (“контейнер”)
+<ul>
+<li>мы поднимаем контейнер командой <code>docker run имя-образа</code>,
+там через цепочку вызовов “докерских демонов” в итоге запускается
+команда из CMD, которую мы написали при создании образа (например,
+<code>CMD java -jar product-0.0.1-SNAPSHOT.jar</code>) и так и
+получается процесс</li>
+</ul></li>
+<li>ОС ставит эту смонтированную точку как корень для процесса
+контейнера
+<ul>
+<li>т.о. для контейнера корнем файловой системы становится эта точка, а
+не реальный корень хостовой ОС</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="один-контейнер---один-процесс">Один контейнер - один
+процесс</h2>
+<ul>
+<li>best practice в контейнеризации является когда при “поднятии
+контейнера” создается один процесс (главный), и от него если надо
+создаются дочерние процессы</li>
+<li>когда создаются два и более независимых процесса, не связанных общим
+родителем - это плохо, потому что тогда управлять ими становится
+невозможно
+<ul>
+<li>когда мы захотим остановить контейнер (читай “убить процесс”), то
+убьем только главный, а остальные останутся работать</li>
+</ul></li>
+<li>если сильно надо - можно использовать <code>супервизор</code>,
+который объединит под собой несколько процессов, став их родителем</li>
+</ul>
+<h2 id="одинаковые-порты-у-разных-контейнеров">Одинаковые порты у разных
+контейнеров</h2>
+<ul>
+<li>вопрос: если сделать несколько приложений, которые слушают
+одинаковый порт (8080 например), упаковать их в образы и запустить через
+докер, то не будет ли конфликта портов?
+<ul>
+<li>нет, не будет. Каждый процесс запускается в своем net-namespace,
+поэтому порт 8080 будет локальным для каждого процесса
+(“контейнера”)</li>
+<li>конфликт будет, если при пробрасывании портов на localhost указать
+одинаковый порт для разных процессов, потому что тогда это будет уже
+несколько одинаковых портов на localhost, что недопустимо</li>
+</ul></li>
+</ul>
+<h1 id="термины">Термины</h1>
+<ul>
+<li><code>демон</code> - процесс, выполняющийся в фоновом режиме, без
+привязки к терминалу или пользовательской сессии
+<ul>
+<li>демон - это название из юникса  линукса, в винде это называется
+<code>служба</code></li>
+<li>демоны запускаются при старте ОС, еще до того как мы залогинились в
+систему, и остаются работать, когда мы разлогиниваемся</li>
+</ul></li>
+<li><code>бинарник</code> - скомпилированная программа, готовая к
+выполнению</li>
+<li><code>Процессы</code> и <code>программы</code>
+<ul>
+<li>Программа - файл на диске, который можно выполнить</li>
+<li>Процесс - запущенная программа
+<ul>
+<li>Процесс имеет
+<ul>
+<li>pid - собственный идентификатор процесса</li>
+<li>ppid - parent pid, идентификатор процесса, который его запустил</li>
+<li>дополнительные фишки
+<ul>
+<li>виртуальное адресное пространство - каждый процесс думает что он
+располагает всей памятью компьютера, хотя на деле работает с
+виртуальными адресами. Эти виртуальные адреса в реальные переводит ОС.
+Т.о. процесс физически не может залезть в память другого процесса и
+что-то там повредить  прочитать.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="nav-menu">
+  <button id="toTop" class="nav-btn" type="button" aria-label="Наверх">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+  <button id="toHome" class="nav-btn" type="button" aria-label="Домой">
+    <span class="material-symbols-outlined">home</span>
+  </button>
+</div>
+</div>
+</div>
+<script>
+  document.getElementById('toTop').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
+
+  document.getElementById('toHome').addEventListener('click', function () {
+    window.location.href = '/papyrus';
+  });
+</script>
+</body>
+</html>

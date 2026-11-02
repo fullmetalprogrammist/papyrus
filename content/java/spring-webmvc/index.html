@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>spring webmvc</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #2b91af;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #2b91af;  padding-left: 4px; }
+    div.sourceCode
+      { color: #000000; background-color: #ffffff; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #2b91af; font-style: italic; } /* Annotation */
+    code span.at { color: #808080; } /* Attribute */
+    code span.bn { color: #000000; } /* BaseN */
+    code span.bu { color: #0000ff; } /* BuiltIn */
+    code span.cf { color: #8f08c4; } /* ControlFlow */
+    code span.ch { color: #a31515; } /* Char */
+    code span.cn { color: #000000; } /* Constant */
+    code span.co { color: #008000; } /* Comment */
+    code span.cv { color: #008000; font-weight: bold; } /* CommentVar */
+    code span.do { color: #008000; font-style: italic; } /* Documentation */
+    code span.dt { color: #2b91af; } /* DataType */
+    code span.dv { color: #000000; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #000000; } /* Float */
+    code span.fu { color: #000000; } /* Function */
+    code span.im { color: #0000ff; } /* Import */
+    code span.in { color: #2b91af; font-style: italic; } /* Information */
+    code span.kw { color: #0000ff; } /* Keyword */
+    code span.op { color: #000000; } /* Operator */
+    code span.ot { color: #000000; } /* Other */
+    code span.pp { color: #808080; } /* Preprocessor */
+    code span.sc { color: #a31515; } /* SpecialChar */
+    code span.ss { color: #a31515; } /* SpecialString */
+    code span.st { color: #a31515; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #a31515; } /* VerbatimString */
+    code span.wa { color: #808080; font-weight: bold; } /* Warning */
+  </style>
+
+  <!-- ============= ============= Мои стили и скрипты ============= ============= -->
+  <!-- Должны подключать тут, чтобы перекрыть дефолты пандока -->
+  <link rel="stylesheet" href="/papyrus/styles/article-page.css">
+  <script src="/papyrus/scripts/oglavlenie.js" defer></script>
+  <script src="/papyrus/scripts/source-code-expand-collapse.js" defer></script>
+  <!-- ============= ============= =================== ============= ============= -->
+
+</head>
+<body>
+<div class="layout">
+<div id="oglavlenie"></div>
+<div class="content">
+<h1 id="основа-под-spring-mvc">Основа под Spring MVC</h1>
+<h2 id="архитектура-сервлетов">Архитектура “сервлетов”</h2>
+<ul>
+<li>Примерная схема того о чем пойдет речь</li>
+</ul>
+<figure>
+<img src="img/servlets-filters-tomcat.svg"
+alt="servlets-filters-tomcat" />
+<figcaption aria-hidden="true">servlets-filters-tomcat</figcaption>
+</figure>
+<h2 id="сервлеты">Сервлеты</h2>
+<h3 id="сервлеты---это-спецификация-из-jakarta">Сервлеты - это
+спецификация из Jakarta</h3>
+<ul>
+<li><code>Java EE</code> и <code>Jakarta</code> - это синонимы. Это
+набор спецификаций для реализации серверных программ на джаве. Грубо
+говоря, преимущественно это набор интерфейсов, которые описывают
+концепцию системы, какие в ней компоненты, как они связаны и
+взаимодействуют. Одним словом, архитектура.</li>
+<li>Сервлеты - это одна из таких спецификаций.</li>
+</ul>
+<h3 id="что-такое-сервлет">Что такое сервлет</h3>
+<ul>
+<li><code>Сервлет</code> - это по сути минимальный кирпич
+веб-приложения.
+<ul>
+<li>Технически это класс-наследник от HttpServlet, в котором есть
+специальные методы вроде doGet, doPost и т.д. Мы пишем в них код
+обработки запроса.</li>
+<li>https://jakarta.ee/specifications/platform/11/apidocs/jakarta/servlet/http/httpservlet</li>
+<li>Я тут под “сервлетом” буду подразумевать именно http-сервлет, а
+вообще есть еще как бы “сервлет общего назначения”, но нас он не
+интересует.</li>
+</ul></li>
+<li>Как (примерно) пишется веб-приложение на сервлетах
+<ul>
+<li>Пишем сервлеты, отмечаем их аннотацией <span class="citation"
+data-cites="WebServlet">@WebServlet</span>.
+<ul>
+<li>Аннотация маркирует класс как сервлет, плюс через нее задается
+маппинг на URL.</li>
+</ul></li>
+<li>Компилируем программу в war-архив (Web Application aRchive).</li>
+<li>Подсовываем архив контейнеру сервлетов (например Tomcat).</li>
+<li>Когда приходит http-запрос, Tomcat его ловит и передает в нужный
+сервлет.</li>
+<li>Ответ сервлета Tomcat возвращает клиенту.</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="at">@WebServlet</span><span class="op">(</span><span class="st">&quot;/hello&quot;</span><span class="op">)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> HelloServlet <span class="kw">extends</span> HttpServlet <span class="op">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">protected</span> <span class="dt">void</span> <span class="fu">doGet</span><span class="op">(</span>HttpServletRequest req<span class="op">,</span> HttpServletResponse resp<span class="op">)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>            <span class="kw">throws</span> <span class="bu">IOException</span> <span class="op">{</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// читаем query-параметр: /hello?name=Иван</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> name <span class="op">=</span> req<span class="op">.</span><span class="fu">getParameter</span><span class="op">(</span><span class="st">&quot;name&quot;</span><span class="op">);</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>name <span class="op">==</span> <span class="kw">null</span> <span class="op">||</span> name<span class="op">.</span><span class="fu">isBlank</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>            name <span class="op">=</span> <span class="st">&quot;world&quot;</span><span class="op">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// задаём тип ответа и кодировку</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        resp<span class="op">.</span><span class="fu">setContentType</span><span class="op">(</span><span class="st">&quot;text/html; charset=UTF-8&quot;</span><span class="op">);</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span><span class="bu">PrintWriter</span> out <span class="op">=</span> resp<span class="op">.</span><span class="fu">getWriter</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>            out<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;&lt;!DOCTYPE html&gt;&quot;</span><span class="op">);</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>            out<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;&lt;html&gt;&lt;body&gt;&quot;</span><span class="op">);</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>            out<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;&lt;h1&gt;Hello, &quot;</span> <span class="op">+</span> name <span class="op">+</span> <span class="st">&quot;!&lt;/h1&gt;&quot;</span><span class="op">);</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>            out<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;&lt;/body&gt;&lt;/html&gt;&quot;</span><span class="op">);</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">protected</span> <span class="dt">void</span> <span class="fu">doPost</span><span class="op">(</span>HttpServletRequest req<span class="op">,</span> HttpServletResponse resp<span class="op">)</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>            <span class="kw">throws</span> <span class="bu">IOException</span> <span class="op">{</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        <span class="co">// можно делегировать в doGet или обработать отдельно</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="fu">doGet</span><span class="op">(</span>req<span class="op">,</span> resp<span class="op">);</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>На сервлетах приложения сейчас конечно не пишутся, это
+низкоуровневый инструмент. Но все веб-фреймворки, вроде Spring MVC так
+или иначе работают поверх сервлетов.</li>
+</ul>
+<h2 id="tomcat-веб-сервер-контейнер-сервлетов">Tomcat = веб-сервер +
+контейнер сервлетов</h2>
+<ul>
+<li>Tomcat - это не только контейнер сервлетов, но и веб-сервер. Т.е. он
+<ul>
+<li>Ловит приходящие http-запросы, т.о. выполняет роль веб-сервера.</li>
+<li>Разбирает запрос и формирует из его данных объекты, понятные
+сервлету, например HttpServletRequest.</li>
+<li>Разбирается, для какого сервлета предназначен запрос.</li>
+<li>Создает инстансы сервлетов и передает им объект запроса. Все это уже
+роль контейнера сервлетов.</li>
+<li>Когда сервлет отработал и вернул объект ответа, томкат делает из
+него http-ответ и возвращает клиенту.</li>
+</ul></li>
+<li>Буду везде писать “томкат” как синоним “веб-сервер + контейнер
+сервлетов”.</li>
+<li>Несколько фактов о томкате
+<ul>
+<li>Компонент томката, который реализует функциональность контейнера
+сервлетов называется <code>Catalina</code>.
+<ul>
+<li>Она управляет жизненным циклом сервлетов, т.е. создает их,
+уничтожает.</li>
+</ul></li>
+<li>Сервлеты создаются как синглтоны.</li>
+<li>Томкат ищет сервлеты на основе аннотации <span class="citation"
+data-cites="WebServlet">@WebServlet</span>. Нам нужно просто положить
+.war с сервлетами в нужную папку томката и он автоматически их
+подхватит.</li>
+</ul></li>
+</ul>
+<h2 id="фильтры">Фильтры</h2>
+<ul>
+<li>Фильтры - это еще один этап обработки запроса.
+<ul>
+<li>https://jakarta.ee/specifications/platform/11/apidocs/jakarta/servlet/http/httpfilter</li>
+<li>Перед тем как попасть в сервлет, запрос проходит через фильтры.
+<ul>
+<li>Фильтры представлены цепочкой. В ней может быть как один, так и
+много фильтров.</li>
+<li>Фильтры привязаны к URL, т.е. можно для разных запросов делать
+разные цепочки фильтров.</li>
+</ul></li>
+<li>Фильтры можно использовать в разных целях
+<ul>
+<li>Сквозная функциональность - добавлять логирование, метрики,
+различные проверки, обогащение запроса дополнительными данными,
+реализовывать идемпотентность и т.д.</li>
+<li>Можно написать какое-то условие и например не пропустить запрос
+дальше к сервлету, а вернуть ответ сразу из фильтра.</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> LoggingFilter <span class="kw">implements</span> <span class="bu">Filter</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">doFilter</span><span class="op">(</span>ServletRequest request<span class="op">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                         ServletResponse response<span class="op">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                         FilterChain chain<span class="op">)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>            <span class="kw">throws</span> <span class="bu">IOException</span><span class="op">,</span> ServletException <span class="op">{</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 1. Код ДО сервлета</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Запрос пришёл: &quot;</span> <span class="op">+</span> <span class="op">((</span>HttpServletRequest<span class="op">)</span> request<span class="op">).</span><span class="fu">getRequestURI</span><span class="op">());</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 2. Передаём (или не передаем) дальше по цепочке (в следующий фильтр или в сервлет)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        chain<span class="op">.</span><span class="fu">doFilter</span><span class="op">(</span>request<span class="op">,</span> response<span class="op">);</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 3. Код &quot;на обратном пути из сервлета&quot;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Сервлет отработал, записал ответ в ServletResponse&quot;</span><span class="op">);</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="коннекторы">Коннекторы</h2>
+<ul>
+<li>Коннекторы - это не часть Java EE, а скорее просто концептуальный
+элемент, который так или иначе присутствует наверное во всех контейнерах
+сервлетов, но называться может по-разному.</li>
+<li>В Tomcat коннектор называется <code>Coyote</code>.</li>
+<li>Задача коннектора - установить сетевое соединение, принять “сырой”
+http-запрос, преобразовать его в понятный сервлету вид и передать дальше
+- контейнеру сервлетов. И то же самое сделать на обратном пути - из
+ответа сервлета собрать “сырой” http-ответ и отправить его клиенту.</li>
+</ul>
+<h1 id="настройки-spring-приложения">Настройки spring-приложения</h1>
+<h2 id="куда-писать-настройки">Куда писать настройки</h2>
+<ul>
+<li>Пишутся в файл <code>src/main/resources/application.yaml</code></li>
+</ul>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">spring</span><span class="kw">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">application</span><span class="kw">:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> ndp</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">server</span><span class="kw">:</span><span class="at">  </span><span class="co"># На одном уровне со spring</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">port</span><span class="kw">:</span><span class="at"> </span><span class="dv">48085</span></span></code></pre></div>
+<h2 id="имя">Имя</h2>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">spring</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">application</span><span class="kw">:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> ndp</span></span></code></pre></div>
+<ul>
+<li>В обычном соло-приложении можно сказать имя ни на что не влияет.
+Приобретает значение только когда приложение работает вместе с другими
+приложениями в экосистеме спринга.</li>
+</ul>
+<h2 id="порт">Порт</h2>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">spring</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">application</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> ndp</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">server</span><span class="kw">:</span><span class="at">  </span><span class="co"># На одном уровне со spring</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">port</span><span class="kw">:</span><span class="at"> </span><span class="dv">48085</span></span></code></pre></div>
+<ul>
+<li>Спринг веб-приложение работает на веб-сервере tomcat, экземпляр
+которого запускается на компьютере вместе с каждым спринг
+веб-приложением. Сколько приложений запущено, столько и томкатов. port
+задает порт томката, на котором будет доступно приложение.</li>
+</ul>
+<h1 id="прием-запроса">Прием запроса</h1>
+<ul>
+<li>TODO</li>
+</ul>
+<h1 id="возврат-результата">Возврат результата</h1>
+<ul>
+<li>Принято делать через static-методы из <code>ResponseEntity</code>
+<ul>
+<li>Это обертка для удобного управления статусом, заголовками и телом
+<ul>
+<li>Последовательность важна - сначала выбираем статус, потом ставим
+заголовки (если надо), потом тело (если надо)</li>
+<li>Методы статуса возвращают билдер BodyBuilder, на котором есть методы
+добавления заголовков, тела и просто build, если кроме статуса ничего не
+надо. Соответственно и методы заголовков  тела тоже возвращают
+BodyBuilder. Метод build возвращает ResponseEntity</li>
+</ul></li>
+<li>P.S. Для себя я бы вероятно выбрал универсальный подход и писал бы
+без сокращений полную цепочку. Кода больше, зато единообразно.</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> ResponseEntity<span class="op">.</span><span class="fu">ok</span><span class="op">().</span><span class="fu">body</span><span class="op">(</span>someResult<span class="op">);</span></span></code></pre></div>
+<h2 id="указание-статуса">Указание статуса</h2>
+<ul>
+<li>Через отдельные методы для популярных статусов</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ResponseEntity<span class="op">.</span><span class="fu">ok</span><span class="op">();</span>  <span class="co">// 200</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ResponseEntity<span class="op">.</span><span class="fu">badRequest</span><span class="op">();</span>  <span class="co">// 400</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>ResponseEntity<span class="op">.</span><span class="fu">notFound</span><span class="op">();</span>    <span class="co">// 404</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>ResponseEntity<span class="op">.</span><span class="fu">internalServerError</span><span class="op">();</span>  <span class="co">// 500</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">// для некоторых других тоже есть, надо гуглить в моменте</span></span></code></pre></div>
+<ul>
+<li>Через универсальный метод для любого статуса</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ResponseEntity<span class="op">.</span><span class="fu">status</span><span class="op">(</span>HttpStatus<span class="op">.</span><span class="fu">OK</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>HttpStatus<span class="op">.</span><span class="fu">OK</span><span class="op">;</span>  <span class="co">// 200</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>HttpStatus<span class="op">.</span><span class="fu">BAD_REQUEST</span><span class="op">;</span>  <span class="co">// 400</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>HttpStatus<span class="op">.</span><span class="fu">NOT_FOUND</span><span class="op">;</span>    <span class="co">// 404</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>HttpStatus<span class="op">.</span><span class="fu">INTERNAL_SERVER_ERROR</span><span class="op">;</span>  <span class="co">// 500</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Остальные - гуглить в моменте</span></span></code></pre></div>
+<h2 id="добавление-заголовков">Добавление заголовков</h2>
+<ul>
+<li>через методы <code>.header()</code>, <code>.headers()</code> на
+билдере</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ResponseEntity<span class="op">.</span><span class="fu">ok</span><span class="op">().</span><span class="fu">header</span><span class="op">(</span><span class="st">&quot;Cache-Control&quot;</span><span class="op">,</span> <span class="st">&quot;max-age=3600&quot;</span><span class="op">)</span></span></code></pre></div>
+<ul>
+<li>Для некоторых заголовков также есть отдельные методы</li>
+<li>Можно добавлять пачку заголовков разом</li>
+</ul>
+<h2 id="добавление-тела">Добавление тела</h2>
+<ul>
+<li>через метод <code>.body()</code> на билдере
+<ul>
+<li>он возвращает ResponseEntity</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ResponseEntity<span class="op">.</span><span class="fu">ok</span><span class="op">().</span><span class="fu">body</span><span class="op">(</span><span class="st">&quot;hello&quot;</span><span class="op">);</span></span></code></pre></div>
+<ul>
+<li>Особенности
+<ul>
+<li>В некоторые методы статуса можно передать тело напрямую, а в
+некоторые - нельзя:
+<ul>
+<li>Важно - если передать в метод статуса тело, тогда уже заголовки не
+добавишь, т.к. такой метод сразу вернет ResponseEntity, а не билдер</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ResponseEntity<span class="op">.</span><span class="fu">ok</span><span class="op">(</span><span class="st">&quot;hello&quot;</span><span class="op">);</span>  <span class="co">// можно</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>ResponseEntity<span class="op">.</span><span class="fu">internalServerError</span><span class="op">(</span><span class="st">&quot;hello&quot;</span><span class="op">);</span>  <span class="co">// нельзя</span></span></code></pre></div>
+<h2 id="формирование-responseentity">Формирование ResponseEntity</h2>
+<ul>
+<li>через метод <code>.build()</code>
+<ul>
+<li>если цепочка не заканчивается на .body() или в метод статуса не
+передано тело, надо собрать ResponseEntity явно через build</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ResponseEntity<span class="op">.</span><span class="fu">internalServerError</span><span class="op">().</span><span class="fu">build</span><span class="op">();</span></span></code></pre></div>
+<div class="nav-menu">
+  <button id="toTop" class="nav-btn" type="button" aria-label="Наверх">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+  <button id="toHome" class="nav-btn" type="button" aria-label="Домой">
+    <span class="material-symbols-outlined">home</span>
+  </button>
+</div>
+</div>
+</div>
+<script>
+  document.getElementById('toTop').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
+
+  document.getElementById('toHome').addEventListener('click', function () {
+    window.location.href = '/papyrus';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>oracle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+
+  <!-- ============= ============= Мои стили и скрипты ============= ============= -->
+  <!-- Должны подключать тут, чтобы перекрыть дефолты пандока -->
+  <link rel="stylesheet" href="/papyrus/styles/article-page.css">
+  <script src="/papyrus/scripts/oglavlenie.js" defer></script>
+  <script src="/papyrus/scripts/source-code-expand-collapse.js" defer></script>
+  <!-- ============= ============= =================== ============= ============= -->
+
+</head>
+<body>
+<div class="layout">
+<div id="oglavlenie"></div>
+<div class="content">
+<h1 id="категории-sql-операторов-ddl-dml-tcl">Категории SQL-операторов
+(DDL, DML, TCL)</h1>
+<ul>
+<li>DDL
+<ul>
+<li>Data Definition Language
+<ul>
+<li>Операторы, изменяющие структуру БД и ее объектов</li>
+<li>CREATE, ALTER, DROP, TRUNCATE</li>
+</ul></li>
+</ul></li>
+<li>DML
+<ul>
+<li>Data Manipulation Language
+<ul>
+<li>Операторы, изменяющие данные</li>
+<li>INSERT, UPDATE, DELETE, MERGE</li>
+</ul></li>
+</ul></li>
+<li>TCL
+<ul>
+<li>Transaction Control Language
+<ul>
+<li>Операторы управления транзакциями</li>
+<li>COMMIT, ROLLBACK, SAVEPOINT</li>
+</ul></li>
+</ul></li>
+<li>Дополнтиельно
+<ul>
+<li>DCL
+<ul>
+<li>Data Control Language
+<ul>
+<li>Управляют доступом к объектам БД</li>
+<li>GRANT, REVOKE</li>
+</ul></li>
+</ul></li>
+<li>DQL
+<ul>
+<li>Data Query Language
+<ul>
+<li>Оператор выбора данных</li>
+<li>SELECT</li>
+<li>Редко выделяют в отельную группу (“select это просто select”)</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h1 id="режимы-параметров-процедур-in-out-in-out">Режимы параметров
+процедур (IN, OUT, IN OUT)</h1>
+<ul>
+<li>IN
+<ul>
+<li>“Входной” параметр
+<ul>
+<li>Дефолтный режим, явно можно не указывать</li>
+<li>Можно задать дефолтное значение</li>
+<li>Можно передать значение при вызове процедуры</li>
+</ul></li>
+</ul></li>
+<li>OUT
+<ul>
+<li>“Выходной” параметр
+<ul>
+<li>Нельзя задать дефолтное значение</li>
+<li>Нельзя передать значение при вызове процедуры</li>
+<li>Нужен для случаев, когда из процедуры надо вернуть значение
+<ul>
+<li>Типичный случай - вставили в процедуре новую строку в таблице, надо
+вернуть ее id
+<ul>
+<li>Присваиваем этот id out-параметру и все, вызывающий код получает его
+в переменной, которую передавал в процедуру как out-параметр</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>IN OUT
+<ul>
+<li>“Входной + выходной” параметр
+<ul>
+<li>Сочетает возможности обоих</li>
+<li>Используется нечасто
+<ul>
+<li>счетчики, аккумуляторы</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>Особенности
+<ul>
+<li>В функциях принятно использовать только IN-параметры, а возвращать
+результат через RETURN
+<ul>
+<li>Все режимы работают и для функций, но это считается
+антипаттерном</li>
+</ul></li>
+</ul></li>
+</ul>
+<h1 id="процедуры-и-функции">Процедуры и функции</h1>
+<ul>
+<li>Процедуры
+<ul>
+<li>Концептуально нужны для реализации “команд” (“действий”)
+<ul>
+<li>Побочные эффекты - DML (добавление, удаление, обновление )- это все
+идеальное место для процедур</li>
+<li>Бизнес-логика тоже обычно в процедурах</li>
+<li>Возвращать значение могут (через OUT-параметры)</li>
+</ul></li>
+</ul></li>
+<li>Функции
+<ul>
+<li>Концептуально нужны для реализации “запросов” и вычислений
+<ul>
+<li>Побочных эффектов иметь не должны</li>
+<li>Могут использоваться в SQL-запросах</li>
+<li>Должны возвращать единственное значение через RETURN</li>
+<li>Могут использовать DML в своем теле, но это антипаттерн
+<ul>
+<li>Потому что при использовании такой функции в SQL оракл выбросит
+ошибку</li>
+</ul></li>
+<li>Тело функции может использовать много SQL-запросов, курсоры и любую
+логику на PL, главное чтобы возвращала единственное значние</li>
+</ul></li>
+</ul></li>
+</ul>
+<h1 id="пакеты">Пакеты</h1>
+<ul>
+<li>Пакет - это объект БД</li>
+<li>Концептуально - это модуль, “namespace”, позволяющий объединить
+несколько функций, процедур, констант в единый логический блок</li>
+<li>Технически состоит из двух частей
+<ul>
+<li>Спецификация (“интерфейс” - описывает, какие процедуры  функции
+будут “видны из пакета снаружи”, их параметры)</li>
+<li>Тело - реализация процедур  функций</li>
+</ul></li>
+<li>Пакет создается в два шага (две команды)
+<ul>
+<li>Создается спецификация (CREATE PACKAGE)</li>
+<li>Создается тело (CREATE PACKAGE BODY)</li>
+</ul></li>
+<li>Обновляется пакет только целиком
+<ul>
+<li>CREATE OR REPLACE PACKAGE BODY</li>
+<li>Т.е. нельзя “поправить одну процедуру”, надо заменять все тело
+пакета, просто ничего не заменяя в тех процедурах, которые менять не
+надо</li>
+</ul></li>
+</ul>
+<h1 id="lob-объекты">LOB-объекты</h1>
+<ul>
+<li>LOB - Large OBjects</li>
+<li>Разновидности в Oracle
+<ul>
+<li>BLOB - Binary Large Object
+<ul>
+<li>Файлы, картинки, музыка, разные документы (PDF и т.д.)</li>
+</ul></li>
+<li>CLOB - Character Large Object</li>
+<li>NCLOB - National Character Large Object</li>
+</ul></li>
+<li>Любой LOB - это просто тип данных для колонки, указывается точно так
+же как и любой другой тип</li>
+<li>Способы хранения LOB
+<ul>
+<li>in-row
+<ul>
+<li>В строке таблицы хранится непосредственно значение</li>
+</ul></li>
+<li>out-of-row
+<ul>
+<li>В строке таблицы хранится указатель (locator), а само значение
+хранится в LOB-сегменте</li>
+</ul></li>
+<li>Независимо от способа хранения, внешне работа выглядит одинаково,
+просто под капотом оракл сам делает все как надо</li>
+<li>Способ хранения оракл выбирает в момент вставки конкретных данных
+<ul>
+<li>Если соблюдаются условия (небольшой размер и т.д.), оракл сохраняет
+как in-row; если не соблюдаются - out-of-row
+<ul>
+<li>Но можно явно запретить in-row хранение</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>Работа с LOB
+<ul>
+<li>Осуществляется через специальный пакет для работы с LOB - называется
+DBMS_LOB</li>
+</ul></li>
+</ul>
+<h1 id="партиционирование-таблиц">Партиционирование таблиц</h1>
+<ul>
+<li>Партиционирование не путать с индексом
+<ul>
+<li>Индекс - ускоряет поиск среди строк</li>
+<li>Партиционирование - отбрасывает часть строк, так что поиск надо
+вести не по всем строкам, а только по части</li>
+</ul></li>
+<li>Партиционирование технически - это физическая группировка строк
+таблицы по сегментам
+<ul>
+<li>На основе “ключа партиционирования”</li>
+<li>Например, есть поле “Дата заказа”, можно сделать партиционирование
+по году (или год+месяц). Тогда при вставке нового заказа оракл сам
+поймет, в какую часть таблицы физически надо вставить строку, чтобы она
+оказалась в нужной партиции
+<ul>
+<li>При поиске по году, соответственно, оракл тоже поймет, в какой
+именно партиции надо искать строку, так что часть строк даже не придется
+осматривать, что и ускорит выполнение запроса</li>
+</ul></li>
+<li>Partition Pruning - это оптимизация, когда оракл как раз
+просматривает строки только из нужной партиции</li>
+<li>Партиция составляется по выражению, т.е. не обязательно хранить в
+колонке чисто год - можно хранить полную дату, а партиционировать по
+году+месяцу.</li>
+<li>“Удалить партицию” как “логическую” вещь нельзя, партиция - это
+физическая тема, и удаляется вместе с данными
+<ul>
+<li>Для изменения схемы партиционирования обычно приходится пересоздать
+таблицу и перелить данные</li>
+</ul></li>
+</ul></li>
+<li>Партиционирование делают по выражениям, которые хорошо дробят данные
+на крупные группы
+<ul>
+<li>Типично - год+месяц для заказов, логов и т.д.</li>
+</ul></li>
+<li>Виды партиционирования
+<ul>
+<li>RANGE - для ключей, хорошо поддающиеся сравнению на &gt; &lt;
+<ul>
+<li>Например даты, год, месяц, год+месяц и т.д.</li>
+</ul></li>
+<li>LIST - для ключей, попадающих в заранее известное множество, хорошо
+сравнивается через =
+<ul>
+<li>Например “страна RU, US, CH”, “пол муж  жен”</li>
+</ul></li>
+<li>HASH</li>
+<li>COMPOSITE</li>
+</ul></li>
+</ul>
+<div class="nav-menu">
+  <button id="toTop" class="nav-btn" type="button" aria-label="Наверх">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+  <button id="toHome" class="nav-btn" type="button" aria-label="Домой">
+    <span class="material-symbols-outlined">home</span>
+  </button>
+</div>
+</div>
+</div>
+<script>
+  document.getElementById('toTop').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
+
+  document.getElementById('toHome').addEventListener('click', function () {
+    window.location.href = '/papyrus';
+  });
+</script>
+</body>
+</html>

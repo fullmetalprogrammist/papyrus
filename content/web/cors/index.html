@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>CORS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #2b91af;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #2b91af;  padding-left: 4px; }
+    div.sourceCode
+      { color: #000000; background-color: #ffffff; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #2b91af; font-style: italic; } /* Annotation */
+    code span.at { color: #808080; } /* Attribute */
+    code span.bn { color: #000000; } /* BaseN */
+    code span.bu { color: #0000ff; } /* BuiltIn */
+    code span.cf { color: #8f08c4; } /* ControlFlow */
+    code span.ch { color: #a31515; } /* Char */
+    code span.cn { color: #000000; } /* Constant */
+    code span.co { color: #008000; } /* Comment */
+    code span.cv { color: #008000; font-weight: bold; } /* CommentVar */
+    code span.do { color: #008000; font-style: italic; } /* Documentation */
+    code span.dt { color: #2b91af; } /* DataType */
+    code span.dv { color: #000000; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #000000; } /* Float */
+    code span.fu { color: #000000; } /* Function */
+    code span.im { color: #0000ff; } /* Import */
+    code span.in { color: #2b91af; font-style: italic; } /* Information */
+    code span.kw { color: #0000ff; } /* Keyword */
+    code span.op { color: #000000; } /* Operator */
+    code span.ot { color: #000000; } /* Other */
+    code span.pp { color: #808080; } /* Preprocessor */
+    code span.sc { color: #a31515; } /* SpecialChar */
+    code span.ss { color: #a31515; } /* SpecialString */
+    code span.st { color: #a31515; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #a31515; } /* VerbatimString */
+    code span.wa { color: #808080; font-weight: bold; } /* Warning */
+  </style>
+
+  <!-- ============= ============= Мои стили и скрипты ============= ============= -->
+  <!-- Должны подключать тут, чтобы перекрыть дефолты пандока -->
+  <link rel="stylesheet" href="/papyrus/styles/article-page.css">
+  <script src="/papyrus/scripts/oglavlenie.js" defer></script>
+  <script src="/papyrus/scripts/source-code-expand-collapse.js" defer></script>
+  <!-- ============= ============= =================== ============= ============= -->
+
+</head>
+<body>
+<div class="layout">
+<div id="oglavlenie"></div>
+<div class="content">
+<h1 id="origin">origin</h1>
+<ul>
+<li><code>Ориджин</code> - это комбинация
+<code>протокол + хост + порт</code>
+<ul>
+<li>Ориджин нужен, чтобы понимать, откуда загружен ресурс (например
+страница, скрипт)</li>
+<li>Так что при сравнении ориджинов происходит сравнение этих трех
+компонентов</li>
+<li>Если хотя бы один компонент отличается, ориджины считаются
+разными</li>
+</ul></li>
+<li>Например, у https://my-app.com ориджин это https://my-app.com:443
+(дефолтный порт для https)
+<ul>
+<li>У https://my-app.com и https://api.my-app.com разные ориджины, т.к.
+хосты разные (my-app.com и api.my-app.com)</li>
+<li>Нюанс
+<ul>
+<li>Если например выполнить <code>console.log(window.origin)</code>, то
+выведется https://my-app.com, потому что если порт стандартный, то
+“текстовое представление” ориджина порт опускает</li>
+<li>Но это не значит, что порт не входит в ориджин. При сравнении это
+строго протокол + хост + порт. Надо помнить, чтобы не ввестись в
+заблуждение текстовым выводом.</li>
+</ul></li>
+</ul></li>
+<li>На русский ориджин иногда переводится как <code>источник</code></li>
+</ul>
+<h1 id="кросс-доменный-запрос">Кросс-доменный запрос</h1>
+<ul>
+<li>Кросс-доменный запрос - это когда скрипт, загруженный с одного
+ориджина, шлет запрос на другой ориджин
+<ul>
+<li>Грубо говоря, зашли на microsoft.com, а на его странице прикреплен
+скрипт (тоже загружается с microsoft.com), который шлет запрос на
+apple.com. Получается кросс-доменный запрос</li>
+</ul></li>
+<li>В чем проблема кросс-доменных запросов?
+<ul>
+<li>Наивный пример для понимания сути
+<ul>
+<li>P.S. Пример показывает, как дело обстояло на заре, до появления
+механизмов защиты. Сейчас такая атака не пройдет</li>
+<li>Я авторизовался на сайте банка, сервер выслал моему браузеру
+идентификатор, браузер сохранил этот идентификатор в куку</li>
+<li>Я сижу на сайте, перехожу по страницам, браузер исправно
+прикладывает куку к моим запросам, за счет чего сервер понимает, что я
+это я</li>
+<li>Тут я открываю новую вкладку, захожу на какой-то скам-сайт, а на
+сайте - скрипт, который отправляет в банк запрос, например, “сколько у
+меня денег на счету” и “какой номер телефона привязан к аккаунту”</li>
+<li>Браузер видит, что запрос для сервера банка и прикладывает куку</li>
+<li>Банк запрос принимает, видит куку, и отправляет ответ с моим
+балансом и номером телефона</li>
+<li>Скрипт на скам-сайте читает ответ и сохраняет мой баланс и номер
+телефона в скамерскую БД</li>
+<li>Поздравляем! Я, ничего не подозревая, отдал мошенникам информацию и
+своем финансовом положении</li>
+</ul></li>
+</ul></li>
+</ul>
+<h1 id="sop">SOP</h1>
+<ul>
+<li><code>Same-Origin Policy</code> - это политика <em>браузера</em> по
+ограничениям для кросс-доменных запросов.</li>
+<li>Ограничений несколько:
+<ul>
+<li>Браузер не дает скрипту читать ответы сервера на кросс-доменные
+запросы
+<ul>
+<li>Например, в наивном примере с банком, хотя сервер ответит на
+скам-запрос и вышлет мой баланс и телефон, но браузер не даст скрипту
+прочитать ответ</li>
+</ul></li>
+<li>Скрипт не может работать с DOM других вкладок, если они относятся к
+другому ориджину</li>
+<li>Скрипт не может работать с куками  localStorage другого ориджина
+<ul>
+<li>P.S. куки  localStorage группируются по ориджину, а не по вкладками,
+т.е. у каждого ориджина (а не у каждой вкладки) свой набор кук и свой
+localStorage</li>
+</ul></li>
+<li>Мб что-то еще</li>
+</ul></li>
+<li>Особенности SOP
+<ul>
+<li>SOP не блокирует возможность отправки кросс-доменного запроса
+<ul>
+<li>Т.е. он дает защиту от атаки-вопроса “покажи, какой у меня баланс”,
+но не дает защиту от атаки-команды “переведи все мои деньги на
+безопасный счет”</li>
+</ul></li>
+</ul></li>
+</ul>
+<h1 id="cors">CORS</h1>
+<ul>
+<li><p><code>CORS</code> - Cross-Origin Resource Sharing</p></li>
+<li><p>Это политика браузера для ослабления SOP в ситуациях, когда это
+нужно</p></li>
+<li><p>Пример ситуации, когда SOP мешает</p>
+<ul>
+<li>Сделали приложение, опубликовали на https://superapp.com</li>
+<li>Сделали API, опубликовали на https://api.superapp.com
+(субдомен)</li>
+<li>Шлем из приложения запросы на api и не можем прочитать ответы,
+потому что хосты разные, и SOP не дает скрипту читать</li>
+</ul></li>
+<li><p>Как CORS помогает решить ситуацию?</p>
+<ul>
+<li><p>Сервер может добавить специальный заголовок</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>response<span class="op">.</span><span class="fu">setHeader</span><span class="op">(</span><span class="er">&#39;</span>Access<span class="op">-</span><span class="bu">Control</span><span class="op">-</span>Allow<span class="op">-</span>Origin<span class="er">&#39;</span><span class="op">,</span> <span class="er">&#39;</span>https<span class="op">:</span><span class="co">//superapp.com&#39;);</span></span></code></pre></div></li>
+<li><p>Браузер, когда видит такой заголовок, разрешает скрипту,
+загруженному с ориджина https://superapp.com, читать ответ</p></li>
+<li><p>Т.о. сервер явным образом может через заголовки ответа сообщить
+браузеру, кому можно читать ответы</p></li>
+<li><p>Заголовок <code>'Access-Control-Allow-Origin': '*'</code>
+позволяет любому скрипту читать ответ</p>
+<ul>
+<li>Это удобно для публичных API</li>
+</ul></li>
+</ul></li>
+</ul>
+<h1 id="атака-csrf">Атака CSRF</h1>
+<ul>
+<li><code>CSRF</code> - Cross-Site Resource Forgery
+<ul>
+<li>“Межсайтовая подделка запроса”</li>
+</ul></li>
+<li>Наивный пример для понимания сути атаки
+<ul>
+<li>Я зашел на свою страницу в социальной сети, авторизовался</li>
+<li>Сервер передал моему браузеру мой идентификатор</li>
+<li>Браузер сохранил идентификатор в куку</li>
+<li>Я сижу на сайте, смотрю фотки, читаю новости, браузер при каждом
+запросе отсылает куку серверу, за счет чего он понимает, кто я</li>
+<li>Я открыл новую вкладку и зашел на скам-сайт</li>
+<li>На этом сайте скрипт, который шлет на сервер социальной сети запрос,
+например, на публикацию на моей стене сообщения “Попал в беду, срочно
+скиньте пожалуйста кто сколько может денег мне на карту 1337228322”</li>
+<li>Браузер, как и положено, автоматически цепляет к этому запросу куку
+с моим идентификатором</li>
+<li>Сервер получает запрос, видит что кука с идентификатором есть, и
+выполняет публикацию сообщения</li>
+<li>Особо сердобольные друзья начинают скидывать скамеру деньги на
+карту, пока я не замечу сообщение и не удалю его</li>
+</ul></li>
+</ul>
+<h1 id="атака-xss">Атака XSS</h1>
+<ul>
+<li><code>XSS</code> - Cross-Site Scripting</li>
+<li>Это тип атаки, когда вредоносный скрипт внедряется в “официальную”
+страницу, и жертвам даже не надо переходить ни на какие скам-сайты - их
+скамит сам “официальный сайт”
+<ul>
+<li>XSS даже в современном мире до сих пор является одной из наиболее
+типичных и распространенных атак, с которой трудно бороться</li>
+</ul></li>
+</ul>
+<h2 id="базовый-пример-внедрения-для-понимания-идеи-атаки">Базовый
+пример внедрения для понимания идеи атаки</h2>
+<ul>
+<li>“Грязный ввод”
+<ul>
+<li>Например, на странице можно оставлять комментарии</li>
+<li>Злоумышленник пишет “Отличная фотка!
+<code>&lt;script&gt;скайнет запускает ракеты здесь&lt;/script&gt;</code>”
+и отправляет комментарий</li>
+<li>Если сервер сохранит этот текст в БД как есть, то следующие
+пользователи, которые зайдут на страницу, станут жертвами атаки, т.к.
+сервер загрузит комментарии, браузер увидит тег
+<code>&lt;script&gt;</code> и честно его выполнит (никто об этом не
+узнает, потому что содержимое скрипта не отображается визуально в
+DOM)</li>
+<li>Поэтому весь пользовательский ввод надо экранировать и пропускать
+через <code>санитайзеры</code>, которые преобразуют текст таким образом,
+чтобы он не мог выполниться
+<ul>
+<li>Экранирование - это замена спецсимволов (вроде угловых скобок
+<code>&lt;</code> и <code>&gt;</code>) на особые коды, в результате чего
+браузер воспринимает их как обычный текст</li>
+<li>Санитайзинг - это преобразование ввода так, что из него либо
+удаляются потенциально опасные блоки, либо модифицируются, и в итоге
+ввод перестает быть опасным</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="виды-xss-атак">Виды XSS-атак</h2>
+<ul>
+<li>Хранимая атака (stored) - как в примере с комментарием
+<ul>
+<li>Суть в том, что вредоносный код сохраняется на сервере</li>
+</ul></li>
+<li>Отраженная атака (reflected)
+<ul>
+<li>Суть в том, что вредоносный код уходит на сервер, но не сохраняется
+на нем, а возвращается клиенту в ответе. Как бы “отражается” от сервера
+<ul>
+<li>Часто способом доставки является url
+<ul>
+<li>Например, злоумышленник формирует ссылку поиска товара
+<code>https://petshop.com/search?q=&lt;script&gt;the matrix has you&lt;/script&gt;</code>
+и кидает ее жертве (замаскировав код, это отдельная тема) “Смотри, какие
+классные комбинезоны для собак!”</li>
+<li>Жертва переходит по ссылке, сервер возвращает, например, html-ответ
+где планировалось отображать результат поиска, вроде “Извините, по
+вашему запросу [тут могло быть КОМБИНЕЗОН, но тут скрипт, и он визуально
+не отображается, а просто выполняется] ничего не найдено”</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>DOM-based XSS</li>
+</ul>
+<div class="nav-menu">
+  <button id="toTop" class="nav-btn" type="button" aria-label="Наверх">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+  <button id="toHome" class="nav-btn" type="button" aria-label="Домой">
+    <span class="material-symbols-outlined">home</span>
+  </button>
+</div>
+</div>
+</div>
+<script>
+  document.getElementById('toTop').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
+
+  document.getElementById('toHome').addEventListener('click', function () {
+    window.location.href = '/papyrus';
+  });
+</script>
+</body>
+</html>

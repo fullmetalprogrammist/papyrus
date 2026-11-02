@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>collections</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #2b91af;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #2b91af;  padding-left: 4px; }
+    div.sourceCode
+      { color: #000000; background-color: #ffffff; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #2b91af; font-style: italic; } /* Annotation */
+    code span.at { color: #808080; } /* Attribute */
+    code span.bn { color: #000000; } /* BaseN */
+    code span.bu { color: #0000ff; } /* BuiltIn */
+    code span.cf { color: #8f08c4; } /* ControlFlow */
+    code span.ch { color: #a31515; } /* Char */
+    code span.cn { color: #000000; } /* Constant */
+    code span.co { color: #008000; } /* Comment */
+    code span.cv { color: #008000; font-weight: bold; } /* CommentVar */
+    code span.do { color: #008000; font-style: italic; } /* Documentation */
+    code span.dt { color: #2b91af; } /* DataType */
+    code span.dv { color: #000000; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #000000; } /* Float */
+    code span.fu { color: #000000; } /* Function */
+    code span.im { color: #0000ff; } /* Import */
+    code span.in { color: #2b91af; font-style: italic; } /* Information */
+    code span.kw { color: #0000ff; } /* Keyword */
+    code span.op { color: #000000; } /* Operator */
+    code span.ot { color: #000000; } /* Other */
+    code span.pp { color: #808080; } /* Preprocessor */
+    code span.sc { color: #a31515; } /* SpecialChar */
+    code span.ss { color: #a31515; } /* SpecialString */
+    code span.st { color: #a31515; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #a31515; } /* VerbatimString */
+    code span.wa { color: #808080; font-weight: bold; } /* Warning */
+  </style>
+
+  <!-- ============= ============= Мои стили и скрипты ============= ============= -->
+  <!-- Должны подключать тут, чтобы перекрыть дефолты пандока -->
+  <link rel="stylesheet" href="/papyrus/styles/article-page.css">
+  <script src="/papyrus/scripts/oglavlenie.js" defer></script>
+  <script src="/papyrus/scripts/source-code-expand-collapse.js" defer></script>
+  <!-- ============= ============= =================== ============= ============= -->
+
+</head>
+<body>
+<div class="layout">
+<div id="oglavlenie"></div>
+<div class="content">
+<h1 id="iterable-и-iterator-spliterator">Iterable и Iterator
+ Spliterator</h1>
+<h2 id="iterable">Iterable</h2>
+<p>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/Iterable.html</p>
+<ul>
+<li><code>Iterable</code> - это интерфейс</li>
+<li>Объект, который реализует Iterable, можно обходить через
+foreach</li>
+<li>В интерфейсе три метода:
+<ul>
+<li><code>iterator()</code> - возвращает итератор, каждый вызов
+возвращает отдельный независимый итератор</li>
+<li><code>forEach(consumer)</code></li>
+<li><code>spliterator()</code></li>
+</ul></li>
+</ul>
+<h2 id="итератор-объект-и-интерфейс">Итератор (объект и интерфейс)</h2>
+<p>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/Iterator.html</p>
+<ul>
+<li>Итератор - это объект, который реализует интерфейс
+<code>Iterator</code></li>
+<li>Главная задача итератора - давать информацию, есть ли еще элементы,
+и возвращать очередной элемент
+<ul>
+<li>С помощью итератора можно также удалить последний выданный
+элемент</li>
+</ul></li>
+<li>Т.е. итератор это как бы курсор, перебирающий элементы один за
+другим в одном направлении</li>
+<li>В интерфейс 4 метода, ключевые это
+<ul>
+<li><code>hasNext()</code>, <code>next()</code> - для проверки, есть ли
+еще элементы и возврата очередного элемента</li>
+<li><code>remove()</code> - удаляет из коллекции последний элемент,
+возвращенный итератором</li>
+</ul></li>
+<li>Каждая конкретная коллекция реализует итератор по-своему, потому что
+в разных коллекциях структура хранения даных отличается, соответственно
+и способы получения элементов разные</li>
+</ul>
+<h3 id="fail-fast-и-fail-safe">fail-fast и fail-safe</h3>
+<ul>
+<li>Итераторы обычных коллекций являются <code>fail-fast</code>
+<ul>
+<li>Это значит что если итератор в процессе перебора элементов
+обнаруживает стороннее структурное изменение (т.е. то, которое сделал не
+он сам), то он выбрасывает
+<strong>ConcurrentModificationException</strong>
+<ul>
+<li>Если изменение сделано не через сам итератор, это повод думать об
+изменении из другого потока. Вроде логично, потому что никакой
+нормальный человек не будет получать итератор, обходить пару элементов,
+потом изменять коллекцию, а потом продолжать обходить. Так что
+модификация из другого потока как будто бы единственная логичная причина
+изменения.</li>
+</ul></li>
+<li>Структурные модификации - это те, которые изменяют размер коллекции.
+Добавление  удаление элемента - это структурные модификации. Изменение
+элемента - нет.</li>
+</ul></li>
+<li>У коллекций из java.util.concurrent итераторы являются
+<code>fail-safe</code>
+<ul>
+<li>Это значит что они не выбрасывают исключение при сторонних
+структурных модификациях</li>
+<li>Такие итераторы могут либо не видеть новых данных, либо видеть их
+частично. В общем это некий баланс между необходимостью параллельных
+модификаций и способностью видеть актуальные данные.
+<ul>
+<li>Достигается разными способами. Допустим, итератор на
+CopyOnWriteArrayList создает копию данных в момент своего создания и
+обходит эту копию, поэтому не видит никаких изменений в оригинальной
+коллекции.</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="listiterator">ListIterator</h3>
+<p>https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/ListIterator.html</p>
+<ul>
+<li>Разновидность итератора, которая позволяет двигаться не только
+вперед, но и назад
+<ul>
+<li>И не только удалять, но и добавлять элемент</li>
+</ul></li>
+</ul>
+<h2 id="spliterator">Spliterator</h2>
+<ul>
+<li>Сплитератор создали изначально для Stream API, для параллельных
+стримов</li>
+<li>Он умеет делить коллекцию на части и обходить эти части независимо
+<ul>
+<li>Параллельные стримы пользуются этой возможностью для ускорения
+обработки коллекции</li>
+</ul></li>
+</ul>
+<h1 id="view-представления-коллекций">view (представления
+коллекций)</h1>
+<ul>
+<li><code>view</code> - это “представление коллекции”
+<ul>
+<li>Это вспомогательный объект, который ссылается на оригинальную
+коллекцию.</li>
+</ul></li>
+<li>view полезны, когда надо что-то сделать над коллекцией, а она это не
+поддерживает, а трансформировать в другую коллекцию не охота. view не
+копируют элементы, а просто ссылаются на оригинальную коллекцию.</li>
+<li>изменения, примененные к оригинальной коллекции, всегда отображаются
+во view и наоборот - изменения во view изменяют оригинальную
+коллекцию.</li>
+<li>существует много методов для создания разных view для разных
+коллекций.</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// </span><span class="al">TODO</span><span class="co"> потом вставить хорошие примеры</span></span></code></pre></div>
+<h1 id="схема-коллекций">Схема коллекций</h1>
+<figure>
+<img src="img/java-collections.drawio.svg"
+alt="java-collections.excalidraw" />
+<figcaption aria-hidden="true">java-collections.excalidraw</figcaption>
+</figure>
+<h1 id="интерфейсы-коллекций">Интерфейсы коллекций</h1>
+<h2 id="collection">Collection</h2>
+<p>https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collection.html</p>
+<table>
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 31%" />
+<col style="width: 55%" />
+</colgroup>
+<thead>
+<tr>
+<th>Группа</th>
+<th>Метод</th>
+<th>Что делает</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Добавление</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>add(o):bool</code>, <code>addAll(coll):bool</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Удаление</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>clear():void</code></td>
+<td>Удалить все элементы</td>
+</tr>
+<tr>
+<td></td>
+<td><code>remove(o):bool</code></td>
+<td>Удалить конкретный элемент (только первое совпадение)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>removeAll(coll):bool</code></td>
+<td>Удалить пересечение</td>
+</tr>
+<tr>
+<td></td>
+<td><code>removeIf(pred):bool</code></td>
+<td>Удалить все элементы, попадающие под условие (все совпадения, а не
+только первое)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>retailAll(coll):bool</code></td>
+<td>Оставить пересечение, остальное - удалить</td>
+</tr>
+<tr>
+<td>Запросы</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>size()</code></td>
+<td>Текущее количество элементов в коллекции</td>
+</tr>
+<tr>
+<td></td>
+<td><code>isEmpty():bool</code></td>
+<td>Пустая  не пустая ли сейчас коллекция</td>
+</tr>
+<tr>
+<td></td>
+<td><code>contains(o):bool</code></td>
+<td>Есть ли в коллекции такой элемент</td>
+</tr>
+<tr>
+<td></td>
+<td><code>containsAll(coll):bool</code></td>
+<td>Есть ли в коллекции все такие элементы</td>
+</tr>
+<tr>
+<td>Преобразование</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>stream()</code>, <code>parallelStream()</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>toArray():arr&lt;Obj&gt;</code></td>
+<td>Возвращает массив Object’ов</td>
+</tr>
+<tr>
+<td></td>
+<td><code>toArray(arr&lt;T&gt;):arr&lt;T&gt;</code></td>
+<td>Мы сами должны создать массив и передать в метод, он будет
+копировать в него элементы. Если места не хватит, пересоздаст новый
+массив. Если места больше, чем надо, заполнит лишнее null’ами.</td>
+</tr>
+<tr>
+<td></td>
+<td><code>toArray(fn&lt;T&gt;):arr&lt;T&gt;</code></td>
+<td>Мы передаем функцию, которая должна создать и вернуть массив, в
+который метод будет копировать коллекцию. Метод нам в эту функцию
+передает size коллекции.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Несколько мыслей о коллекциях
+<ul>
+<li><p>Логику возврата bool и выбросов исключений лучше читать в
+документации, чтобы не было испорченного телефона</p></li>
+<li><p>Как таковых методов “получения” элементов у Collection нет. Мне
+кажется потому, что получение сильно зависит от реализации. Например, у
+списка есть получение по индексу, у очереди можно получить первый
+ последний элемент, а для обычного set вообще нет понятия первый
+ последний и порядок нестабильный, поэтому у него не может быть таких
+методов.</p></li>
+</ul></li>
+</ul>
+<h2 id="sequencedcollection">SequencedCollection</h2>
+<p>https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/SequencedCollection.html</p>
+<ul>
+<li>“Стабильный порядок элементов”, например
+<ul>
+<li>Порядок добавления (типа списка)</li>
+<li>Порядок, зависящий от контента элемента (например, деревья хранят
+элементы в отсортированном виде)</li>
+</ul></li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 33%" />
+<col style="width: 56%" />
+</colgroup>
+<thead>
+<tr>
+<th>Группа</th>
+<th>Метод</th>
+<th>Что делает</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Добавление</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>addFist(e):void</code>, <code>addLast(e):void</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Получение</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>removeFirst():e</code>, <code>removeLast():e</code></td>
+<td>Получение с удалением</td>
+</tr>
+<tr>
+<td></td>
+<td><code>getFirst():e</code>, <code>getLast():e</code></td>
+<td>Получение без удаления</td>
+</tr>
+<tr>
+<td>Операции</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>reversed():scoll</code></td>
+<td>Возвращает view для коллекции, с обратным порядком элементов. Для
+каждого более конкретного интерфейса возвращает тип коллекции этого же
+типа (например, SequencedSet &gt; SequencedSet итд). Все структурные
+изменения, сделанные через view, изменяют исходную коллекцию. А
+изменения в исходной коллекции могут отражаться  нет во view, это надо
+смотреть в конкретном случае.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Мысли о последовательной коллекции
+<ul>
+<li>Поскольку есть строгий порядок, то есть понятие первого  последнего
+элемента. Стало быть появляются методы получения - первого и последнего
+элемента.</li>
+</ul></li>
+</ul>
+<h2 id="queue">Queue</h2>
+<p>https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Queue.html</p>
+<table>
+<thead>
+<tr>
+<th>Концепция</th>
+<th>Особенности</th>
+<th>Метод</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>добавить</td>
+<td>с  без исключения</td>
+<td><code>add(e)</code>, <code>offer(e)</code></td>
+</tr>
+<tr>
+<td>get</td>
+<td>с  без исключения</td>
+<td><code>remove()</code>, <code>poll()</code></td>
+</tr>
+<tr>
+<td>examine</td>
+<td>с  без исключения</td>
+<td><code>element()</code>, <code>peek()</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Мышление
+<ul>
+<li>Классическая очередь с “головой” head и “хвостом” tail, добавление в
+хвост, получение из головы</li>
+<li>examine - это как бы “посмотреть”, “изучить” элемент, логически не
+подразумевает удаление</li>
+</ul></li>
+<li>Словарь
+<ul>
+<li>peek - перевод “заглядывать” (I peek into the hole, I struggle for
+control - Marilyn Manson), как бы “заглянуть в очередь”, поэтому без
+удаления.</li>
+<li>poll - один из переводов это “подрезать верхушки”, а еще есть
+русское слово “полоть”, т.е. “выдергивать”, поэтому poll удаляет элемент
+из очереди.</li>
+<li>offer - “предложить” вставить элемент. Не заставить вставить, а
+предложить, потому что в случае невозможности вставить исключения не
+будет. Мы предложили, нам отказали - ну и ладно.</li>
+</ul></li>
+</ul>
+<h3 id="deque">Deque</h3>
+<p>https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Deque.html</p>
+<ul>
+<li>Всё, что умеет Queue + “F  L”-модификации, т.к. дек это
+sequence-коллекция</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 18%" />
+<col style="width: 49%" />
+</colgroup>
+<thead>
+<tr>
+<th>Концепция</th>
+<th>Особенности</th>
+<th>Метод</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>очередь как стек</td>
+<td></td>
+<td><code>push(e)</code> void, <code>pop()</code> e</td>
+</tr>
+<tr>
+<td>удалить F  L совпадение</td>
+<td>просто удаляет</td>
+<td><code>remove[First\Last]Occurence(o)</code> bool</td>
+</tr>
+</tbody>
+</table>
+<h2 id="list">List</h2>
+<p>https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html</p>
+<ul>
+<li>“Индексированное хранилище”</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 33%" />
+<col style="width: 49%" />
+</colgroup>
+<thead>
+<tr>
+<th>Группа</th>
+<th>Метод</th>
+<th>Что делает</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Операция по индексу</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>add(i, e):void</code></td>
+<td>Вставить в i-индекс, а что было - сдвинуть вправо</td>
+</tr>
+<tr>
+<td></td>
+<td><code>addAll(i, coll):bool</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>get(i):e</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>set(i, e):e</code></td>
+<td>Заменяет элемент на новый, а возвращает старый</td>
+</tr>
+<tr>
+<td></td>
+<td><code>remove(i):e</code></td>
+<td>Удаляет элемент по индексу и возвращает этот элемент</td>
+</tr>
+<tr>
+<td></td>
+<td><code>indexOf(o):i</code>, <code>lastIndexOf(o):i</code></td>
+<td></td>
+</tr>
+<tr>
+<td>view</td>
+<td></td>
+<td>fail-fast</td>
+</tr>
+<tr>
+<td></td>
+<td><code>subList(i, j):list&lt;E&gt;</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>reversed():list&lt;E&gt;</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Итерация+</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>listIterator()</code>, <code>listIterator(i)</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Мышление
+<ul>
+<li>“Индексированное хранилище”, значит все собственные операции будут
+вертеться вокруг индексов. Просто задуматься, а какие возможности
+добавляет факт наличия индекса, и всё.</li>
+</ul></li>
+</ul>
+<h2 id="set">Set</h2>
+<p>https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html</p>
+<ul>
+<li>Не добавляет новых методов.</li>
+</ul>
+<h3 id="sequencedset">SequencedSet</h3>
+<p>https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/SequencedSet.html</p>
+<ul>
+<li>Не добавляет новых методов.</li>
+<li>Гарантирует порядок элементов. Какой именно порядок - зависит от
+реализации.</li>
+</ul>
+<h3 id="sortedset">SortedSet</h3>
+<p>https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/SortedSet.html</p>
+<table>
+<thead>
+<tr>
+<th>Группа</th>
+<th>Метод</th>
+<th>Что делает</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>subset(E, E)</li>
+<li>headSet(→E)</li>
+<li>tailSet(E→)</li>
+</ul>
+<h3 id="navigableset">NavigableSet</h3>
+<p>https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/NavigableSet.html</p>
+<ul>
+<li>lower(e) &lt;</li>
+<li>higher(e) &gt;</li>
+<li>floor(e) &gt;=</li>
+<li>ceiling(e) &lt;=</li>
+</ul>
+<h2 id="map">Map</h2>
+<p>TODO</p>
+<h1 id="реализации">Реализации</h1>
+<h2 id="list-1">List</h2>
+<h3 id="arraylist-и-linkedlist">ArrayList и LinkedList</h3>
+<ul>
+<li><code>ArrayList</code> - список на основе массива</li>
+<li><code>LinkedList</code> - список на основе двусвязного списка</li>
+</ul>
+<p>Что выбрать?</p>
+<ul>
+<li>В 99% случаев, когда нужен список, - выбираем ArrayList</li>
+<li>LinkedList почти никогда не нужен, потому что технически уступает
+массиву
+<ul>
+<li>Был какой-то случай вроде видеоредакторов, когда позиция вставки
+известна заранее и не надо итерироваться для этого, вот тогда список
+подходил бы больше</li>
+</ul></li>
+<li>Недостатки LinkedList
+<ul>
+<li>Все недостатки связаны с особенностями работы процессора с
+памятью</li>
+<li>Самая быстрая память - это регистры, потом кэш, потом оперативка.
+Когда нужных данных не оказывается в регистрах, они ищутся в кэше, потом
+в оперативке. Процессор считывает данные из оперативки пачками, т.е.
+грубо говоря не только нужные данные, но и данные в округе.</li>
+<li>Во-первых, узел списка жрет много памяти, тк хранит две ссылки.
+Соответственно, из-за этого данных в кэше помещается меньше, поэтому
+чаще приходится лезть в оперативку, что замедляет работу.</li>
+<li>Во-вторых, узлы располагаются в произвольных местах памяти, не
+строго друг за другом. Поэтому когда процессор читает пачку данных из
+оперативки, вероятность что два элемента списка окажутся рядом гораздо
+меньше, чем у массива. Из-за этого опять выходит что надо чаще лезть в
+оперативку.</li>
+</ul></li>
+</ul>
+<h3 id="copyonwritearraylist">CopyOnWriteArrayList</h3>
+<ul>
+<li>Потокобезопасный список</li>
+<li>Безопасность за счет того что при любом изменении списка сначала
+создается копия списка, потом она изменяется, а потом ее ссылка заменяет
+ссылку на оригинальный список</li>
+</ul>
+<h3 id="unmodifiablelist">“UnmodifiableList”</h3>
+<ul>
+<li>Такого типа на самом деле нет, это условное название для
+неизменяемых списков, которые возвращают методы <code>List.of()</code> и
+<code>List.copyOf()</code></li>
+</ul>
+<h2 id="set-1">Set</h2>
+<h3 id="hashset">HashSet</h3>
+<ul>
+<li>Реализация на основе хэш-таблицы
+<ul>
+<li><code>Бакет</code> (bucket) - это ячейка массива, в которой лежит
+элемент.</li>
+<li>При коллизиях, для хранения столкнувшихся элементов сначала
+используется список, потом красно-черное дерево
+<ul>
+<li>Коллизии не влияют на момент пересчета хэш-таблицы</li>
+</ul></li>
+<li>Хэш-функции стараются делать так, чтобы значения как можно
+равномернее распределялись по массиву</li>
+<li><code>load</code> (загрузка) хэш-таблицы - это
+<code>количество сохраненных элементов / кол-во бакетов</code>
+<ul>
+<li>например, в таблице сейчас хранится 103 элемента, а количество
+бакетов 50, тогда загрузка 103 / 50 = 2.06</li>
+</ul></li>
+<li>Если загрузка больше 0.75, происходит <code>resizing</code> -
+выделяется новый массив большего размера и элементы перекладываются в
+него
+<ul>
+<li>При этом происходит повторное вычисление хэша элементов</li>
+<li>Бакет, в который надо положить элемент, вычисляется на основе хэша
+элемента и размера массива. Так что из-за изменения размера массива,
+столкнувшиеся в прошлый раз элементы на этот раз оказываются в разных
+бакетах.
+<ul>
+<li>Именно из-за того, что элементы меняют положение в массиве при
+пересчете, HashSet не дает гарантий последовательнсти элементов,
+последовательность нестабильная.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>Скорости
+<ul>
+<li>add, remove, contains быстрые, константные, если таблица загружена
+слабо и нет коллизий</li>
+<li>итерация медленная, потому что надо проходить по всем ячейкам
+массива и проверять, есть ли в них данные</li>
+</ul></li>
+</ul>
+<h3 id="linkedhashset">LinkedHashSet</h3>
+<ul>
+<li>То же самое что HashSet, только элементы хранят ссылки друг на
+друга</li>
+<li>Итератор возвращает элементы в порядке их добавления.</li>
+</ul>
+<h3 id="treeset">TreeSet</h3>
+<ul>
+<li>Использует красно-черное дерево.</li>
+<li>Итератор возвращает элементы по старшинству, от меньших к
+большим.</li>
+</ul>
+<h2 id="map-1">Map</h2>
+<h3 id="hashmap">HashMap</h3>
+<h1 id="полезные-примеры">Полезные примеры</h1>
+<h2 id="создание-коллекций">Создание коллекций</h2>
+<h3 id="списки">Списки</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Создаются немодифицируемые списки</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">List</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> unmodif <span class="op">=</span> <span class="bu">Arrays</span><span class="op">.</span><span class="fu">asList</span><span class="op">(</span><span class="dv">5</span><span class="op">,</span> <span class="dv">7</span><span class="op">,</span> <span class="dv">13</span><span class="op">,</span> <span class="dv">20</span><span class="op">);</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">List</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> unmodif <span class="op">=</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">5</span><span class="op">,</span> <span class="dv">7</span><span class="op">,</span> <span class="dv">13</span><span class="op">,</span> <span class="dv">20</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Модифицируемый список создается только через конструктор</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> modif <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;(</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">5</span><span class="op">,</span> <span class="dv">7</span><span class="op">,</span> <span class="dv">13</span><span class="op">,</span> <span class="dv">20</span><span class="op">)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span></code></pre></div>
+<h3 id="сеты">Сеты</h3>
+<p>HashSet<T> newHashSet(int numElements)</p>
+<h1 id="todo">TODO</h1>
+<ul>
+<li>С созданием коллекций разобраться нормально, разные способы и чем
+отличаются, как эффективнее</li>
+<li>Collections.addAll - посмотреть что еще есть в Collections и вообще
+что такое Collections</li>
+<li>mondayTasks.equals(Set.of(logicCode, mikePhone)); как equals для
+коллекций работает?</li>
+<li>В методах Collection и наверное прочих возвращается true  false,
+бросается исключение в разных случаях. Надо получше разобраться, что
+именно когда возвращается и почему. Это факультативно. Вероятно, после
+полного обзора всего.</li>
+<li>see “Synchronized Collections” on page 281) around ArrayList or
+LinkedList.</li>
+<li>equals и hashCode для коллекций, вроде пишут что они как-то
+переопределены?</li>
+<li>natural order что такое?</li>
+<li>К конкурентным версиям вернуться потом, щас вообще не варик тратить
+время</li>
+</ul>
+<h1 id="вопросы">Вопросы</h1>
+<ul>
+<li>Соответствие типов в коллекции - добавлять можно элементы только
+строго определенного типа, а удалять - элементы любого типа?</li>
+<li>Добавление  удаление элементов возвращают bool, а могут выбросить
+исключение. От чего это зависит? Какие ситуации?</li>
+<li>Что такое spliterator?</li>
+<li>circular array что такое? (обсуждалось в деках вроде)</li>
+</ul>
+<h1 id="разобрать-примеры-кода">Разобрать примеры кода</h1>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Collection</span><span class="op">&lt;</span>Task<span class="op">&gt;</span> allTasks_2 <span class="op">=</span> Stream<span class="op">.</span><span class="fu">of</span><span class="op">(</span>mondayTasks<span class="op">,</span>tuesdayTasks<span class="op">)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">flatMap</span><span class="op">(</span><span class="bu">Collection</span><span class="op">::</span>stream<span class="op">)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">collect</span><span class="op">(</span>Collectors<span class="op">.</span><span class="fu">toSet</span><span class="op">());</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> allTasks_2<span class="op">.</span><span class="fu">equals</span><span class="op">(</span><span class="bu">Set</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span>logicCode<span class="op">,</span> mikePhone<span class="op">,</span> ruthPhone<span class="op">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>databaseCode<span class="op">,</span> guiCode<span class="op">,</span> paulPhone<span class="op">));</span></span></code></pre></div>
+<div class="nav-menu">
+  <button id="toTop" class="nav-btn" type="button" aria-label="Наверх">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+  <button id="toHome" class="nav-btn" type="button" aria-label="Домой">
+    <span class="material-symbols-outlined">home</span>
+  </button>
+</div>
+</div>
+</div>
+<script>
+  document.getElementById('toTop').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
+
+  document.getElementById('toHome').addEventListener('click', function () {
+    window.location.href = '/papyrus';
+  });
+</script>
+</body>
+</html>

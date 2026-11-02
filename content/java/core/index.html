@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>java core</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #2b91af;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #2b91af;  padding-left: 4px; }
+    div.sourceCode
+      { color: #000000; background-color: #ffffff; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #2b91af; font-style: italic; } /* Annotation */
+    code span.at { color: #808080; } /* Attribute */
+    code span.bn { color: #000000; } /* BaseN */
+    code span.bu { color: #0000ff; } /* BuiltIn */
+    code span.cf { color: #8f08c4; } /* ControlFlow */
+    code span.ch { color: #a31515; } /* Char */
+    code span.cn { color: #000000; } /* Constant */
+    code span.co { color: #008000; } /* Comment */
+    code span.cv { color: #008000; font-weight: bold; } /* CommentVar */
+    code span.do { color: #008000; font-style: italic; } /* Documentation */
+    code span.dt { color: #2b91af; } /* DataType */
+    code span.dv { color: #000000; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #000000; } /* Float */
+    code span.fu { color: #000000; } /* Function */
+    code span.im { color: #0000ff; } /* Import */
+    code span.in { color: #2b91af; font-style: italic; } /* Information */
+    code span.kw { color: #0000ff; } /* Keyword */
+    code span.op { color: #000000; } /* Operator */
+    code span.ot { color: #000000; } /* Other */
+    code span.pp { color: #808080; } /* Preprocessor */
+    code span.sc { color: #a31515; } /* SpecialChar */
+    code span.ss { color: #a31515; } /* SpecialString */
+    code span.st { color: #a31515; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #a31515; } /* VerbatimString */
+    code span.wa { color: #808080; font-weight: bold; } /* Warning */
+  </style>
+
+  <!-- ============= ============= Мои стили и скрипты ============= ============= -->
+  <!-- Должны подключать тут, чтобы перекрыть дефолты пандока -->
+  <link rel="stylesheet" href="/papyrus/styles/article-page.css">
+  <script src="/papyrus/scripts/oglavlenie.js" defer></script>
+  <script src="/papyrus/scripts/source-code-expand-collapse.js" defer></script>
+  <!-- ============= ============= =================== ============= ============= -->
+
+</head>
+<body>
+<div class="layout">
+<div id="oglavlenie"></div>
+<div class="content">
+<h1 id="cкачать-документацию-по-java">Cкачать документацию по Java</h1>
+<ul>
+<li>Можно скачать документацию по API джавы локально, на случай если
+вдруг сайт глючит, чтобы всегда можно было открыть без проблем
+<ul>
+<li>https://docs.oracle.com/en/java/javase/26/index.html</li>
+</ul></li>
+<li>Раздел Overview &gt; Download the JDK &gt; Кнопка “Documentation
+Download”
+<ul>
+<li>https://www.oracle.com/java/technologies/javase-jdk26-doc-downloads.html</li>
+</ul></li>
+</ul>
+<h1 id="jvm">JVM</h1>
+<h2 id="jvm-и-jdk">JVM и JDK</h2>
+<ul>
+<li>TODO</li>
+</ul>
+<h2 id="jit">JIT</h2>
+<ul>
+<li>TODO</li>
+</ul>
+<h2 id="memory-model">Memory model</h2>
+<ul>
+<li>TODO Тут про стек и кучу имеется ввиду?</li>
+</ul>
+<h1 id="строки">Строки</h1>
+<ul>
+<li><a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/String.html">Документация,
+методы</a></li>
+</ul>
+<h2 id="строка---это-объект-причем-иммутабельный">Строка - это объект,
+причем иммутабельный</h2>
+<ul>
+<li>Строка - это объект, внутри которого находится массив символов.
+<ul>
+<li>В массиве в современной джаве лежат байты <code>byte[]</code>, а не
+непосредственно символы.</li>
+</ul></li>
+<li>Строки в джаве иммутабельные, поэтому абсолютно любое “изменение” по
+сути порождает новую строку</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> mes <span class="op">=</span> <span class="st">&quot;hello&quot;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>mes <span class="op">=</span> mes <span class="op">+</span> <span class="st">&quot; world&quot;</span><span class="op">;</span>  <span class="co">// В mes записалась новая строка &quot;hello world&quot;, исходный &quot;hello&quot; не изменился</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>mes <span class="op">=</span> mes<span class="op">.</span><span class="fu">toUpperCase</span><span class="op">();</span>  <span class="co">// В up записалась новая строка &quot;HELLO WORLD&quot;, а &quot;hello world&quot; не изменилась</span></span></code></pre></div>
+<h2 id="сравнение-строк-через-и-.equals">Сравнение строк через == и
+.equals()</h2>
+<ul>
+<li>Поскольку строки это объекты, их надо сравнивать через equals, а не
+через ==
+<ul>
+<li>Потому что через == сравнятся ссылки, а через equals - контент</li>
+<li>Плюс из-за пула строк может возникнуть путаница, поэтому equals -
+это жбшечка, а == - это рулетка</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> a <span class="op">=</span> <span class="st">&quot;Hello&quot;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> b <span class="op">=</span> <span class="st">&quot;Hello&quot;</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> c <span class="op">=</span> <span class="kw">new</span> <span class="bu">String</span><span class="op">(</span><span class="st">&quot;Hello&quot;</span><span class="op">);</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>a<span class="op">.</span><span class="fu">equals</span><span class="op">(</span>b<span class="op">))</span>  ✅  <span class="co">// true, тк в обоих переменных слово Hello</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> b<span class="op">)</span>       ❌  <span class="co">// тоже true, но лишь из-за механизма стринг пула, а не из-за одинаковых слов</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> c<span class="op">)</span>           <span class="co">// false - обосрались, тк сравниваются ссылки, а не слова</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>a<span class="op">.</span><span class="fu">equals</span><span class="op">(</span>c<span class="op">))</span>      <span class="co">// true - все корректно, сравнивается текст</span></span></code></pre></div>
+<h2 id="замена-выражений-при-компиляции">Замена выражений при
+компиляции</h2>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> message <span class="op">=</span> <span class="st">&quot;hello&quot;</span> <span class="op">+</span> <span class="st">&quot; &quot;</span> <span class="op">+</span> <span class="st">&quot;world&quot;</span><span class="op">;</span></span></code></pre></div>
+<p>Когда компилятор может понять итоговое значение, как в данном случае,
+в байткоде окажется готовая строка “hello world” вместо выражения
+<code>"hello" + " " + "world"</code>, т.е. конкатенации в рантайме не
+будет.</p>
+<hr />
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">final</span> <span class="bu">String</span> world <span class="op">=</span> <span class="st">&quot;world&quot;</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> message <span class="op">=</span> <span class="st">&quot;hello&quot;</span> <span class="op">+</span> <span class="st">&quot; &quot;</span> <span class="op">+</span> world<span class="op">;</span></span></code></pre></div>
+<p>Здесь тоже вместо <code>"hello" + " " + world</code> будет “hello
+world” без конкатенации в рантайме, потому что компилятору за счет final
++ присваивания гарантированно известно значение world при компиляции,
+значит он может вычислить выражение и заменить его на готовую
+строку.</p>
+<hr />
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> world <span class="op">=</span> <span class="st">&quot;world&quot;</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> message <span class="op">=</span> <span class="st">&quot;hello&quot;</span> <span class="op">+</span> <span class="st">&quot; &quot;</span> <span class="op">+</span> world<span class="op">;</span></span></code></pre></div>
+<p>А вот тут компилятор не сможет заменить
+<code>"hello" + " " + world</code> на готовую строку, потому что world
+это обычная переменная, без final, и компилятор не знает ее значение при
+компиляции.</p>
+<h2 id="string-pool">String pool</h2>
+<h3 id="зачем-нужен-пул">Зачем нужен пул</h3>
+<ul>
+<li>Пул строк хранит ссылки на строки и в некоторых случаях JVM может
+искать строки в пуле и повторно их использовать. Т.о. экономится память
+и снижается нагрузка на сборщик мусора.</li>
+</ul>
+<h3 id="какие-строки-попадают-в-пул">Какие строки попадают в пул</h3>
+<ul>
+<li>Какие строки попадают в пул
+<ul>
+<li>В пул попадают все литералы</li>
+<li>Все строки, на которых явно вызван метод <code>.intern()</code></li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> a <span class="op">=</span> <span class="st">&quot;hello world&quot;</span><span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> message <span class="op">=</span> someString<span class="op">.</span><span class="fu">intern</span><span class="op">();</span></span></code></pre></div>
+<h3 id="интернирование-метод-.intern">Интернирование, метод
+.intern()</h3>
+<ul>
+<li>“Интернирование” значит “Проверить, есть ли строка в пуле. Если
+есть, вернуть ссылку на нее. Если нет, поместить строку в пул и вернуть
+ссылку”.
+<ul>
+<li>Этим занимается jvm.</li>
+</ul></li>
+<li>При вызове intern() мы явно запускаем интернирование.</li>
+</ul>
+<h2 id="создание-строк-через-new-и-через-литерал">Создание строк через
+new и через литерал</h2>
+<p>Вопрос - сколько строк создается в этом коде?</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> a <span class="op">=</span> <span class="kw">new</span> <span class="bu">String</span><span class="op">(</span><span class="st">&quot;Hello&quot;</span><span class="op">);</span></span></code></pre></div>
+<p>Ответ: две. Первая строка это литерал “Hello”. Она передается в
+конструктор new String и получается вторая строка. Ссылка на нее
+сохраняется в переменную <code>a</code>, а первую строку “Hello” в
+памяти удерживает пул строк.</p>
+<ul>
+<li>При использовании new всегда создается новая строка в куче.</li>
+<li>При использовании литерала проводится интернирование.</li>
+</ul>
+<h2 id="примеры-для-самоконтроля">Примеры для самоконтроля</h2>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Пример 1</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> a <span class="op">=</span> <span class="st">&quot;java&quot;</span><span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> b <span class="op">=</span> <span class="st">&quot;java&quot;</span><span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> c <span class="op">=</span> <span class="kw">new</span> <span class="bu">String</span><span class="op">(</span><span class="st">&quot;java&quot;</span><span class="op">);</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>a <span class="op">==</span> b<span class="op">;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>a <span class="op">==</span> c<span class="op">;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>a<span class="op">.</span><span class="fu">equals</span><span class="op">(</span>c<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Пример 2</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> a <span class="op">=</span> <span class="kw">new</span> <span class="bu">String</span><span class="op">(</span><span class="st">&quot;hello&quot;</span><span class="op">);</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> b <span class="op">=</span> a<span class="op">.</span><span class="fu">intern</span><span class="op">();</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> c <span class="op">=</span> <span class="st">&quot;hello&quot;</span><span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>a <span class="op">==</span> c<span class="op">;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>b <span class="op">==</span> c<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Пример 3</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="dt">final</span> <span class="bu">String</span> part <span class="op">=</span> <span class="st">&quot;ja&quot;</span><span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> a <span class="op">=</span> part <span class="op">+</span> <span class="st">&quot;va&quot;</span><span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> dynamic <span class="op">=</span> args<span class="op">.</span><span class="fu">len</span> <span class="op">&gt;</span> <span class="dv">0</span> <span class="op">?</span> <span class="st">&quot;ja&quot;</span> <span class="op">:</span> <span class="st">&quot;ja&quot;</span><span class="op">;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> b <span class="op">=</span> dynamic <span class="op">+</span> <span class="st">&quot;va&quot;</span><span class="op">;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>a <span class="op">==</span> <span class="st">&quot;java&quot;</span><span class="op">;</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>b <span class="op">==</span> <span class="st">&quot;java&quot;</span><span class="op">;</span></span></code></pre></div>
+<h3 id="ответ-1">Ответ 1</h3>
+<ul>
+<li><code>a == b : true</code>, литерал “java” помещается в пул строк,
+ссылка кладется в а. В b кладется ссылка на эту же строку, потому что
+опять используется литерал “java”, стало быть сначала проверяется пул, а
+там “java” уже есть. == сравнивает ссылки. Ссылки равны, поэтому
+true.</li>
+<li><code>a == c : false</code>, потому что new String всегда создает
+новый объект в куче. Объекты разные, ссылки разные, == дает false.</li>
+<li><code>a.equals(c) : true</code>, потому что equals сравнивает текст
+строк.</li>
+</ul>
+<h3 id="ответ-2">Ответ 2</h3>
+<ul>
+<li><code>a == c : false</code>, потому что new String создает новый
+объект, ссылки разные, == дает false.</li>
+<li><code>b == c : true</code>, в a хранится “hello”. Вызов a.intern()
+приводит к интернированию “hello” и в b оказывается ссылка на “hello” из
+пула. В c тоже возвращается ссылка на “hello” из пула. Ссылки
+одинаковые, == дает true.</li>
+</ul>
+<h3 id="ответ-3">Ответ 3</h3>
+<ul>
+<li><code>a == java : true</code>. В пуле окажется “ja” и “java” (“va”
+вообще есть только в исходном коде, но после компиляции его нет, потому
+что “ja” + “va” заменятся на “java”, так что “va” и в пуле тоже не
+будет). В <code>а</code> будет ссылка на “java”, вместо литерала “java”
+- ссылка на строку “java”, ссылки одинаковые, == дает true.</li>
+<li><code>b == "java" : false</code>. Из-за того что dynamic вычислится
+в рантайме, то и b вычислится в рантайме через конкатенацию. Поиска в
+пуле не будет, получится новая строка при конкатенации. “java” возьмет
+ссылку из пула, ссылка с b разная, == даст false.</li>
+</ul>
+<h2 id="todo">TODO</h2>
+<ul>
+<li>Пока не знаю, важно ли это и куда приплести
+<ul>
+<li>CharSequence - интерфейс, который реализуют строки и стрингбилдеры.
+Это он объявляет методы charAt, isEmpty и некоторые другие, которые
+можно прямо на строках вызывать.</li>
+</ul></li>
+</ul>
+<h1 id="символы">Символы</h1>
+<ul>
+<li>TODO: тут про коды, про символы из одного и двух байтов? ну и прочие
+хитрости</li>
+</ul>
+<h1 id="equals-и-.hashcode">.equals() и .hashCode()</h1>
+<h2 id="equals---это-логическое-равно---не-равно-для-объектов">equals -
+это логическое “равно - не равно” для объектов</h2>
+<ul>
+<li><code>.equals()</code> это метод Object, используется для
+логического сравнения объектов на “равно - не равно”
+<ul>
+<li>Допустим, 5 == 5 это очевидно, а как сравнить два объекта Address, в
+которых много полей? Для этого у Address переопределяем equals и пишем в
+нем логику сравнения.</li>
+</ul></li>
+<li>В Object реализация equals сравнивает ссылки на объекты. А например
+Integer переопределяет метод и сравнивает значения, лежащие в
+обертках.</li>
+<li>Объекты на логическое “равно - не равно” всегда надо сравнивать
+через equals, иначе могут быть сюрпризы.
+<ul>
+<li>Например, Integer кэширует маленькие значения (в пределах byte) и
+два маленьких Integer по 100 могут оказаться равны по ==, а Integer по
+200 уже будут не равны по ==, так что объекты - всегда сравнивать по
+equals надо.</li>
+</ul></li>
+</ul>
+<h2 id="hashcode---это-число-от-содержимого-объекта">hashCode - это
+число от содержимого объекта</h2>
+<ul>
+<li><code>hashCode</code> физически это число int</li>
+<li>Если мы пишем сами реализацию хэша, то обычно пропускаем через
+хэш-функцию поля объекта
+<ul>
+<li>По умолчанию в Object реализация хэша зависит от JVM. Четких
+алгоритмов не известно, важно только что для одного и того же объекта
+метод .hashCode() должен возвращать одинаковый хэш</li>
+</ul></li>
+<li>Хэш нужен в основном для работы коллекций, основанных на хэш-таблице
+<ul>
+<li>Хэш по сути это быстрый способ понять, в какой бакет класть
+значение</li>
+</ul></li>
+<li>✏️ Некоторые способы вычислить хэш</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Objects<span class="op">.</span><span class="fu">hash</span><span class="op">(</span>country<span class="op">,</span> city<span class="op">,</span> street<span class="op">,</span> house<span class="op">,</span> apartment<span class="op">);</span>  <span class="co">// Типично когда надо единый хэш из нескольких полей</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Long</span><span class="op">.</span><span class="fu">hashCode</span><span class="op">(</span>id<span class="op">);</span>  <span class="co">// Integer.hashCode() и т.д.</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>somestring<span class="op">.</span><span class="fu">hashCode</span><span class="op">();</span></span></code></pre></div>
+<h2 id="взаимосвязь-equals-и-hashcode">Взаимосвязь equals и
+hashCode</h2>
+<ul>
+<li>Эти методы тесно связаны. hashCode отдельно обычно не
+переопределяют, обычно только в паре с equals.</li>
+<li>⚠️ Правило - “переопределили equals - должны переопределить
+hashCode”
+<ul>
+<li>Почему? Потому что если equals для двух объектов дает true, то их
+хэши ⚠️ обязаны быть одинаковыми.
+<ul>
+<li>А почему вообще хэши объектов, которые равны по equals, обязаны быть
+одинаковыми? Что будет, если хэши будут разными?
+<ul>
+<li>Причина на самом деле проста. Возьмем например HashSet. В сете по
+определению не может быть двух одинаковых элементов, т.е. если a equals
+b, то a и b не могут в сете одновременно лежать. Представим, что хэши у
+них разные, тогда они окажутся в разных бакетах и тогда при добавлении b
+сет бы не нашел a. Соответственно, не понял бы что уже такой объект есть
+и добавил бы b. Вот поэтому хэши у них обязаны быть одинаковыми, чтобы
+сет по хэшу быстро нашел нужный бакет, а потом по equals бы уже проверил
+наверняка, есть такой объект или нет.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="правило-комбинаций-полей">Правило комбинаций полей</h3>
+<ul>
+<li>✅ Используем одинаковый набор полей в обоих методах. Идеальный
+вариант.</li>
+</ul>
+<pre><code>equals:    фамилия + имя + отчество;
+hashCode:  фамилия + имя + отчество;</code></pre>
+<ul>
+<li>❌ В hashCode больше полей, чем в equals. Запрещено.</li>
+</ul>
+<pre><code>equals:    фамилия + имя;
+hashCode:  фамилия + имя + отчество;</code></pre>
+<p>Почему? Потому что Петров Эдуард Иванович и Петров Эдуард
+Валентинович по equals равны (оба они Петров Эдуард), а хэши получаются
+разные (из-за отчества). Нарушается правило “объекты равны, значит дб
+одинаковый хэш”</p>
+<ul>
+<li>🤔 В equals больше полей, чем в hashCode. Сомнительно, лучше так не
+делать.</li>
+</ul>
+<pre><code>equals:    фамилия + имя + отчество;
+hashCode:  фамилия + имя;</code></pre>
+<p>Правило “объекты равны, значит дб одинаковый хэш” не нарушается, но
+получается больше коллизий, поэтому страдает производительность
+коллекций, основанных на хэш-таблицах. Например, Петров Эдуард Иванович,
+Петров Эдуард Валентинович, Петров Эдуард Семенович и все прочие Петровы
+Эдуарды попадут в один и тот же бакет. Стало быть будет больше линейного
+перебора при поиске объектов.</p>
+<h2
+id="как-писать-equals-и-hashcode-какие-поля-выбрать-для-сравнения">Как
+писать equals и hashCode? Какие поля выбрать для сравнения?</h2>
+<ul>
+<li>Базово сначала проверяется равенство ссылок, потом наследство и если
+это совпадает, тогда уже сравнение по полям.</li>
+<li>Выбираются поля, которые задают идентичность объекта:</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Address <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> country<span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> city<span class="op">;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> street<span class="op">;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> house<span class="op">;</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> apartment<span class="op">;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span><span class="op">(</span><span class="bu">Object</span> o<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="kw">this</span> <span class="op">==</span> o<span class="op">)</span> <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span>  <span class="co">// &lt;-- Базово проверяем на равенство ссылок</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!(</span>o <span class="kw">instanceof</span> Address other<span class="op">))</span> <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span>  <span class="co">// &lt;-- и на наследство</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> house <span class="op">==</span> other<span class="op">.</span><span class="fu">house</span>  <span class="co">// &lt;-- Потом уже сравниваем поля</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>            <span class="op">&amp;&amp;</span> apartment <span class="op">==</span> other<span class="op">.</span><span class="fu">apartment</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>            <span class="op">&amp;&amp;</span> Objects<span class="op">.</span><span class="fu">equals</span><span class="op">(</span>country<span class="op">,</span> other<span class="op">.</span><span class="fu">country</span><span class="op">)</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>            <span class="op">&amp;&amp;</span> Objects<span class="op">.</span><span class="fu">equals</span><span class="op">(</span>city<span class="op">,</span> other<span class="op">.</span><span class="fu">city</span><span class="op">)</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>            <span class="op">&amp;&amp;</span> Objects<span class="op">.</span><span class="fu">equals</span><span class="op">(</span>street<span class="op">,</span> other<span class="op">.</span><span class="fu">street</span><span class="op">);</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">hashCode</span><span class="op">()</span> <span class="op">{</span>  <span class="co">// &lt;-- хэш считаем по полям, которые использовали в equals</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Objects<span class="op">.</span><span class="fu">hash</span><span class="op">(</span>country<span class="op">,</span> city<span class="op">,</span> street<span class="op">,</span> house<span class="op">,</span> apartment<span class="op">);</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Если у объекта есть какой-то идентификатор, id например, который и
+так однозначно его идентифицирует, то можно писать equals только по
+нему:</li>
+</ul>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Person <span class="op">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">long</span> id<span class="op">;</span>  <span class="co">// &lt;-- Есть какой-то id&#39;шник, поэтому можно только по нему сравнивать</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> name<span class="op">;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> age<span class="op">;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span><span class="op">(</span><span class="bu">Object</span> o<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="kw">this</span> <span class="op">==</span> o<span class="op">)</span> <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!(</span>o <span class="kw">instanceof</span> Person person<span class="op">))</span> <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> id <span class="op">==</span> person<span class="op">.</span><span class="fu">id</span><span class="op">;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">hashCode</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">Long</span><span class="op">.</span><span class="fu">hashCode</span><span class="op">(</span>id<span class="op">);</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="дополнительные-советы">Дополнительные советы</h2>
+<ul>
+<li>После помещения объекта в сет или в ключ мапы, основанные на
+хэш-таблицах, нельзя менять поля, которые участвуют в расчете хэша, т.к.
+хэш изменится и не удастся найти эти объекты.</li>
+<li>В lombok есть аннотации, упрощающие реализацию equals и hashCode.
+Просто влепить по всем полям наверное не стоит, но там есть более тонкие
+настройки. Стоит присмотреться, когда потребуется реализация.</li>
+</ul>
+<h1 id="compareto">.compareTo()</h1>
+<ul>
+<li><code>.compareTo()</code> это метод интерфейса
+<code>Comparable</code></li>
+<li>По умолчанию класс Object не реализует этот интерфейс. Однако
+реализация есть у подклассов, например String, Integer, LocalDate и
+т.д.</li>
+<li>Реализуя compareTo в классе, мы задаем <code>natural order</code>
+(естественный порядок) для экземпляров этого класса. Например, у чисел
+1, 2, 3 порядок очевиден, а у объектов - нет. Поэтому чтобы было понятно
+как сравнивать объекты, мы должны реализовать compareTo.</li>
+<li>Сравнение используется в коллекциях на основе дерева, TreeSet,
+TreeMap например.</li>
+<li>compareTo желательно согласовать с equals. Если equals говорит, что
+объекты равны, то compareTo должен возвращать 0.</li>
+<li>compareTo обычно редко реализуют. В случаях, когда надо сравнивать
+элементы, у которых по своей природе нет естественного порядка, обычно
+используют объект типа <code>Comparator&lt;T&gt;</code></li>
+</ul>
+<h2 id="как-реализовать-compareto">Как реализовать compareTo</h2>
+<ul>
+<li>Допишу, если встретится ситуация когда это реально будет надо и
+полезно.</li>
+</ul>
+<h1 id="массивы">Массивы</h1>
+<h2 id="массив---это-объект">Массив - это объект</h2>
+<ul>
+<li>Массив - это объект, он наследуется от Object
+<ul>
+<li>Поэтому массивы создаются через new</li>
+<li>Поэтому у массива есть методы equals(), toString(), hashCode()</li>
+</ul></li>
+<li>У всех видов массивов (<code>int[]</code>, <code>String[]</code> и
+т.д.) есть скрытые классы, наследники Object
+<ul>
+<li>У самопальных массивов, вроде <code>Person[]</code> тоже будет
+скрытый класс, наследник Object, который JVM сгенерирует налету</li>
+</ul></li>
+</ul>
+<h2 id="проблема-arrays.aslist">“Проблема Arrays.asList”</h2>
+<p>Вот код:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span><span class="op">[]</span> numbers <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[]</span> <span class="op">{</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">7</span><span class="op">,</span> <span class="dv">4</span><span class="op">,</span> <span class="dv">21</span><span class="op">,</span> <span class="dv">100</span> <span class="op">};</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bu">List</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">[]&gt;</span> list <span class="op">=</span> <span class="bu">Arrays</span><span class="op">.</span><span class="fu">asList</span><span class="op">(</span>numbers<span class="op">);</span></span></code></pre></div>
+<p>Меня бесило то, что я передаю массив и получаю
+<code>List&lt;int[]&gt;</code>, т.е. “список массивов” вместо массива
+чисел. Я не понимал, как так. Да и сейчас не понимаю механику особо. Вот
+описание метода <code>&lt;T&gt; asList(T... a)</code>. Он принимает
+несколько аргументов. По сути то же самое что
+<code>&lt;T&gt; asList(T[] a)</code>. Здесь дженерики, а они по
+определению не работают с примитивами. Если передать массив
+объектов:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Integer</span><span class="op">[]</span> numbers <span class="op">=</span> <span class="kw">new</span> <span class="bu">Integer</span><span class="op">[]</span> <span class="op">{</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">7</span><span class="op">,</span> <span class="dv">4</span><span class="op">,</span> <span class="dv">21</span><span class="op">,</span> <span class="dv">100</span> <span class="op">};</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">List</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> list <span class="op">=</span> <span class="bu">Arrays</span><span class="op">.</span><span class="fu">asList</span><span class="op">(</span>numbers<span class="op">);</span></span></code></pre></div>
+<p>Тогда получается список этих объектов. А если передать массив
+примитивов, то тип элемента вычисляется как “Массив-объект”.</p>
+<h1 id="обертки-boxing">Обертки, boxing</h1>
+<h2 id="примитивы-и-их-обертки">Примитивы и их обертки</h2>
+<table>
+<thead>
+<tr>
+<th>Категория</th>
+<th>Тип</th>
+<th>Обертка</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Числа</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>byte</code></td>
+<td><code>Byte</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>short</code></td>
+<td><code>Short</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>int</code></td>
+<td><code>Integer</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>long</code></td>
+<td><code>Long</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>float</code></td>
+<td><code>Float</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>double</code></td>
+<td><code>Double</code></td>
+</tr>
+<tr>
+<td>Остальные</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>char</code></td>
+<td><code>Character</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>boolean</code></td>
+<td><code>Boolean</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="зачем-нужны-обертки">Зачем нужны обертки</h2>
+<ul>
+<li>Находятся в <a
+href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/package-summary.html">java.lang</a></li>
+<li>Хранят разные статические утилитарные методы для своего примитивного
+типа</li>
+<li>Используются в дженериках</li>
+</ul>
+<h2 id="autoboxing-и-unboxing">autoboxing и unboxing</h2>
+<ul>
+<li><code>autoboxing</code> - это упаковка примитива в его обертку</li>
+<li><code>unboxing</code> - это извлечение примитива из обертки</li>
+<li>и то, и другое происходит во время компиляции, в соответствующих
+местах компилятор автоматически добавляет нужные преобразования
+<ul>
+<li>По сути это срабатывает когда примитив присваивается туда где нужен
+объект, и когда объект присваивается туда где нужен примитив</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">// autoboxing  int -&gt; Integer</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Integer</span> x <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="bu">List</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> numbers <span class="op">=</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">,</span> <span class="dv">30</span><span class="op">);</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">// unboxing  Integer -&gt; int</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> y <span class="op">=</span> x<span class="op">;</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> num <span class="op">=</span> numbers<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="dv">0</span><span class="op">);</span></span></code></pre></div>
+<ul>
+<li>Б  А - это синтаксический сахар над</li>
+</ul>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Integer</span><span class="op">.</span><span class="fu">valueOf</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> y <span class="op">=</span> x<span class="op">.</span><span class="fu">intValue</span><span class="op">();</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">// и прочими подобными конструкциями</span></span></code></pre></div>
+<h2 id="обертки-боксинг-и-коллекции">Обертки, боксинг и коллекции</h2>
+<ul>
+<li>Коллекции появились раньше дженериков</li>
+<li>В них все хранилось в виде Object</li>
+<li>За счет оберток и боксинга можно было делать например вот так:</li>
+</ul>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>coll<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="st">&quot;Hello&quot;</span><span class="op">);</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>coll<span class="op">.</span><span class="fu">add</span><span class="op">(</span>person<span class="op">);</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>coll<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="dv">5</span><span class="op">);</span>  <span class="co">// &lt;-- 5 боксится в Integer</span></span></code></pre></div>
+<ul>
+<li>Правда при извлечении приводить к нужному типу в таком случае
+приходилось бы явно, т.к. все хранится как Object и компилятор не знает,
+чего мы понадобавляли.</li>
+</ul>
+<h1 id="дженерики">Дженерики</h1>
+<h2 id="стирание-типов">Стирание типов</h2>
+<ul>
+<li><code>type erasure</code> (“стирание” типов) - это базовый механизм
+работы дженериков</li>
+<li>после компиляции никаких дженериков не существует, они как бы
+“стираются”</li>
+<li>стирание - это механизм замены типа дженерика на реальный тип
+<ul>
+<li>на какой именно? по верхней доступной границе</li>
+</ul></li>
+</ul>
+<p>Код с дженериками:</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">// классы для примеров</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Animal <span class="op">{</span> <span class="op">}</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Tiger <span class="kw">extends</span> Animal <span class="op">{</span> <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="bu">Box</span><span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{</span>  <span class="co">// &lt;-- Вводим дженерик-тип T</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> T value<span class="op">;</span>  <span class="co">// &lt;-- И используем его в классе вместо &quot;реального&quot; типа тут</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">set</span><span class="op">(</span>T value<span class="op">)</span> <span class="op">{</span>  <span class="co">// &lt;-- и тут</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">value</span> <span class="op">=</span> value<span class="op">;</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> T <span class="fu">get</span><span class="op">()</span> <span class="op">{</span>  <span class="co">// &lt;-- и тут</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> value<span class="op">;</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> box <span class="op">=</span> <span class="kw">new</span> <span class="bu">Box</span><span class="op">&lt;</span>Tiger<span class="op">&gt;();</span>  <span class="co">// &lt;-- Закрываем дженерик конкретным типом</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>Tiger tiger <span class="op">=</span> box<span class="op">.</span><span class="fu">get</span><span class="op">();</span>  <span class="co">// &lt;-- Руками ничего приводить не приходится</span></span></code></pre></div>
+<p>После компиляции код с дженериками превращается в обычный код без
+дженериков. В нужных местах компилятор просто расставляет приведение к
+нужным типам:</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="bu">Box</span> <span class="op">{</span>  <span class="co">// &lt;-- Никакого T после компиляции нет.</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// У T в объявлении не было ограничений, поэтому он </span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">Object</span> value<span class="op">;</span>  <span class="co">// заменился по верхней границе (на Object, а не на Animal).</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">set</span><span class="op">(</span><span class="bu">Object</span> value<span class="op">)</span> <span class="op">{</span>  <span class="co">// &lt;-- Везде, где был T,</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">value</span> <span class="op">=</span> value<span class="op">;</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">Object</span> <span class="fu">get</span><span class="op">()</span> <span class="op">{</span>  <span class="co">// &lt;-- произошла замена на реальный тип, Object в данном случае</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> value<span class="op">;</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="bu">Box</span> box <span class="op">=</span> <span class="kw">new</span> <span class="bu">Box</span><span class="op">();</span>  <span class="co">// &lt;-- Никаких дженериков нет</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>Tiger tiger <span class="op">=</span> <span class="op">(</span>Tiger<span class="op">)</span> box<span class="op">.</span><span class="fu">get</span><span class="op">();</span>  <span class="co">// &lt;-- Компилятор подставил приведение к нужному типу</span></span></code></pre></div>
+<p>Если дженерик ограничен:</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="bu">Box</span><span class="op">&lt;</span>T <span class="kw">extends</span> Animal<span class="op">&gt;</span> <span class="op">{</span>  <span class="co">// &lt;-- Указано, что T это подтип Animal</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> T value<span class="op">;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">set</span><span class="op">(</span>T value<span class="op">)</span> <span class="op">{</span><span class="kw">...</span><span class="op">}</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> T <span class="fu">get</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> value<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> box <span class="op">=</span> <span class="kw">new</span> <span class="bu">Box</span><span class="op">&lt;</span>Tiger<span class="op">&gt;();</span>  <span class="co">// &lt;-- Желаемый тип - Tiger</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>Tiger tiger <span class="op">=</span> box<span class="op">.</span><span class="fu">get</span><span class="op">();</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="bu">Box</span> <span class="op">{</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> Animal value<span class="op">;</span>  <span class="co">// &lt;-- T везде заменился</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">set</span><span class="op">(</span>Animal value<span class="op">)</span> <span class="op">{</span><span class="kw">...</span><span class="op">}</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Animal <span class="fu">get</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> value<span class="op">;</span> <span class="op">}</span>  <span class="co">// &lt;-- по типу-ограничителю</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="bu">Box</span> box <span class="op">=</span> <span class="kw">new</span> <span class="bu">Box</span><span class="op">();</span>  <span class="co">// &lt;-- Дженериков нет</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>Tiger tiger <span class="op">=</span> <span class="op">(</span>Tiger<span class="op">)</span> box<span class="op">.</span><span class="fu">get</span><span class="op">();</span>  <span class="co">// &lt;-- Компилятор знает, что мы хотели Tiger для Box</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co">// Tiger без проблем ложится в Animal внутри Box</span></span></code></pre></div>
+<h2 id="почему-в-дженериках-нельзя-использовать-примитивы">Почему в
+дженериках нельзя использовать примитивы</h2>
+<ul>
+<li>В дженериках нельзя использовать примитивы:</li>
+</ul>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">List</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> numbers <span class="op">=</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">,</span> <span class="dv">30</span><span class="op">);</span>  ❌</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">List</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> numbers <span class="op">=</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">,</span> <span class="dv">30</span><span class="op">);</span>  ✅</span></code></pre></div>
+<ul>
+<li>Это из-за стирания типов. Механика стирания типов работает только с
+объектами, а не с примитивами. Вместо int-дженерика в качестве реального
+типа невозможно поставить Object, потому что int не является наследником
+Object. Следовательно, чтобы стирание работало, нужен объектный тип,
+поэтому используется Integer.</li>
+</ul>
+<h1 id="stream-api">Stream API</h1>
+<ul>
+<li>TODO Переписать с бумажных записей</li>
+</ul>
+<h1 id="optional">Optional</h1>
+<ul>
+<li>TODO</li>
+</ul>
+<div class="nav-menu">
+  <button id="toTop" class="nav-btn" type="button" aria-label="Наверх">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+  <button id="toHome" class="nav-btn" type="button" aria-label="Домой">
+    <span class="material-symbols-outlined">home</span>
+  </button>
+</div>
+</div>
+</div>
+<script>
+  document.getElementById('toTop').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
+
+  document.getElementById('toHome').addEventListener('click', function () {
+    window.location.href = '/papyrus';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>OAuth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+
+  <!-- ============= ============= Мои стили и скрипты ============= ============= -->
+  <!-- Должны подключать тут, чтобы перекрыть дефолты пандока -->
+  <link rel="stylesheet" href="/papyrus/styles/article-page.css">
+  <script src="/papyrus/scripts/oglavlenie.js" defer></script>
+  <script src="/papyrus/scripts/source-code-expand-collapse.js" defer></script>
+  <!-- ============= ============= =================== ============= ============= -->
+
+</head>
+<body>
+<div class="layout">
+<div id="oglavlenie"></div>
+<div class="content">
+<h1 id="как-oauth-2.0-работает-в-общих-чертах">Как OAuth 2.0 работает в
+общих чертах</h1>
+<ul>
+<li>Сервис</li>
+</ul>
+<h1 id="развитие-аутентификации">Развитие аутентификации</h1>
+<ul>
+<li>Раньше все приложения в интернете сами управляли аутентификацией
+<ul>
+<li>Пользователи должны были “зарегистрироваться на сайте”, придумать
+логин и пароль, чтобы заходить и пользоваться приложением</li>
+</ul></li>
+<li>Когда приложений в интернете становится очень много, пользователям
+становится утомительно регистрироваться в каждом, придумывать логины и
+пароли
+<ul>
+<li>Плюс самим приложениям тоже приходится раз за разом реализовывать
+одну и ту же по сути одинаковую функциональность аутентификации</li>
+</ul></li>
+<li>Поэтому появилась концепция IdP - Identity Provider’ов
+<ul>
+<li>IdP - это сервисы, которые хранят и управляют индентификационной
+информацией</li>
+</ul></li>
+<li>Зачем это нужно?
+<ul>
+<li>Теперь пользователи могут один раз зарегистрироваться в IdP-сервисе
+(например, в гугле, гитхабе, вконтакте и других сервисах, которые
+выполняют роль IdP) и использовать эту учетку во всех приложениях,
+которые поддерживают работу с этим конкретным IdP</li>
+<li>А приложениям больше не обязательно хранить креды пользователей,
+потому что теперь приложения могут обращаться к IdP, чтобы
+идентифицировать пользователей</li>
+<li>Т.о. функциональность “хранения и управления аккаунтами
+пользователей” делегируется третьим лицам, что удобно и пользователю, и
+приложениям</li>
+<li>При этом IdP не рассекречивает никаких данных пользователей, типа
+логинов и паролей. Условно говоря, приложение “веселая ферма”, в которую
+Вася входит через гугл аккаунт, знает только что вот этот пользователь -
+это Вася, но не знает, что у него логин в гугле
+<code>vasyok228@google.com</code> а пароль qwer1234</li>
+</ul></li>
+</ul>
+<h1 id="oauth-2.0">OAuth 2.0</h1>
+<ul>
+<li>OAuth 2.0 - Open Authorization</li>
+<li>Это протокол прикладного уровня, работает поверх HTTP, на
+токенах</li>
+<li>нужен для авторизации</li>
+<li>не определяет аутентификацию
+<ul>
+<li>??? но она ему нужна? разве может быть авторизация без
+аутентификации?</li>
+</ul></li>
+</ul>
+<h1 id="identity-provider-idp">Identity Provider (IdP)</h1>
+<ul>
+<li>сервис, который предоставляет идентити</li>
+<li>идентити - сложное понятие, как будто атомарное, очень сложно
+объяснить
+<ul>
+<li>грубо говоря
+<ul>
+<li>юзер - реальный какой-то чел с логином-паролем</li>
+<li>клиент - просто техническая связка наверное тоже “логина-пароля”
+(условно), которая используется для доступа</li>
+</ul></li>
+</ul></li>
+</ul>
+<h1 id="oidc">OIDC</h1>
+<ul>
+<li>Open ID Connect</li>
+<li>Это протокол прикладного уровня, работает поверх OAuth 2.0</li>
+<li>нужен для аутентификации
+<ul>
+<li>??? а авторизация замешана тут как-то в нем?</li>
+</ul></li>
+</ul>
+<h1 id="iam">IAM</h1>
+<ul>
+<li>IAM - Identity and Access Management</li>
+<li>IAM
+<ul>
+<li>проверка пользователя</li>
+<li>контроль доступа к ресурсам</li>
+</ul></li>
+<li>ресурс
+<ul>
+<li>приложения, данные - одним словом все, к чему можно получить
+доступ</li>
+</ul></li>
+<li>идентити - кто-то кто хочет получить доступ к ресурсу, “личность”
+<ul>
+<li>“user account” - может быть как реальный человек, так и не человек -
+например приложение, устройство и т.д.</li>
+</ul></li>
+<li>аутентификация - проверка, является ли пользователь тем, за кого
+себя выдает</li>
+<li>авторизация - проверка, имеет ли пользователь право получить ресурс,
+который он запрашивает
+<ul>
+<li>??? альтернативное определение - “процесс определения, к каким
+ресурсам пользователь имеет доступ”</li>
+</ul></li>
+</ul>
+<h2 id="authentication-factors">Authentication Factors</h2>
+<table>
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr>
+<th>Knowledge (something you know)</th>
+<th>Pin, password</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Possession (something you have)</td>
+<td>Mobile phone, encryption key device</td>
+</tr>
+<tr>
+<td>Inherence (something you are)</td>
+<td>Fingerprint, facial recognition, iris scan</td>
+</tr>
+</tbody>
+</table>
+<h2 id="mfa-multi-factor-authentication">MFA (Multi-Factor
+Authentication)</h2>
+<h2 id="rbac-role-based-access-control">RBAC (Role-Based Access
+Control)</h2>
+<h2 id="владелец-ресурса">Владелец ресурса</h2>
+<h2 id="сервер-ресурсов">Сервер ресурсов</h2>
+<h2 id="сервер-idp-authorization-server">Сервер IdP (Authorization
+server)</h2>
+<h2 id="клиент">Клиент</h2>
+<h1 id="черновик">Черновик</h1>
+<h2 id="проблемы">Проблемы</h2>
+<ul>
+<li>несколько сервисов, несколько учетных записей, у каждого сервиса
+свои уязвимости</li>
+<li>аутентификация в два шага
+<ul>
+<li>??? это двухфакторная?</li>
+</ul></li>
+<li>авторизация в одном сервисе с помощью другого, без предоставления
+первому пароля от второго</li>
+<li>протокол OpenID</li>
+<li>токен доступа и токен обновления</li>
+<li>OIDC, аутентификация</li>
+<li>??? OAuth 2.0 это про аутентификацию или авторизацию?
+<ul>
+<li>только авторизация</li>
+</ul></li>
+</ul>
+<div class="nav-menu">
+  <button id="toTop" class="nav-btn" type="button" aria-label="Наверх">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+  <button id="toHome" class="nav-btn" type="button" aria-label="Домой">
+    <span class="material-symbols-outlined">home</span>
+  </button>
+</div>
+</div>
+</div>
+<script>
+  document.getElementById('toTop').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
+
+  document.getElementById('toHome').addEventListener('click', function () {
+    window.location.href = '/papyrus';
+  });
+</script>
+</body>
+</html>

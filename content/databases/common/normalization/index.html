@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Нормализация и денормализация</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+
+  <!-- ============= ============= Мои стили и скрипты ============= ============= -->
+  <!-- Должны подключать тут, чтобы перекрыть дефолты пандока -->
+  <link rel="stylesheet" href="/papyrus/styles/article-page.css">
+  <script src="/papyrus/scripts/oglavlenie.js" defer></script>
+  <script src="/papyrus/scripts/source-code-expand-collapse.js" defer></script>
+  <!-- ============= ============= =================== ============= ============= -->
+
+</head>
+<body>
+<div class="layout">
+<div id="oglavlenie"></div>
+<div class="content">
+<h1 id="нормализация">Нормализация</h1>
+<ul>
+<li><code>Нормализация</code> - это приведение БД к виду, отвечающему
+нормальным формам. Нормальная форма - это набор формальных критериев к
+структуре БД.</li>
+<li>В результате нормализации БД шаг за шагом избавляется от логической
+избыточности. Логическая избыточность проявляется в дублировании данных
+в нескольких таблицах, за счет чего повышается вероятность приведения БД
+в противоречивое состояние. В одном месте данные обновили, а в другом
+нет - появилось противоречие, где же правильные данные?</li>
+<li>Список нормальных форм, от менее к более строгим:
+<ul>
+<li>Ненормализованная форма или нулевая нормальная форма (UNF)</li>
+<li>Первая нормальная форма (1NF)</li>
+<li>Вторая нормальная форма (2NF)</li>
+<li>Третья нормальная форма (3NF)</li>
+<li>Нормальная форма Бойса-Кодда (BCNF)</li>
+<li>Четвертая нормальная форма (4NF)</li>
+<li>Пятая нормальная форма (5NF)</li>
+<li>Доменно-ключевая нормальная форма (DKNF)</li>
+<li>Шестая нормальная форма (6NF)</li>
+</ul></li>
+<li>БД считается нормализованной, если находится минимум в 3НФ.
+<ul>
+<li>На практике редко доходит до дальнейшей нормализации, потому что 3НФ
+уже устраняет достаточное количество проблем, но еще не приводит к
+снижению производительности и усложнению восприятия. Ситуации, когда
+нужна 4НФ довольно редки, а 5НФ и дальше относятся больше к теории, чем
+к реальному миру.</li>
+</ul></li>
+<li>То, что БД находится в какой-то НФ автоматически означает, что она
+уже находится и в предыдущих НФ.</li>
+</ul>
+<h1 id="нормальные-формы">Нормальные формы</h1>
+<h2 id="первая-нормальная-форма">Первая нормальная форма</h2>
+<blockquote>
+<p>На удивление я не нашел каких-то единых определений для 1НФ. Сколько
+сайтов, столько и мнений. Некоторые вещи кажутся странными, но как будто
+все же не лишенными смысла. Поэтому я решил их тоже выписать. В
+“основные критерии” я буду выписывать то, что показалось наиболее
+правдоподобным, а в “дополнительные критерии” - то, что любопытно, но
+сомнительно или неоднозначно.</p>
+</blockquote>
+<p>Основные критерии:</p>
+<ul>
+<li>Хранящиеся в каждом столбце данные должны быть скалярными. Т.е. поле
+не может хранить список значений.</li>
+</ul>
+<p>Дополнительные критерии:</p>
+<ul>
+<li><p>В таблице не может быть повторяющихся строк.</p>
+<p>Требование странное, потому что, насколько я понимаю, в реляционной
+модели таблица, которая имеет повторяющиеся строки (т.е. по сути это
+означает отсутствие первичного ключа), вообще за таблицу даже не
+считается.</p></li>
+<li><p>В таблице не может быть полей, которые имеют одинаковый
+смысл.</p>
+<p>Например, не может быть два поля под телефон - один домашний, другой
+рабочий. Потому что при появлении человека с тремя телефонами это бы
+означало необходимость переделывать структуру таблицы.</p></li>
+<li><p>В столбце хранятся данные одного типа.</p>
+<p>Требование странное, потому что опять же, такая таблица не может
+называться реляционной. Технически невозможно создать в СУБД таблицу, в
+один и тот же столбец можно было бы сохранить и дату, и строку. Еще
+приводится пример, когда физически тип данных один, например, целое
+число, но логически в столбце хранятся разные значения, например,
+зарплата в рублях и в долларах.</p></li>
+<li><p>Порядок строк  столбцов не имеет значения.</p>
+<p>Что-то из области фантастики. Тут даже трудно пример придумать, когда
+бы последовательность имела значение. Вероятно, тут какой-нибудь
+абсурдный пример вроде хранения пин-кода, по столбцу на каждую цифру, с
+неговорящими ничего названиями.</p></li>
+</ul>
+<p>Пример нарушения критериев 1НФ (галочками одних цветов обозначены
+одинаковые даты рождения для наглядности, а Александры Трофимовы - это
+два разных сотрудника, у которых просто все совпадает, но по id видно,
+что это не один и тот же человек):</p>
+<table>
+<colgroup>
+<col style="width: 4%" />
+<col style="width: 20%" />
+<col style="width: 19%" />
+<col style="width: 17%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>id сотрудника :key:</th>
+<th>имя</th>
+<th>должность</th>
+<th>дата рождения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1000</td>
+<td>Илья Синицын</td>
+<td>CTO, архитектор</td>
+<td>1991-05-12 :ballot_box_with_check:</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1010</td>
+<td>Александр Трофимов</td>
+<td>Разработчик</td>
+<td>1993-01-25 :white_check_mark:</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1020</td>
+<td>Кирилл Соболев</td>
+<td>Менеджер проекта</td>
+<td>1991-05-12 :ballot_box_with_check:</td>
+</tr>
+<tr>
+<td>4</td>
+<td>1030</td>
+<td>Александр Трофимов</td>
+<td>Разработчик</td>
+<td>1993-01-25​ :white_check_mark:</td>
+</tr>
+</tbody>
+</table>
+<p>В чем ошибка:</p>
+<ul>
+<li>Предположим, для каждого сотрудника может быть определено несколько
+должностей, которые он может занимать в зависимости от своих навыков.
+Ошибка в том, что в 1 строке в поле <code>должность</code> указано
+несколько значений через запятую, т.е. оно не является скалярным. Если,
+например, понадобится узнать, сколько в компании людей, способных
+занимать те или иные должности, такой формат хранения задачу
+усложнит.</li>
+</ul>
+<p>Как исправить:</p>
+<ul>
+<li>Сформировать на основе столбца, содержащего несколько значений,
+отдельную таблицу и связать с помощью внешнего ключа с исходной
+таблицей.</li>
+</ul>
+<figure>
+<img src="img/1NF-demo.drawio.svg" alt="normalized.drawio" />
+<figcaption aria-hidden="true">normalized.drawio</figcaption>
+</figure>
+<h2 id="вторая-нормальная-форма">Вторая нормальная форма</h2>
+<p>Критерии:</p>
+<ul>
+<li>Каждое неключевое поле должно зависеть от первичного ключа. Если он
+составной, то неключевое поле должно зависеть от него целиком, а не от
+его части (неключевые поля - это поля, которые не входят в состав
+первичного ключа).</li>
+</ul>
+<p>Если Y зависит от X (обозначается как <em>X→Y</em> ), то это значит
+что по значению X можно однозначно определить значение Y. X в данном
+случае называется <em>детерминантом</em>, а тип зависимости -
+<em>функциональная</em>.</p>
+<p>Пример нарушения 2НФ:</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 27%" />
+<col style="width: 24%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th>проект :key:</th>
+<th>сотрудник :key:</th>
+<th>должность</th>
+<th>длительность проекта</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Илья Синицын</td>
+<td>CTO</td>
+<td>400</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Александр Трофимов</td>
+<td>Разработчик</td>
+<td>400</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Илья Синицын</td>
+<td>Архитектор</td>
+<td>700</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Кирилл Соболев</td>
+<td>Менеджер проекта</td>
+<td>400</td>
+</tr>
+</tbody>
+</table>
+<p>В чем ошибка:</p>
+<ul>
+<li>Здесь составной первичный ключ - проект и сотрудник. На примере Ильи
+Синицына видно, что только оба поля вместе позволяют однозначно
+определить должность, т.к. он участвует в двух проектах под разными
+должностями. А вот поле длительность указывает на длительность проекта в
+целом и, соответственно, для ее определения достаточно только проекта, а
+сотрудник не нужен. Это и есть нарушение 2НФ - поле зависит только от
+части полей, составляющих первичный ключ.</li>
+</ul>
+<p>Как исправить:</p>
+<ul>
+<li>Сгруппировать поле, нарушающее правило, и его детерминант в
+отдельной таблице и связать с исходной с помощью внешнего ключа.</li>
+</ul>
+<figure>
+<img src="img/2NF-demo.drawio.svg" alt="2NF-demo.drawio" />
+<figcaption aria-hidden="true">2NF-demo.drawio</figcaption>
+</figure>
+<h2 id="третья-нормальная-форма">Третья нормальная форма</h2>
+<p>Критерии:</p>
+<ul>
+<li>Неключевые поля не должны зависеть от других неключевых полей.</li>
+</ul>
+<p>Пример нарушения 3НФ:</p>
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 15%" />
+<col style="width: 14%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr>
+<th>id сотрудника :key:</th>
+<th>имя</th>
+<th>должность</th>
+<th>описание должности</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1000</td>
+<td>Илья Синицын</td>
+<td>CTO</td>
+<td>Планирование проектов, формирование технологического стека</td>
+</tr>
+<tr>
+<td>1010</td>
+<td>Александр Трофимов</td>
+<td>Разработчик</td>
+<td>Реализация поставленных задач в программном коде</td>
+</tr>
+<tr>
+<td>1020</td>
+<td>Кирилл Соболев</td>
+<td>Менеджер проекта</td>
+<td>Переговоры с заказчиком, формирование задач и назначение их
+разработчикам</td>
+</tr>
+<tr>
+<td>1030</td>
+<td>Илья Сухомлин</td>
+<td>Архитектор</td>
+<td>Проработка архитектуры приложений</td>
+</tr>
+</tbody>
+</table>
+<p>В чем ошибка:</p>
+<ul>
+<li>Предположим, что у каждого сотрудника есть основная должность, в
+которой он особенно хорош, и поэтому эта должность хранится
+непосредственно “рядом” с сотрудником. Т.е. должность зависит от id
+сотрудника. Но описание должности зависит не от id сотрудника, а от
+самой должности (это называется <em>транзитивная</em> зависимость). В
+этом и есть ошибка - неключевой атрибут “описание должности” зависит от
+другого неключевого атрибута “должность”.</li>
+</ul>
+<p>Как исправить:</p>
+<ul>
+<li>Оформить зависимость в виде отдельной таблицы и связать с помощью
+внешнего ключа с исходной таблицей.</li>
+</ul>
+<figure>
+<img src="img/3NF-demo.drawio.svg" alt="3NF-demo.drawio" />
+<figcaption aria-hidden="true">3NF-demo.drawio</figcaption>
+</figure>
+<h1 id="денормализация">Денормализация</h1>
+<p>TODO: https://habr.com/ru/companies/latera/articles/281262/</p>
+<div class="nav-menu">
+  <button id="toTop" class="nav-btn" type="button" aria-label="Наверх">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+  <button id="toHome" class="nav-btn" type="button" aria-label="Домой">
+    <span class="material-symbols-outlined">home</span>
+  </button>
+</div>
+</div>
+</div>
+<script>
+  document.getElementById('toTop').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
+
+  document.getElementById('toHome').addEventListener('click', function () {
+    window.location.href = '/papyrus';
+  });
+</script>
+</body>
+</html>

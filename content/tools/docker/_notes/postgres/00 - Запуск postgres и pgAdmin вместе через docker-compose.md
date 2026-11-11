@@ -9,13 +9,12 @@
 name: postgres_train
 
 services:
-  pgs:
+  pgs:  # В pgAdmin для поля "имя хоста" при создании подключения
     image: postgres
-    container_name: postgres_db
     environment:
-      POSTGRES_USER: admin
+      POSTGRES_USER: admin  # Креды для подключения к БД при создании соединения в pgAdmin
       POSTGRES_PASSWORD: admin123
-      POSTGRES_DB: training_db
+      POSTGRES_DB: training_db  # Для поля maintaince db в pgAdmin при настройке подключения
     volumes:
       - postgres_data:/var/lib/postgresql
     ports:
@@ -24,15 +23,15 @@ services:
       postgres -c shared_preload_libraries='pg_stat_statements'
               -c pg_stat_statements.track=all
               -c pg_stat_statements.max=10000
+              -c max_parallel_workers_per_gather=0
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: pgadmin4
-    environment:
+    environment:  # креды для захода в pgAdmin
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "5050:80"
+      - "5050:80"  # Под портом 5050 на localhost'е будет доступен pgAdmin
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 volumes:
@@ -59,7 +58,7 @@ volumes:
 
 # Подключение из pgAdmin
 
-- после того как контейнеры запустятся, pgAdmin доступен в браузере по адресу http://localhost:8080
+- после того как контейнеры запустятся, pgAdmin доступен в браузере по адресу http://localhost:5050
   - порт такой же, как в yaml задали
 - логинимся по кредам, которые указали в docker-compose
 - подключаемся к серверу, настройки такие:

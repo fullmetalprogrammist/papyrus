@@ -263,6 +263,10 @@
 <div class="layout">
 <div id="oglavlenie"></div>
 <div class="content">
+<ul>
+<li>Вот эту ссылку главное не просрать
+https://use-the-index-luke.com/sql/anatomy</li>
+</ul>
 <h1 id="что-такое-индекс">Что такое индекс</h1>
 <ul>
 <li><p><code>Индекс</code> - это специальная структура данных для
@@ -283,7 +287,7 @@
 принципов
 <ul>
 <li>Но ключевое то, что цель индекса - ускорение поиска, а как - это
-детали реализации</li>
+детали реализации.</li>
 </ul></li>
 </ul></li>
 </ul>
@@ -294,7 +298,13 @@
 <li>Потому что приходится пересчитать индексы с учетом измененных
 данных</li>
 </ul></li>
-<li>Индексы тоже занимают определенный объем хранилища</li>
+<li>Индексы тоже занимают определенный объем хранилища
+<ul>
+<li>Если индексы, созданные для таблицы, суммарно начинают занимать
+больше места, чем сама таблица - это плохой звонок. Скорее всего тут
+либо созданы лишние индексы, либо индексы созданы неэффективно, либо
+вообще нужна не реляционная СУБД для задачи.</li>
+</ul></li>
 </ul>
 <p>Тем не менее, польза от правильно составленных индексов перевешивает
 эти накладные расходы.</p>
@@ -306,8 +316,11 @@
 <li>В последнем случае планировщик может посчитать последовательный
 перебор более эффективным, и не будет использовать индекс</li>
 </ul></li>
-<li>Поэтому индексы надо строить по полю  полям в высокой
+<li>Поэтому индексы хорошо работают на полях с высокой
 <code>селективностью</code></li>
+<li>Все запросы надо выполнять с <code>explain analyze</code> чтобы
+видеть план выполнения и понимать, как БД ищет данные, использует ли
+индексы и т.д.</li>
 </ul>
 <h2 id="селективность-и-кардинальность">Селективность и
 кардинальность</h2>
@@ -360,22 +373,26 @@
 <h2 id="почему-низкая-селективность---плохо-для-индекса">Почему низкая
 селективность - плохо для индекса</h2>
 <ul>
-<li>Поиск данных связан с чтением с диска</li>
-<li>Технически чтение бывает последовательным и произвольным
+<li>Поиск данных связан с чтением с диска.</li>
+<li>Технически чтение бывает <code>последовательным</code> и
+<code>произвольным</code>.
 <ul>
 <li>Последовательное чтение - это когда блоки диска читаются друг за
-другом</li>
+другом.</li>
 <li>Произвольное чтение - это когда блоки читаются то из одного места
-диска, то из другого (“прыжки”)</li>
-<li>Технически последовательное чтение быстрее</li>
+диска, то из другого (<code>"прыжки"</code>).</li>
+<li>Технически последовательное чтение быстрее.</li>
 </ul></li>
-<li>Поиск в индексе - это произвольное чтение
+<li>Если селективность низкая, значит по индексу невозможно найти одну
+конкретную строку или хотя бы сузить поиск до небольшого количества (по
+сравнению с общим количеством строк).
 <ul>
-<li>Причем произвольное чтение два раза - первый раз при поиске в самом
-индексе, второй раз - для выбора данных из таблицы</li>
+<li>Значит индекс вернет много ключей, и значит чтобы получить по ним
+данные, придется сделать много “прыжков” к таблице. Так что по итогу
+может оказаться что просто перебрать строки одну за другой в таблице
+безо всяких индексов будет быстрее, за счет того что последовательное
+чтение быстрее произвольного.</li>
 </ul></li>
-<li>Поиск в таблице - это последовательное чтение</li>
-<li>Как эти факторы связаны с селективностью?</li>
 </ul>
 <h3 id="пример-ищем-мужчин">Пример “Ищем мужчин”</h3>
 <ul>
@@ -416,7 +433,7 @@
 технические детали</li>
 </ul></li>
 <li>Поэтому мы просто создаем индекс, который имеет хороший потенциал, а
-планировщик сам решает в моменте, использовать его или нет</li>
+планировщик сам решает в моменте, использовать его или нет.</li>
 </ul></li>
 </ul>
 <h1 id="технические-разновидности-индексов">Технические разновидности
@@ -447,106 +464,170 @@
 сравнения.</li>
 </ul></li>
 </ul>
-<h2 id="узлы-и-листья">Узлы и листья</h2>
+<h2 id="организация-b-tree-индекса">Организация B-tree индекса</h2>
 <ul>
-<li>В узлах дерева хранятся ключи - значение поля / полей, по которым
-построен индекс, и ссылки на дочерние узлы.</li>
-<li>В листьях дерева - хранится либо ссылка на данные, либо сами данные.
+<li>Главная цель индекса - обеспечить упорядоченное представление
+индексируемых данных.</li>
+<li>B-tree индекс для организации данных использует три структуры -
+дерево, массив и двусвязный список.
 <ul>
-<li>(в зависимости от того, какой индекс - кластеризованный или
-нет)</li>
+<li>Каждый узел дерева - это страница размером несколько kb (около
+8).</li>
+<li>В каждом узле хранятся
+<ul>
+<li><strong>Несколько</strong> ключей индекса в виде
+<strong>отсортированного</strong> массива. Это позволяет искать в нем с
+помощью бинарного поиска.</li>
+<li>Ссылки на дочерние узлы.</li>
 </ul></li>
-<li>Узлы в БД это не узлы из учебника, где в каждом узле одно значение.
+<li>Корень и промежуточные узлы нужны для навигации - чтобы быстро выйти
+на листовой узел, в котором находится искомый ключ.</li>
+<li>Листья организованы в двусвязный список.
 <ul>
-<li>В БД в узлах хранится много ключей в отсортированном виде. Узел -
-это целая страница. За счет того что в узлах не хранятся данные, можно
-напихать в них больше ключей и тем самым сделать высоту дерева меньше.
-Следовательно, искать быстрее, потому что меньше приходится читать
-индексных узлов из памяти.
-<ul>
-<li>Поэтому данные всегда хранятся только в листьях, а в узлах - не
-хранятся.</li>
-</ul></li>
-</ul></li>
-<li>P.P.S. Листья - это “конечные” узлы если что (у которых нет
-потомков).</li>
-</ul>
-<h2 id="почему-поиск-быстрый">Почему поиск быстрый</h2>
-<ul>
-<li>Поскольку дерево - упорядоченная структура, то можно быстро
-отбросить часть данных и получить т.о. ускорение поиска
-<ul>
-<li>Можно либо сразу найти конкретное значение
-<ul>
-<li>Например <code>id = 100</code></li>
-</ul></li>
-<li>Либо проводить последовательный поиск на небольшой части данных
-<ul>
-<li>Например <code>author = 'Пушкин' and year &gt; 1820</code>
-<ul>
-<li>Для случая, когда индекс только по полю author - СУБД быстро находит
-все книги Пушкина и начинает среди них уже последовательно перебирать в
-поисках тех что написаны после 1820 года</li>
+<li>Листья связаны в такой последовательности, что по сути их массивы
+образуют логически единый отсортированный массив.</li>
 </ul></li>
 </ul></li>
-<li>P.S. Как поиск в b-деревьях работает - это отдельная тема, т.к. это
-не просто двоичное дерево, тут поиск комбинированный</li>
+<li>Алгоритм поиска нужного ключа такой
+<ul>
+<li>По дереву быстро находим лист, в котором находится нужный ключ.</li>
+<li>Бинарным поиском в массиве ключей внутри этого листа находим нужный
+ключ.
+<ul>
+<li>Если вдруг нужен не один ключ, а диапазон (например &gt;), тогда
+просто двигаемся по массиву вверх, а за счет того что листья связаны в
+список, то можно легко захватить подходящие ключи из соседних
+листьев.</li>
+</ul></li>
 </ul></li>
 </ul>
 <figure>
-<img src="img/single-and-many-data.drawio.svg"
-alt="single-and-many-data.drawio" />
-<figcaption aria-hidden="true">single-and-many-data.drawio</figcaption>
+<img src="img/btree-index-concept.drawio.svg"
+alt="Устройство B-tree индекса" />
+<figcaption aria-hidden="true">Устройство B-tree индекса</figcaption>
 </figure>
+<ul>
+<li>P.S. Технически ссылки организуются по-разному. Часто на картинках
+их рисуют отдельно от ключей. Обычно на таких рисунках ссылки
+располагаются между ключами и получается например 3 ключа и 4 ссылки,
+т.е. +1. Но я ебаться не стал, это и понимать труднее, и рисовать. По
+сути это и не важно.
+<ul>
+<li>На этом рисунке ссылка от ключа <code>K</code> ведет на узел, в
+котором все ключи &lt;= K.</li>
+</ul></li>
+<li>Высота дерева будет
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><mi>x</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>h</mi></mrow><annotation encoding="application/x-tex">\log_x(y)=h</annotation></semantics></math>
+, где
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+это количество ключей в узле,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+количество строк в таблице, а
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>
+высота дерева.
+<ul>
+<li>Допустим, если в страницу влезло 100 ключей, а в таблице 1млрд
+строк, тогда высота будет всего 4-5.</li>
+</ul></li>
+</ul>
+<h2 id="основные-причины-медленного-индекса">Основные причины медленного
+индекса</h2>
+<ul>
+<li>Первая причина
+<ul>
+<li>Потенциальная необходимость просмотра большого количества листов для
+поиска всех совпадений ключей.
+<ul>
+<li>Как видно на рисунке, ключи повторяются. Например, 27, 53, 57
+встречаются по два раза. Это значит, что СУБД придется просмотреть всю
+цепочку таких ключей. Причем не исключено, что например в третьем листе
+тоже могло бы быть 27, а значит СУБД пришлось бы загрузить еще одну
+страницу.</li>
+</ul></li>
+</ul></li>
+<li>Вторая причина
+<ul>
+<li>Для получения данных СУБД необходимо обратиться к таблице. Поскольку
+данные в таблице хранятся в разбросанном виде, то чем больше совпадений
+по ключам в индексе, тем больше вероятность что для поиска всех этих
+данных придется читать много страниц с данными. Это
+<strong>произвольное</strong> чтение и оно медленное.</li>
+</ul></li>
+</ul>
+<p>Итого, поиск данных по индексу включает три шага: а) найти по дереву
+нужный лист б) просмотреть цепочку листов на предмет нужных ключей, если
+их несколько в) считать из таблицы нужные данные.</p>
+<p>Только первый шаг стабильно быстрый из-за небольшой высоты дерева.
+Остальные два могут ощутимо замедлять работу индекса.</p>
+<h2 id="удаление-из-индекса">Удаление из индекса</h2>
+<ul>
+<li>Тут речь про postgres.</li>
+<li>При удалении строки из таблицы она помечается как невидимая, а
+индекс не затрагивается, т.е. ключ остается в индексе. Через какие-то
+промежутки времени запускается процесс vacuum, который реально удаляет
+строки из таблицы и из индекса.
+<ul>
+<li>Но прикол в том, что хотя ключи из индекса удаляются, индекс от
+этого не становится меньше по объему сжираемого места, потому что
+страницы остаются как и были, просто они “дырявые” или даже вообще
+пустые.</li>
+</ul></li>
+<li>Поэтому при массовых удалениях данных (а возможно и изменениях),
+можно индекс дропнуть и пересоздать, чтобы такого фрагментирования не
+было.
+<ul>
+<li>Если удаления не массовые, тогда фрагментация меньше, потому что
+когда в странице не хватает места для добавления ключа, то СУБД
+проверяет ее на наличие ключей, которые ведут на удаленные строки, и
+если такие есть, то может такой ключ удалить и вставить новый на ее
+место.</li>
+</ul></li>
+<li>TODO: В общем, при массовых операциях надо бы погуглить что к
+чему.</li>
+</ul>
 <h2 id="кластеризованный-и-некластеризованный-индекс">Кластеризованный и
 некластеризованный индекс</h2>
 <ul>
 <li>Такое деление характерно для b-tree индексов</li>
-<li>Главное отличие - в том что хранится в листьях
+<li><code>Кластеризованный</code> индекс - условно можно считать, что
+данные интегрированы в сам индекс. Поэтому можно условно сказать, что
+сам индекс и есть таблица с данными.
 <ul>
-<li><code>Кластеризованный</code> индекс - в листьях хранятся сами
-данные
+<li>Поэтому кластеризованный индекс может быть только один.</li>
+</ul></li>
+<li><code>Некластеризованный</code> индекс - хранит только ссылки на
+данные, а сами данные лежат в таблице.
 <ul>
-<li>В этом случае индекс и есть сама “таблица” с данными. Поэтому
-кластеризованный индекс может быть только один.</li>
+<li>Поэтому некластеризованных индексов может быть сколько угодно.</li>
 </ul></li>
-<li><code>Некластеризованный</code> - в листьях хранятся ссылки на
-данные.
-<ul>
-<li>Поэтому некластеризованных индексов может быть сколько угодно. В
-листьях хранится значение индексированного поля / полей + ссылка на
-строку таблицы.</li>
-</ul></li>
-</ul></li>
-<li>Несколько мыслей
-<ul>
-<li>Кластеризованные индексы имеет смысл создавать на поля, значения в
-которых идут нарастающим манером
-<ul>
-<li>Например “дата добавления поста”
-<ul>
-<li>Потому что это не приводит к сильной перестройке индекса, т.к.
-строка добавляется в конец
-<ul>
-<li>Если же сделать, например, на поле “фамилия”, то новую строку с
-фамилией “Петров” придется вставлять куда-то в середину данных, и все
-окружающие данные придется перекладывать, что очевидно дороже чем
-добавлять в конец</li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
+<li>P.S. Решил просто до такого концептуального минимализма свести
+определения. Все остальное удалил, потому что по ощущениям это жесткий
+нейробред был. Буду мониторить момент, когда человек хорошо расскажет
+про эти индексы, и тогда мб дополню. Так-то в принципе пофигу как они
+там технически организованы. Просто запомнить, что “кластеризованный =
+таблица” поможет понять почему он один. Ну и еще бы понять в каких
+кейсах этот индекс полезен и хватит пожалуй, чем с листьями ебаными
+возиться.</li>
 </ul>
 <h1 id="тактики-использования-индексов">Тактики использования
 индексов</h1>
-<h2 id="несколько-индексов-для-таблицы">Несколько индексов для
-таблицы</h2>
+<h2 id="советы-по-индексам">Советы по индексам</h2>
+<ul>
+<li>Разработчик лучше всех должен понимать как составить хороший индекс,
+потому что он знает бизнес и условия запросов. А именно из условий
+запросов понятно, какой индекс нужен.</li>
+<li>Несколько индексов
 <ul>
 <li>Для одной таблицы можно строить несколько индексов для ускорения
-разных запросов</li>
+разных запросов.</li>
 <li>Какое поле  набор полей выбрать для индекса - зависит от того, какие
 поля фигурируют чаще всего в запросах в предложениях where и order
 by.</li>
+<li>Чем больше индексов, тем больше накладные расходы на
+insert-update-delete. Поэтому один индекс предпочтительнее двух. Можно
+делать составной индекс, чтобы покрывать много запросов. Тогда можно
+получить профит как от двух индексов, а оверхед как для одного.</li>
+</ul></li>
 </ul>
 <h2 id="составной-индекс">Составной индекс</h2>
 <ul>
@@ -604,9 +685,9 @@ country + city</li>
 <li>Например, в postgres можно создать индекс и через include
 дополнительно включить в него нужные для запроса данные. При этом эти
 данные не будут участвовать в сортировке.</li>
-<li>А например в oracle нет такой “include”-возможности и придется
-включить все нужные поля в состав самого индекса, что сделает его
-тяжелее, потому что они будут участвовать в сортировке.</li>
+<li>А например в oracle (возможно) нет такой “include”-возможности и
+придется включить все нужные поля в состав самого индекса, что сделает
+его тяжелее, потому что они будут участвовать в сортировке.</li>
 </ul></li>
 <li>Пример покрывающего индекса
 <ul>
@@ -632,10 +713,307 @@ class="sourceCode sql"><code class="sourceCode sql"><span id="cb5-1"><a href="#c
 <li>Ответ - нет, не лучше. Движок нормально читает индекс задом наперед,
 поэтому даже ASC индекс хорошо работает при DESC-выборке.</li>
 </ul></li>
+<li>Не лучше ли сделать индекс по created_at + user_id + order_id?
+<ul>
+<li>Ответ - не лучше. По user_id используется строгое равенство, оно
+позволяет отфильтровать сразу много строк. Поэтому строгое равенство
+всегда на первом месте надо ставить в индексе.</li>
+</ul></li>
 </ul>
 <h2 id="частичный-индекс">Частичный индекс</h2>
 <ul>
 <li>TODO</li>
+</ul>
+<h2 id="индексы-на-foreign-key">Индексы на Foreign Key</h2>
+<ul>
+<li>Если в таблице есть fk-поля, то на них желательно создавать индексы.
+<ul>
+<li>TODO: зачем? Примеры. Что-то связано с определением, ссылается ли
+строка на что-то?</li>
+</ul></li>
+</ul>
+<h1 id="кейсы-запросов">Кейсы запросов</h1>
+<ul>
+<li>Несколько кейсов, когда индексы особо пригождаются
+<ul>
+<li>Поиск по ключу <code>where id = ?</code></li>
+<li>Поиск по составному ключу
+<code>where order_id = ? and line_id = ?</code></li>
+<li>Поиск по диапазону
+<ul>
+<li><code>where created_ad &gt; ?</code></li>
+<li><code>where created_at between ? and ?</code></li>
+</ul></li>
+<li>topN <code>order by created_at limit ?</code></li>
+<li>Обработка foreign keys</li>
+</ul></li>
+</ul>
+<h1 id="uuid-vs-bigint-для-ключа">UUID vs bigint для ключа</h1>
+<ul>
+<li>Размеры
+<ul>
+<li>bigint - 8 байт</li>
+<li>uuid - 16 байт</li>
+</ul></li>
+</ul>
+<h2 id="влияние-на-индекс">Влияние на индекс</h2>
+<ul>
+<li>Надо понимать, как природа ключа влияет на то, как он вставляется в
+индекс.
+<ul>
+<li>Если ключи имеют нарастающее значение, значит они будут скорее всего
+вставляться в последнюю страницу. Это хорошо для кэширования, это хорошо
+потому что перестройка индекса минимальная.</li>
+<li>Если ключи имеют случайное значение, значит они будут вставляться
+уже в непредсказуемую страницу. Это плохо, потому что сильнее
+перестраивает индекс, дает больше чтений диска, в общем это технически
+плохо сказывается на вставке.</li>
+</ul></li>
+<li>Исходя из этих вариантов, выводы такие:
+<ul>
+<li>bigint - не имеет проблем, потому что его значение нарастающее.</li>
+<li>uuid - если выбрать правильную версию, то тоже проблем не будет.
+<ul>
+<li>Правильная версия - это uuid v7, потому что там первые биты
+генерируются на основе текущего времени, поэтому такие uuid будут
+монотонно возрастающими и стало быть не будет проблем в индексе.</li>
+</ul></li>
+</ul></li>
+<li>Еще на что можно обратить внимание:
+<ul>
+<li>Числа процессору сравнивать проще, чем uuid.</li>
+<li>Числовой код проще воспринимать человеку (хотя это спорно, если
+число огромное).</li>
+<li>Из-за разницы в размерах, uuid ключи очевидно будут занимать гораздо
+больше места.</li>
+</ul></li>
+</ul>
+<h2 id="бд-единая-или-шардированная">БД единая или шардированная?</h2>
+<ul>
+<li>Второй вопрос - БД единая или шардированная.
+<ul>
+<li>Если шардированная, то тут практически без вариантов uuid, потому
+что с числами нужна координация, чтобы не было двух одинаковых id.</li>
+</ul></li>
+</ul>
+<h1 id="справочная-информация">Справочная информация</h1>
+<h2 id="сколько-времени-занимают-разные-операции">Сколько времени
+занимают разные операции</h2>
+<ul>
+<li>https://gist.github.com/hellerbarde/2843375</li>
+</ul>
+<pre><code>Main memory reference ...................... 100 ns             
+SSD random read ........................ 150,000 ns  = 150 µs
+Read 1 MB sequentially from memory ..... 250,000 ns  = 250 µs
+Read 1 MB sequentially from SSD* ..... 1,000,000 ns  =   1 ms
+Disk seek ........................... 10,000,000 ns  =  10 ms
+Read 1 MB sequentially from disk .... 20,000,000 ns  =  20 ms</code></pre>
+<ul>
+<li>Полезно чтобы понимать примерно, сколько может выполняться запрос,
+т.к. планировщик показывает потенциальное количество чтений с диска.
+Интересует Disk seek - 10 ms, обращение к диску (не SSD).</li>
+</ul>
+<h1 id="планировщик">Планировщик</h1>
+<h2 id="where-id-123">where id = 123</h2>
+<ul>
+<li>employees_pk - ключ по одному полю employee_id. В таблице только эта
+колонка определяет строку.</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">explain</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">analyze</span>, buffers)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> first_name, last_name</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> employees</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a> <span class="kw">WHERE</span> employee_id <span class="op">=</span> <span class="dv">123</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Index Scan using employees_pk on employees  </span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>(<span class="kw">cost</span><span class="op">=</span><span class="fl">0.28</span><span class="op">..</span><span class="fl">8.29</span> <span class="kw">rows</span><span class="op">=</span><span class="dv">1</span> width<span class="op">=</span><span class="dv">10</span>) </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>(actual <span class="dt">time</span><span class="op">=</span><span class="fl">0.059</span><span class="op">..</span><span class="fl">0.061</span> <span class="kw">rows</span><span class="op">=</span><span class="fl">1.00</span> loops<span class="op">=</span><span class="dv">1</span>)<span class="ot">&quot;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Cond: (employee_id = &#39;123&#39;::numeric)&quot;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Searches: 1&quot;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=3&quot;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning Time: 0.091 ms&quot;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Execution Time: 0.084 ms&quot;</span></span></code></pre></div>
+<ul>
+<li>Вывод какой? Индекс используется, это видно по Index Scan.</li>
+</ul>
+<h2 id="where-id-123-and-компания_id">where id = 123 and
+компания_id</h2>
+<ul>
+<li>employees2_pk это составной индекс по (<code>сотрудник_id</code>,
+<code>компания_id</code>)</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">explain</span> (<span class="kw">analyze</span>, costs, buffers)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> first_name, last_name</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> employees2</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a> <span class="kw">WHERE</span> employee_id   <span class="op">=</span> <span class="dv">123</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>   <span class="kw">AND</span> subsidiary_id <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Index Scan using employees2_pk on employees2  </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>(<span class="kw">cost</span><span class="op">=</span><span class="fl">0.29</span><span class="op">..</span><span class="fl">8.30</span> <span class="kw">rows</span><span class="op">=</span><span class="dv">1</span> width<span class="op">=</span><span class="dv">10</span>) </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>(actual <span class="dt">time</span><span class="op">=</span><span class="fl">0.026</span><span class="op">..</span><span class="fl">0.027</span> <span class="kw">rows</span><span class="op">=</span><span class="fl">1.00</span> loops<span class="op">=</span><span class="dv">1</span>)<span class="ot">&quot;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Cond: ((employee_id = &#39;123&#39;::numeric) AND (subsidiary_id = &#39;30&#39;::numeric))&quot;</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Searches: 1&quot;</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=3&quot;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning Time: 0.075 ms&quot;</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Execution Time: 0.039 ms&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">explain</span> (<span class="kw">analyze</span>, costs, buffers)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> first_name, last_name</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> employees2</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a> <span class="kw">WHERE</span> subsidiary_id <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a> <span class="ot">&quot;Index Scan using employees2_pk on employees2  </span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a> (<span class="kw">cost</span><span class="op">=</span><span class="fl">0.29</span><span class="op">..</span><span class="fl">454.05</span> <span class="kw">rows</span><span class="op">=</span><span class="dv">104</span> width<span class="op">=</span><span class="dv">10</span>) </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a> (actual <span class="dt">time</span><span class="op">=</span><span class="fl">0.558</span><span class="op">..</span><span class="fl">0.970</span> <span class="kw">rows</span><span class="op">=</span><span class="fl">104.00</span> loops<span class="op">=</span><span class="dv">1</span>)<span class="ot">&quot;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Cond: (subsidiary_id = &#39;20&#39;::numeric)&quot;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Searches: 1&quot;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=139&quot;</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning Time: 0.110 ms&quot;</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Execution Time: 0.998 ms&quot;</span></span></code></pre></div>
+<h2 id="where-компания-id-и-last-name">where компания-id и
+last-name</h2>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">explain</span> (<span class="kw">analyze</span>, costs, buffers)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a> <span class="kw">SELECT</span> first_name, last_name, subsidiary_id, phone_number</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> employees2</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a> <span class="kw">WHERE</span> last_name  <span class="op">=</span> <span class="st">&#39;WINAND&#39;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>   <span class="kw">AND</span> subsidiary_id <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Seq Scan on employees2  </span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>(<span class="kw">cost</span><span class="op">=</span><span class="fl">0.00</span><span class="op">..</span><span class="fl">1722.00</span> <span class="kw">rows</span><span class="op">=</span><span class="dv">1</span> width<span class="op">=</span><span class="dv">19</span>) </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>(actual <span class="dt">time</span><span class="op">=</span><span class="fl">5.513</span><span class="op">..</span><span class="fl">26.756</span> <span class="kw">rows</span><span class="op">=</span><span class="fl">1.00</span> loops<span class="op">=</span><span class="dv">1</span>)<span class="ot">&quot;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Filter: (((last_name)::text = &#39;WINAND&#39;::text) AND (subsidiary_id = &#39;30&#39;::numeric))&quot;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Rows Removed by Filter: 9999&quot;</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=1572&quot;</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning:&quot;</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=3 dirtied=1&quot;</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning Time: 0.373 ms&quot;</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Execution Time: 26.786 ms&quot;</span></span></code></pre></div>
+<h2 id="околомусор">Околомусор</h2>
+<ul>
+<li>Чтобы посмотреть план выполнения запроса добавляем перед ним
+<code>explain analyze</code></li>
+</ul>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">explain</span> <span class="kw">analyze</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="kw">id</span>, name</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> users</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> <span class="kw">id</span> <span class="op">=</span> <span class="dv">1</span></span></code></pre></div>
+<pre><code>&quot;Index Scan using users_pkey on users  (cost=0.42..8.44 rows=1 width=18) (actual time=0.020..0.021 rows=1.00 loops=1)&quot;
+&quot;  Index Cond: (id = 1)&quot;
+&quot;  Index Searches: 1&quot;
+&quot;  Buffers: shared hit=4&quot;
+&quot;Planning Time: 0.072 ms&quot;
+&quot;Execution Time: 0.037 ms&quot;</code></pre>
+<ul>
+<li>Что такое
+<ul>
+<li>Actual time - фактическое время выполнения запроса?</li>
+<li>Execution time - непосредственное время до выбора данных?</li>
+<li>Buffers - количество чтений с диска? shared hit Там умножается это
+число на 10мс из таблицы затрат времени? Мб надо shared hit + read
+складывать и потом уже умножать на время?</li>
+</ul></li>
+<li>Фишки
+<ul>
+<li>План не показывает, обращается ли БД к таблице при выполнении
+запроса. Т.е. если все данные можно выбрать из индекса и обращения к
+таблице не было, или если для выбора надо обращаться к таблице - по
+плану это понять невозможно.
+<ul>
+<li>TODO: А влияет ли это на время получения данных?</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="запросы-с-выводами-от-explain">Запросы с выводами от
+explain</h2>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">explain</span> <span class="kw">analyze</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="kw">id</span>, name</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> users</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> <span class="kw">id</span> <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Index Scan using users_pkey on users  </span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">cost</span><span class="op">=</span><span class="fl">0.42</span><span class="op">..</span><span class="fl">8.44</span> <span class="kw">rows</span><span class="op">=</span><span class="dv">1</span> width<span class="op">=</span><span class="dv">18</span>) </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    (actual <span class="dt">time</span><span class="op">=</span><span class="fl">2.204</span><span class="op">..</span><span class="fl">2.209</span> <span class="kw">rows</span><span class="op">=</span><span class="fl">1.00</span> loops<span class="op">=</span><span class="dv">1</span>)<span class="ot">&quot;</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Cond: (id = 1)&quot;</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Searches: 1&quot;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=3 read=4&quot;</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning:&quot;</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=8&quot;</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning Time: 0.182 ms&quot;</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Execution Time: 2.234 ms&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">explain</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">analyze</span>, costs <span class="kw">off</span>, buffers)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="kw">id</span>, name</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> users</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> name <span class="op">=</span> <span class="st">&#39;test1&#39;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- Без индекса по name</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Seq Scan on users </span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    (actual <span class="dt">time</span><span class="op">=</span><span class="fl">0.237</span><span class="op">..</span><span class="fl">71.693</span> <span class="kw">rows</span><span class="op">=</span><span class="fl">1.00</span> loops<span class="op">=</span><span class="dv">1</span>)<span class="ot">&quot;</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Filter: ((name)::text = &#39;test1&#39;::text)&quot;</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Rows Removed by Filter: 999999&quot;</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=94 read=6275&quot;</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning Time: 0.076 ms&quot;</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Execution Time: 71.721 ms&quot;</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">-- С индексом по name</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Index Scan using idx_users_name on users </span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    (actual <span class="dt">time</span><span class="op">=</span><span class="fl">0.103</span><span class="op">..</span><span class="fl">0.104</span> <span class="kw">rows</span><span class="op">=</span><span class="fl">1.00</span> loops<span class="op">=</span><span class="dv">1</span>)<span class="ot">&quot;</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Cond: ((name)::text = &#39;test1&#39;::text)&quot;</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Searches: 1&quot;</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=1 read=3&quot;</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning:&quot;</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=23 read=1&quot;</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning Time: 0.455 ms&quot;</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Execution Time: 0.128 ms&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">explain</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">analyze</span>, costs <span class="kw">off</span>, buffers)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="kw">id</span>, name</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> users</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> <span class="kw">id</span> <span class="op">&gt;=</span> <span class="dv">5</span> <span class="kw">and</span> <span class="kw">id</span> <span class="op">&lt;=</span> <span class="dv">8</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Index Scan using users_pkey on users </span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    (actual <span class="dt">time</span><span class="op">=</span><span class="fl">0.008</span><span class="op">..</span><span class="fl">0.009</span> <span class="kw">rows</span><span class="op">=</span><span class="fl">4.00</span> loops<span class="op">=</span><span class="dv">1</span>)<span class="ot">&quot;</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Cond: ((id &gt;= 5) AND (id &lt;= 8))&quot;</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Searches: 1&quot;</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=4&quot;</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning:&quot;</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=19&quot;</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning Time: 0.288 ms&quot;</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Execution Time: 0.031 ms&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">explain</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">analyze</span>, costs <span class="kw">off</span>, buffers)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="kw">id</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> users</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> <span class="kw">id</span> <span class="op">&gt;=</span> <span class="dv">5</span> <span class="kw">and</span> <span class="kw">id</span> <span class="op">&lt;=</span> <span class="dv">8</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Index Only Scan using users_pkey on users </span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    (actual <span class="dt">time</span><span class="op">=</span><span class="fl">0.005</span><span class="op">..</span><span class="fl">0.006</span> <span class="kw">rows</span><span class="op">=</span><span class="fl">4.00</span> loops<span class="op">=</span><span class="dv">1</span>)<span class="ot">&quot;</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Cond: ((id &gt;= 5) AND (id &lt;= 8))&quot;</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Heap Fetches: 0&quot;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Index Searches: 1&quot;</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=4&quot;</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning:&quot;</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;  Buffers: shared hit=8&quot;</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Planning Time: 0.127 ms&quot;</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="ot">&quot;Execution Time: 0.022 ms&quot;</span></span></code></pre></div>
+<ul>
+<li>Внимание на Index Only Scan - появляется only, когда в таблицу
+ходить не надо, все можно взять из индекса.</li>
+<li>Heap Fetches - это показывает сколько походов в таблицу. TODO
+Вероятно даже при index only scan иногда надо в таблицу ходить?
+<ul>
+<li>Возможно, это связано с необходимостью проверки, есть ли еще строка
+в таблице? Вроде в индексе могут быть ключи, строк для которых уже в
+таблице нет - они отмечены как удаленные, или может изменились?</li>
+</ul></li>
 </ul>
 <h1 id="todo">TODO</h1>
 <p>В индекс включаются поля, которые наиболее часто фигурируют в
@@ -649,6 +1027,210 @@ class="sourceCode sql"><code class="sourceCode sql"><span id="cb5-1"><a href="#c
 <li>Неупорядоченная таблица - что значит?</li>
 <li>Еще какие?</li>
 </ul></li>
+<li>Index Scan и другие виды сканов в планировщике</li>
+</ul>
+<h2 id="для-постргес">Для постргес</h2>
+<pre><code>create table users(
+    id bigint primary key,
+    name varchar(200)
+    )</code></pre>
+<pre><code>insert into users(id, name) 
+    select g.x, &#39;test&#39; || g.x
+        from generate_series(1, 1_000_000) as g(x)</code></pre>
+<pre><code>insert into users(id</code></pre>
+<pre><code>CREATE UNIQUE INDEX users_pkey ON public.users USING btree (id)</code></pre>
+<ul>
+<li>какие еще у index есть приставки?</li>
+</ul>
+<h1 id="markus-запросы-на-создание-данных">Markus запросы на создание
+данных</h1>
+<h2 id="под-where-id-123-без-составного-ключа">Под where id = 123 без
+составного ключа</h2>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> employees1 (</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>   employee_id   <span class="dt">NUMERIC</span>       <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>   first_name    <span class="dt">VARCHAR</span>(<span class="dv">1000</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>   last_name     <span class="dt">VARCHAR</span>(<span class="dv">1000</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>   date_of_birth <span class="dt">DATE</span>                  ,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>   phone_number  <span class="dt">VARCHAR</span>(<span class="dv">1000</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>   junk          <span class="dt">CHAR</span>(<span class="dv">1000</span>)            ,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>   <span class="kw">CONSTRAINT</span> employees1_pk <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (employee_id)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">FUNCTION</span> random_string(minlen <span class="dt">NUMERIC</span>, maxlen <span class="dt">NUMERIC</span>)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>RETURNS <span class="dt">VARCHAR</span>(<span class="dv">1000</span>)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="kw">AS</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="kw">DECLARE</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  rv <span class="dt">VARCHAR</span>(<span class="dv">1000</span>) <span class="op">:=</span> <span class="st">&#39;&#39;</span>;</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  i  <span class="dt">INTEGER</span> <span class="op">:=</span> <span class="dv">0</span>;</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  len <span class="dt">INTEGER</span> <span class="op">:=</span> <span class="dv">0</span>;</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">IF</span> maxlen <span class="op">&lt;</span> <span class="dv">1</span> <span class="kw">OR</span> minlen <span class="op">&lt;</span> <span class="dv">1</span> <span class="kw">OR</span> maxlen <span class="op">&lt;</span> minlen <span class="cf">THEN</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">RETURN</span> rv;</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">END</span> <span class="cf">IF</span>;</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>  len <span class="op">:=</span> <span class="fu">floor</span>(<span class="kw">random</span>()<span class="op">*</span>(maxlen<span class="op">-</span>minlen)) <span class="op">+</span> minlen;</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">FOR</span> i <span class="kw">IN</span> <span class="fl">1.</span>.<span class="fu">floor</span>(len) <span class="cf">LOOP</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    rv <span class="op">:=</span> rv <span class="op">||</span> <span class="fu">chr</span>(<span class="dv">97</span><span class="op">+</span><span class="fu">CAST</span>(<span class="kw">random</span>() <span class="op">*</span> <span class="dv">25</span> <span class="kw">AS</span> <span class="dt">INTEGER</span>));</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">END</span> <span class="cf">LOOP</span>;</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>  <span class="kw">RETURN</span> rv;</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a><span class="cf">END</span>;</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>$$ LANGUAGE plpgsql;</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> employees1 (employee_id,  first_name,</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>                       last_name,    date_of_birth, </span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>                       phone_number, junk)</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> GENERATE_SERIES</span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">initcap</span>(<span class="fu">lower</span>(random_string(<span class="dv">2</span>, <span class="dv">8</span>)))</span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">initcap</span>(<span class="fu">lower</span>(random_string(<span class="dv">2</span>, <span class="dv">8</span>)))</span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">CURRENT_DATE</span> <span class="op">-</span> <span class="fu">CAST</span>(<span class="fu">floor</span>(<span class="kw">random</span>() <span class="op">*</span> <span class="dv">365</span> <span class="op">*</span> <span class="dv">10</span> <span class="op">+</span> <span class="dv">40</span> <span class="op">*</span> <span class="dv">365</span>) <span class="kw">AS</span> <span class="dt">NUMERIC</span>) <span class="op">*</span> <span class="dt">INTERVAL</span> <span class="st">&#39;1 DAY&#39;</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">CAST</span>(<span class="fu">floor</span>(<span class="kw">random</span>() <span class="op">*</span> <span class="dv">9000</span> <span class="op">+</span> <span class="dv">1000</span>) <span class="kw">AS</span> <span class="dt">NUMERIC</span>)</span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>     , <span class="st">&#39;junk&#39;</span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> GENERATE_SERIES(<span class="dv">1</span>, <span class="dv">1000</span>);</span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a><span class="kw">UPDATE</span> employees1 </span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>   <span class="kw">SET</span> first_name<span class="op">=</span><span class="st">&#39;MARKUS&#39;</span>, </span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>       last_name<span class="op">=</span><span class="st">&#39;WINAND&#39;</span></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a> <span class="kw">WHERE</span> employee_id<span class="op">=</span><span class="dv">123</span>;</span></code></pre></div>
+<h2 id="под-where-id-и-подкомпания_id">Под where id и
+подкомпания_id</h2>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> employees2 (</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>   employee_id   <span class="dt">NUMERIC</span>       <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>   first_name    <span class="dt">VARCHAR</span>(<span class="dv">1000</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>   last_name     <span class="dt">VARCHAR</span>(<span class="dv">1000</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>   date_of_birth <span class="dt">DATE</span>                  ,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>   phone_number  <span class="dt">VARCHAR</span>(<span class="dv">1000</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>   junk          <span class="dt">CHAR</span>(<span class="dv">1000</span>)            ,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>   <span class="kw">CONSTRAINT</span> employees2_pk <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (employee_id)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> employees2 (employee_id,  first_name,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>                       last_name,    date_of_birth, </span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>                       phone_number, junk)</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> GENERATE_SERIES</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">initcap</span>(<span class="fu">lower</span>(random_string(<span class="dv">2</span>, <span class="dv">8</span>)))</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">initcap</span>(<span class="fu">lower</span>(random_string(<span class="dv">2</span>, <span class="dv">8</span>)))</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">CURRENT_DATE</span> <span class="op">-</span> <span class="fu">CAST</span>(<span class="fu">floor</span>(<span class="kw">random</span>() <span class="op">*</span> <span class="dv">365</span> <span class="op">*</span> <span class="dv">10</span> <span class="op">+</span> <span class="dv">40</span> <span class="op">*</span> <span class="dv">365</span>) <span class="kw">AS</span> <span class="dt">NUMERIC</span>) <span class="op">*</span> <span class="dt">INTERVAL</span> <span class="st">&#39;1 DAY&#39;</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">CAST</span>(<span class="fu">floor</span>(<span class="kw">random</span>() <span class="op">*</span> <span class="dv">9000</span> <span class="op">+</span> <span class="dv">1000</span>) <span class="kw">AS</span> <span class="dt">NUMERIC</span>)</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>     , <span class="st">&#39;junk&#39;</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> GENERATE_SERIES(<span class="dv">1</span>, <span class="dv">1000</span>);</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="kw">UPDATE</span> employees2</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>   <span class="kw">SET</span> first_name<span class="op">=</span><span class="st">&#39;MARKUS&#39;</span>, </span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>       last_name<span class="op">=</span><span class="st">&#39;WINAND&#39;</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a> <span class="kw">WHERE</span> employee_id<span class="op">=</span><span class="dv">123</span>;</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> employees2 <span class="kw">ADD</span> subsidiary_id <span class="dt">NUMERIC</span>;</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="kw">UPDATE</span>      employees2 <span class="kw">SET</span> subsidiary_id <span class="op">=</span> <span class="dv">30</span>;</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> employees2 <span class="kw">ALTER</span> <span class="kw">COLUMN</span> subsidiary_id <span class="kw">SET</span> <span class="kw">NOT</span> <span class="kw">NULL</span>;</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="co">-- change the PK</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> employees2 <span class="kw">DROP</span> <span class="kw">CONSTRAINT</span> employees2_pk;</span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> employees2 <span class="kw">ADD</span> <span class="kw">CONSTRAINT</span> employees2_pk</span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>      <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (employee_id, subsidiary_id);</span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a><span class="co">-- generate more records (Very Big Company)</span></span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> employees2 (employee_id,  first_name,</span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>                       last_name,    date_of_birth, </span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>                       phone_number, subsidiary_id, junk)</span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> GENERATE_SERIES</span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">initcap</span>(<span class="fu">lower</span>(random_string(<span class="dv">2</span>, <span class="dv">8</span>)))</span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">initcap</span>(<span class="fu">lower</span>(random_string(<span class="dv">2</span>, <span class="dv">8</span>)))</span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">CURRENT_DATE</span> <span class="op">-</span> <span class="fu">CAST</span>(<span class="fu">floor</span>(<span class="kw">random</span>() <span class="op">*</span> <span class="dv">365</span> <span class="op">*</span> <span class="dv">10</span> <span class="op">+</span> <span class="dv">40</span> <span class="op">*</span> <span class="dv">365</span>) <span class="kw">AS</span> <span class="dt">NUMERIC</span>) <span class="op">*</span> <span class="dt">INTERVAL</span> <span class="st">&#39;1 DAY&#39;</span></span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">CAST</span>(<span class="fu">floor</span>(<span class="kw">random</span>() <span class="op">*</span> <span class="dv">9000</span> <span class="op">+</span> <span class="dv">1000</span>) <span class="kw">AS</span> <span class="dt">NUMERIC</span>)</span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>     , <span class="fu">CAST</span>(<span class="fu">floor</span>(<span class="kw">random</span>() <span class="op">*</span> (generate_series)<span class="op">/</span><span class="dv">9000</span><span class="op">*</span><span class="dv">29</span>) <span class="kw">AS</span> <span class="dt">NUMERIC</span>)</span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>     , <span class="st">&#39;junk&#39;</span></span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> GENERATE_SERIES(<span class="dv">1</span>, <span class="dv">9000</span>);</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">UNIQUE</span> <span class="kw">INDEX</span> employees2_pk</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">ON</span> employees2 (employee_id, subsidiary_id)</span></code></pre></div>
+<h1 id="скуф">Скуф</h1>
+<h2 id="о-статистике">О статистике</h2>
+<ul>
+<li>У постгреса есть статистика по данным, на основе которой он может
+принимать решения, например, надо ли использовать индекс или сразу проще
+всю таблицу просматривать.
+<ul>
+<li>Например, ищем сотрудника с зарплатой 200к. Если статистика говорит,
+что таких сотрудников 90% в таблице, тогда нет смысла искать их по
+индексу, потому что все равно будет много обращений к таблице, значит
+выгоднее просто читать таблицу последовательно. Если же таких
+сотрудников мало, тогда возможно выгоднее искать через индекс. Поэтому
+постгрес ведет статистику и использует ее в планировании запроса.</li>
+<li>Иногда статистика не совпадает с реальностью, TODO: что тогда с этим
+делать? Как поправить?</li>
+</ul></li>
+</ul>
+<h2 id="про-план-выполнения-запроса">Про план выполнения запроса</h2>
+<ul>
+<li>Состоит из вложенных узлов. Те что ниже и отбиты табами - это
+вложенные, а самая первая строчка - внешний.
+<ul>
+<li>TODO: хорошо бы конечно какой-нибудь более-менее здоровый план
+приложить для наглядности.</li>
+<li>Выполнение идет изнутри наружу, т.е. самый глубокий узел выполняется
+первым.</li>
+</ul></li>
+<li>Способы доступа к данным
+<ul>
+<li>Последовательное сканирование таблицы <code>Seq Scan</code>.
+<ul>
+<li>Используется, когда данных потенциально выберется много (условно
+&gt;20%, например из 100 млн строк надо выбрать 20 млн).</li>
+</ul></li>
+<li>Сканирование индекса
+<ul>
+<li><code>Index Scan</code> - нашли ключ в индексе, пошли прочитали
+данные из таблицы. Здесь много произвольного чтения, т.е. каждый прыжок
+в таблицу за данными - это произвольное чтение.
+<ul>
+<li>Используется, когда строк выбирается мало (условно 1-5%).</li>
+</ul></li>
+<li><code>Bitmap Index Scan</code> + <code>Bitmap Heap Scan</code> -
+нашли ключи в индексе, потом составляем “карту” страниц, в которых
+потенциально лежат нужные данные. Организуем эту карту так, чтобы в ней
+страницы шли в порядке их физической близости друг к другу, чтобы
+минимизировать случайные прыжки по диску и максимизировать
+последовательное чтение.
+<ul>
+<li>Используется, когда строк выбирается среднее количество
+(5-20%).</li>
+<li>Оверхед в виде построения карты, траты памяти на нее.</li>
+</ul></li>
+<li><code>Index Only Scan</code> - для выполнения запроса достаточно
+данных, находящихся в индексе, так что ходить в таблицу не надо.</li>
+</ul></li>
+<li>По итогу какой выберется способ, зависит от накопленной статистики и
+настроек БД. Постгрес подумает, что в конкретном случае выгоднее -
+прыгать по диску, строить карту или тупо читать всю таблицу, и выберет
+то что оптимальнее.</li>
+</ul></li>
+<li><code>cost</code> - показывает “стоимость” (в попугаях) этого узла.
+Определяется на основе того, сколько IO-операций и сколько процессора
+нужно.
+<ul>
+<li>Первая цифра - стоимость подготовительной работы, чтобы выдать
+первую строку.</li>
+<li>Вторая цифра - стоимость вывода всех строк.</li>
+</ul></li>
+<li><code>rows</code> - предполагаемое количество строк, которое будет
+выдано этим узлом наверх.
+<ul>
+<li>Если не просто explain, а explain analyze тогда там будет
+<code>actual rows</code> и <code>loops</code> - более реальная инфа?
+TODO</li>
+<li>TODO: Разница между rows и actual rows о чем-то говорит? Типа что
+статистика неправильная?</li>
+</ul></li>
+<li><code>width</code> - TODO</li>
+</ul>
+<h2 id="синтаксис">Синтаксис</h2>
+<ul>
+<li>using - при соединении таблиц вместо on</li>
 </ul>
 <div class="nav-menu">
   <button id="toTop" class="nav-btn" type="button" aria-label="Наверх">

@@ -59,7 +59,7 @@ node server.js -b papyrus
 - Открыть страницу
 
 ```
- http://localhost:3000/papyrus/
+ http://localhost:3050/papyrus/
 ```
 
 
@@ -113,6 +113,6 @@ node server.js -b papyrus
 - Страница будет доступна по адресу:
 
 ```
- http://localhost:3000/papyrus/
+ http://localhost:3050/papyrus/
 ```
 

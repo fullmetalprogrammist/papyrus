@@ -10,7 +10,7 @@ const url = require('url');
 
 // ---------- парсинг аргументов ----------
 function parseArgs(argv) {
-  const args = { b: 'papyrus', p: '3000', r: '.' };
+  const args = { b: 'papyrus', p: '3050', r: '.' };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '-b' || a === '--base') args.b = argv[++i] ?? args.b;
@@ -20,7 +20,7 @@ function parseArgs(argv) {
   let base = args.b.trim();
   if (!base.startsWith('/')) base = '/' + base;
   if (base.endsWith('/')) base = base.slice(0, -1);
-  return { base, port: parseInt(args.p, 10) || 3000, root: path.resolve(args.r) };
+  return { base, port: parseInt(args.p, 10) || 3050, root: path.resolve(args.r) };
 }
 
 const { base, port, root } = parseArgs(process.argv);

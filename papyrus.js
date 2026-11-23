@@ -162,6 +162,7 @@ function convertFile(sourcePath, useKeepNameLogic) {
     
     const args = [
         sourcePath,
+        '-f', 'markdown+emoji',
         '-o', outputPath,
         `--template=${templatePath}`,
         `--syntax-highlighting=${themePath}`

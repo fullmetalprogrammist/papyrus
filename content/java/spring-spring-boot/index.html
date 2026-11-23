@@ -266,6 +266,13 @@
 <h1 id="бины-beans">Бины (beans)</h1>
 <h2 id="что-такое-бины">Что такое бины</h2>
 <ul>
+<li><span class="emoji" data-emoji="question">❓</span> Что такое бины и
+что они собой представляют?</li>
+<li><span class="emoji" data-emoji="question">❓</span> Кто управляет
+жизненным циклом бинов?</li>
+</ul>
+<hr />
+<ul>
 <li>Бины - это основные “строительные блоки” в Spring-программах</li>
 <li>Бины представляют собой объекты, жизненный цикл которых находится в
 руках контейнера Spring IoC
@@ -273,8 +280,16 @@
 <li>Контейнер создает бины, снабжает зависимостями, инициализирует и
 уничтожает</li>
 </ul></li>
+<li>TODO: Бины должны быть stateless?</li>
 </ul>
 <h2 id="как-создать-бины">Как создать бины</h2>
+<ul>
+<li><span class="emoji" data-emoji="question">❓</span> Как создать
+бин?</li>
+<li><span class="emoji" data-emoji="question">❓</span> Можно ли
+получить бин?</li>
+</ul>
+<hr />
 <ul>
 <li>Бины создаются автоматически, их создает контейнер</li>
 <li>Можно явно запросить у контейнера бин
@@ -307,11 +322,11 @@
 <h3 id="конфигурационный-класс">Конфигурационный класс</h3>
 <ul>
 <li>Комбинация: <code>@Configuration</code> на класс +
-<code>@Bean</code> на метод
+<code>@Bean</code> на метод.
 <ul>
-<li>В методе создаем руками и возвращаем нужный инстанс</li>
+<li>В методе создаем руками и возвращаем нужный инстанс.</li>
 </ul></li>
-<li>Бин получает имя как название метода</li>
+<li>Бин получает имя как название метода.</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="at">@Configuration</span>  <span class="co">// &lt;-- </span></span>
@@ -327,22 +342,25 @@ class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <ul>
+<li>Когда этот способ хорош
+<ul>
 <li>Когда бины надо создавать из библиотечных классов, этот способ
 является единственным решением, поскольку “чужой” класс мы не можем
-аннотировать непосредственно биновыми аннотациями</li>
+аннотировать непосредственно биновыми аннотациями.</li>
+</ul></li>
 <li>Особенности
 <ul>
-<li>По умолчанию в этом подходе бины создаются со скопом singleton
+<li>По умолчанию в этом подходе бины создаются со скопом singleton.
 <ul>
 <li>Т.е. при каждом вызове метода возвращается один и тот же
-инстанс</li>
+инстанс.</li>
 <li>Если надо чтобы метод возвращал каждый раз новый инстанс, надо
 дополнительно добавить методу аннотацию <code>@Scope("prototype")</code>
 <ul>
 <li>Но это считается антипаттерном. Исторически <span class="citation"
 data-cites="Configuration-класс">@Configuration-класс</span>
 используется для объявления бинов, которые должны существовать именно в
-единственном экземпляре на все приложение</li>
+единственном экземпляре на все приложение.</li>
 </ul></li>
 </ul></li>
 </ul></li>
@@ -356,86 +374,98 @@ data-cites="Configuration-класс">@Configuration-класс</span>
 <li>Создание бина</li>
 <li>Пост-процессинг
 <ul>
-<li>Пре-инициализация</li>
+<li>Пре-инициализация (делается через BeanPostProcessor)</li>
 <li>Инициализация (выполнение метода бина, аннотированного через
 <code>@PostConstruct</code>)</li>
-<li>Пост-инициализация</li>
+<li>Пост-инициализация (делается через BeanPostProcessor)</li>
 </ul></li>
 <li>Жизнь-работа</li>
 <li>Освобождение ресурсов (выполнение метода бина, аннотированного через
 <code>@PreDestroy</code>)</li>
 <li>Уничтожение бина</li>
 </ul></li>
+<li>TODO: надо примеры, когда какой этап полезен.</li>
 </ul>
 <h2 id="скоуп-бинов-scope">Скоуп бинов (scope)</h2>
 <ul>
 <li>Адекватного русского устоявшегося перевода нет. “Область видимости”
-не отражает суть</li>
-<li>Суть скоупа это “время жизни + количество экземпляров”</li>
+не отражает суть.</li>
+<li>Суть скоупа это “время жизни + количество экземпляров”.</li>
 <li>Скоупы делятся на категории
 <ul>
 <li><code>core</code> - так сказать, скоупы обычного спринг-приложения
 <ul>
 <li><code>singleton</code> - бин существует один на все приложение,
 контейнер при требовании такого бина создает его, кэширует, а потом
-каждый раз возвращает один и тот же инстанс</li>
+каждый раз возвращает один и тот же инстанс.</li>
 <li><code>prototype</code> - контейнер каждый раз создает новый инстанс
-бина</li>
+бина.</li>
 </ul></li>
 <li><code>web</code> - скоупы для спринговых веб-приложений (Spring MVC)
 <ul>
 <li><code>request</code> - на каждый HTTP-запрос создается новый инстанс
-бина</li>
+бина.</li>
 <li><code>session</code></li>
 <li><code>application</code></li>
 <li><code>websocket</code></li>
+<li>TODO: примеры, какие бины имеют такие скоупы</li>
 </ul></li>
 <li>прочие - в других типах спринг-проектов могут быть свои скоупы</li>
 </ul></li>
 <li>Специализированные скоупы дополняют базовые, т.е. в веб-приложениях
 доступны core-скоупы + собственные веб-скоупы</li>
-<li>Скоуп можно задать явно через аннотацию
-<code>@Scope("тут-тип-скоупа")</code> в дополнение к биновой
-аннотации</li>
+<li>Скоуп бину можно задать явно через аннотацию
+<code>@Scope("тип-скоупа")</code> (вешается на класс бина).</li>
 </ul>
-<h1 id="пост-процессинг-бинов-beanpostprocessor">Пост-процессинг бинов
-<span class="citation"
-data-cites="BeanPostProcessor">@BeanPostProcessor</span></h1>
+<h1 id="пост-процессинг-бинов-через-beanpostprocessor">Пост-процессинг
+бинов через BeanPostProcessor</h1>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="at">@Component</span>  <span class="co">// Класс, реализущий BeanPostProcessor, надо зарегистрировать как бин</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SimpleBeanPostProcessor <span class="kw">implements</span> BeanPostProcessor <span class="op">{</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span>  <span class="co">// Модифицируем бин до вызова @PostConstruct</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">Object</span> <span class="fu">postProcessBeforeInitialization</span><span class="op">(</span><span class="bu">Object</span> bean<span class="op">,</span> <span class="bu">String</span> beanName<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Before init: &quot;</span> <span class="op">+</span> beanName<span class="op">);</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Before @PostConstruct: &quot;</span> <span class="op">+</span> beanName<span class="op">);</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// можно модифицировать бин до инициализации</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> bean<span class="op">;</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">Object</span> <span class="fu">postProcessAfterInitialization</span><span class="op">(</span><span class="bu">Object</span> bean<span class="op">,</span> <span class="bu">String</span> beanName<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;After init: &quot;</span> <span class="op">+</span> beanName<span class="op">);</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">// здесь часто создаются прокси (AOP)</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> bean<span class="op">;</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Как процессор понимает, что должен обработать пришедший бин, варианты:</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>bean <span class="kw">instanceof</span> Auditable<span class="op">)</span> <span class="op">{</span>  <span class="co">// По типу</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Изменяем бин как хотим</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span>  </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="st">&quot;dataSource&quot;</span><span class="op">.</span><span class="fu">equals</span><span class="op">(</span>beanName<span class="op">))</span> <span class="op">{</span>  <span class="co">// По имени бина</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Изменяем бин как хотим</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span>  </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>bean<span class="op">.</span><span class="fu">getClass</span><span class="op">().</span><span class="fu">isAnnotationPresent</span><span class="op">(</span>MyCustomAnnotation<span class="op">.</span><span class="fu">class</span><span class="op">))</span> <span class="op">{</span>  <span class="co">// По аннотации</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Изменяем бин как хотим</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span>  </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> bean<span class="op">;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span>  <span class="co">// Модифицируем бин после вызова @PostConstruct</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">Object</span> <span class="fu">postProcessAfterInitialization</span><span class="op">(</span><span class="bu">Object</span> bean<span class="op">,</span> <span class="bu">String</span> beanName<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;After @PostConstruct: &quot;</span> <span class="op">+</span> beanName<span class="op">);</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Снова делаем проверку, надо ли обрабатывать бин</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        <span class="co">// здесь часто создаются прокси (AOP)</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> bean<span class="op">;</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <ul>
-<li><code>BeanPostProcessor</code> это интерфейс</li>
+<li><code>BeanPostProcessor</code> это интерфейс.</li>
 <li>Интерфейс довольно старый, но почти не менялся за 20 лет, относится
-к самой базе
+к самой базе.
 <ul>
-<li>Нужен он чтобы обрабатывать бины после их создания
+<li>Нужен чтобы обрабатывать бины после их создания.
 <ul>
-<li>Например, вызвать методы инициализации, заменить бин на прокси</li>
+<li>Например, вызвать методы инициализации, заменить бин на прокси.</li>
 </ul></li>
 </ul></li>
 <li>Чтобы спринг увидел реализацию, надо этот класс зарегистрировать как
-бин
+бин.
 <ul>
 <li>Не обязательно аннотацией, можно любым способом, просто аннотацией
-удобно</li>
+удобно.</li>
 </ul></li>
 <li>У интерфейса два метода
 <ul>
@@ -456,7 +486,7 @@ data-cites="Value">@Value</span> например)</li>
 <li>а можно вернуть другой объект (так например создаются прокси)</li>
 </ul></li>
 </ul></li>
-<li>before-метод используется реже after-метода
+<li>“before”-метод используется реже “after”-метода
 <ul>
 <li>да и в целом оба метода обычно используются разработчиками
 библиотек, нежели прикладными программистами</li>
@@ -466,7 +496,22 @@ data-cites="PostConstruct">@PostConstruct</span> отличается тем, ч
 - это работа с одним конкретным бином и там по сути возможности
 ограничены только какой-то настройкой бина. А BeanPostProcessor
 срабатывает на все бины и позволяет по сути заменить бин другим
-объектом</li>
+объектом.</li>
+</ul></li>
+<li>Можно создавать много реализаций BeanPostProcessor.
+<ul>
+<li>Здесь принцип “1 процессор - на 1 вид обработки (сквозной задачи)”.
+Например, один процессор добавляет логирование, а другой -
+транзакционность. Нет смысла делать все в одном процессоре, будет не
+SOLID.</li>
+<li>Если процессор предназначен для конкретных бинов, внутри методов
+можно проверять это (по типу, по имени бина, по наличию аннотаций на
+нем).</li>
+</ul></li>
+<li>Каждый бин проходит через все процессоры.
+<ul>
+<li>TODO: Процессоры можно организовать в нужном порядке. Если не
+организовывать, то порядок будет произвольный.</li>
 </ul></li>
 </ul>
 <h1 id="проблемы-с-бинами">Проблемы с бинами</h1>
@@ -573,27 +618,27 @@ data-cites="Autowired">@Autowired</span></h2>
 <li>Через поле</li>
 </ul></li>
 <li>Все они используют аннотацию <code>@Autowired</code> для маркировки,
-что требуется автоматическое внедрение зависимости
+что требуется автоматическое внедрение зависимости.
 <ul>
 <li>Аннотация вешается на соответствующий член класса - конструктор,
-метод-сеттер или на поле</li>
+метод-сеттер или на поле.</li>
 <li>Сама по себе она ничего не внедряет, а просто спринг использует ее
-на разных этапах создания бина для понимания, как внедрять зависимости
+на разных этапах создания бина для понимания, как внедрять зависимости.
 <ul>
 <li>Если <span class="citation" data-cites="Autowired">@Autowired</span>
-на конструкторе, то зависимости внедряются на этапе создания бина</li>
+на конструкторе, то зависимости внедряются на этапе создания бина.</li>
 <li>Если <span class="citation" data-cites="Autowired">@Autowired</span>
 на методе или поле, то внедрение происходит на этапе пост-процессинга
-бина</li>
+бина.</li>
 </ul></li>
 </ul></li>
 <li>Предпочтительным считается внедрение через конструктор
 <ul>
 <li>Потому что зависимость после внедрения нельзя перезаписать,
-следовательно не сломаешь поведение</li>
+следовательно не сломаешь поведение.</li>
 <li>Зависимости через конструктор обязательные, стало быть явно видно
-что нужно классу для работы</li>
-<li>Зависимости проще замокать в тестах</li>
+что нужно классу для работы.</li>
+<li>Зависимости проще замокать в тестах.</li>
 </ul></li>
 </ul>
 <h3 id="конструктор">Конструктор</h3>
@@ -609,10 +654,10 @@ class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <ul>
 <li>Если конструктор один, то <span class="citation"
-data-cites="Autowired">@Autowired</span> можно не вешать</li>
+data-cites="Autowired">@Autowired</span> можно не вешать.</li>
 <li>Если конструкторов несколько, тогда один из них явно надо пометить
 <span class="citation" data-cites="Autowired">@Autowired</span>, иначе
-будет ошибка</li>
+будет ошибка.</li>
 </ul>
 <h3 id="сеттеры">Сеттеры</h3>
 <div class="sourceCode" id="cb8"><pre
@@ -702,11 +747,15 @@ class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href=
 <ul>
 <li><code>Proxy.newProxyInstance</code> - для нашего удобства (механизм
 Java), чтобы спринг сам создал обертку для оригинального класса, а нам
-через лямбду осталось только осталось написать обвязку для методов
+через лямбду осталось только осталось написать обвязку для методов.
 <ul>
-<li>Весь код лямбды будет выполняться перед вызовом каждого метода</li>
-<li>обычно прокси возвращают из post-метода, потому что к этому моменту
-бин уже прошел инициализацию и готов к работе</li>
+<li>Через лямбду мы реализуем желаемую обвязку. Спринг нам дает
+оригинальный метод, переданные ему аргументы. Поэтому мы можем выполнить
+обвязку и в любой момент вызвать оригинальный метод.</li>
+<li>Когда на проксе вызывается любой метод, то выполняется эта
+лямбда.</li>
+<li>Обычно прокси возвращают из “after”-метода процессора, потому что к
+этому моменту бин уже прошел инициализацию и готов к работе.</li>
 </ul></li>
 </ul>
 <h1 id="aop-aspect-oriented-programming">AOP (Aspect-Oriented

@@ -1,3 +1,10 @@
+---
+key: spring-mvc
+path: ["Spring"]
+title: "Spring Webmvc"
+---
+
+
 # Основа под Spring MVC
 
 ## Архитектура "сервлетов"

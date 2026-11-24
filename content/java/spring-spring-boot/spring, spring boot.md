@@ -1,5 +1,7 @@
 ---
-topic: spring-boot
+key: spring-boot
+path: ["Spring"]
+title: "Spring, Spring Boot"
 ---
 
 

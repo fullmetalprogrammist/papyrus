@@ -13,6 +13,9 @@ const pandocStuffDir = path.join(rootDir, 'pandoc stuff');
 const templatePath = path.join(pandocStuffDir, 'fmptemplate.html');
 const themePath = path.join(pandocStuffDir, 'fmp.theme');
 
+// Путь к шаблону question.html в корне проекта
+const questionsTemplatePath = path.join(rootDir, 'questions.html');
+
 // 3. Проверка наличия ресурсов
 if (!fs.existsSync(templatePath) || !fs.existsSync(themePath)) {
     console.error('Ошибка: не найдены fmptemplate.html или fmp.theme в папке "pandoc stuff".');
@@ -27,6 +30,10 @@ const COLOR_RESET = '\x1b[0m';
 // Базовый префикс сайта (папка, в которой лежит content/)
 const SITE_PREFIX = '/papyrus';
 
+// Маркеры в шаблоне questions.html
+const QUESTIONS_START_MARKER = '<!-- QUESTIONS STARTS HERE -->';
+const QUESTIONS_END_MARKER = '<!-- QUESTIONS ENDS HERE -->';
+
 // 4. Парсинг аргументов вручную
 const args = process.argv.slice(2);
 let inputPath = null;
@@ -36,6 +43,7 @@ let agoDays = null;
 let keepName = false;
 let convertAll = false;
 let generateToc = false;
+let generateQuestions = false;
 
 for (let i = 0; i < args.length; i++) {
     if (args[i] === '-i' || args[i] === '--input') {
@@ -63,15 +71,31 @@ for (let i = 0; i < args.length; i++) {
         convertAll = true;
     } else if (args[i] === '-g' || args[i] === '--generate-toc') {
         generateToc = true;
+    } else if (args[i] === '-q' || args[i] === '--questions') {
+        generateQuestions = true;
     }
 }
 
 // Если не передан ни один флаг, который требует работы — ничего не делаем
-const hasAnyFlag = inputPath !== null || onlyToday || agoMinutes !== null || agoDays !== null || keepName || convertAll || generateToc;
+const hasAnyFlag = inputPath !== null || onlyToday || agoMinutes !== null || agoDays !== null || keepName || convertAll || generateToc || generateQuestions;
 if (!hasAnyFlag) {
     console.log('Не передано ни одного флага. Ничего не делаю.');
-    console.log('Доступные флаги: -i/--input <path>, --today, --ago -m <minutes>, --ago -d <days>, --keep-name, --all, -g/--generate-toc');
+    console.log('Доступные флаги: -i/--input <path>, --today, --ago -m <minutes>, --ago -d <days>, --keep-name, --all, -g/--generate-toc, -q/--questions');
     process.exit(0);
+}
+
+// Проверяем шаблон questions.html заранее, если запрошены вопросы
+if (generateQuestions) {
+    if (!fs.existsSync(questionsTemplatePath)) {
+        console.error(`Ошибка: не найден файл шаблона questions.html в ${rootDir}`);
+        process.exit(1);
+    }
+
+    const tpl = fs.readFileSync(questionsTemplatePath, 'utf8');
+    if (tpl.indexOf(QUESTIONS_START_MARKER) === -1 || tpl.indexOf(QUESTIONS_END_MARKER) === -1) {
+        console.error(`Ошибка: в questions.html не найдены маркеры ${QUESTIONS_START_MARKER} / ${QUESTIONS_END_MARKER}`);
+        process.exit(1);
+    }
 }
 
 // Начало сегодняшнего дня в UTC
@@ -168,18 +192,142 @@ function resolveInputPath(inputPath) {
 }
 
 /**
+ * Вычисляет имя выходного html-файла для данного md по той же логике, что и convertFile.
+ * Возвращает имя файла (без пути), например "index.html" или "имя-конспекта.html".
+ */
+function getOutputFileName(sourcePath, useKeepNameLogic) {
+    if (useKeepNameLogic) {
+        return path.basename(sourcePath, '.md') + '.html';
+    }
+    return 'index.html';
+}
+
+/**
+ * Воспроизводит алгоритм генерации id заголовка в Pandoc (gfm/plain auto_identifiers).
+ * Пример: "Что такое бины" -> "что-такое-бины"
+ *         "Бины (beans)"    -> "бины-beans"
+ */
+function pandocHeaderId(text) {
+    // Убираем markdown-разметку в заголовке (жирный, курсив, код, ссылки)
+    let s = String(text)
+        .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')   // ![alt](url) -> alt
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')    // [text](url) -> text
+        .replace(/[*_`~]/g, '');                    // * _ ` ~
+
+    // Нижний регистр (Pandoc использует Unicode lowercase)
+    s = s.toLowerCase();
+
+    // Заменяем пробелы (и любые whitespace) на дефис
+    s = s.replace(/\s+/g, '-');
+
+    // Оставляем только буквы (Unicode), цифры, дефисы и подчёркивания
+    s = s.replace(/[^\p{L}\p{N}_-]/gu, '');
+
+    // Схлопываем повторные дефисы и убираем ведущие/замыкающие
+    s = s.replace(/-+/g, '-').replace(/^-+|-+$/g, '');
+
+    return s;
+}
+
+/**
+ * Извлекает вопросы из markdown-файла вместе с id ближайшего предшествующего заголовка.
+ * Возвращает массив объектов { question, anchor }.
+ * anchor — id заголовка, под которым находится вопрос (или null, если заголовка ещё не было).
+ */
+function extractQuestions(filePath) {
+    const content = fs.readFileSync(filePath, 'utf8');
+    const lines = content.split(/\r?\n/);
+    const questions = [];
+
+    let currentAnchor = null;
+
+    for (const line of lines) {
+        // Проверяем, не заголовок ли это (ATX: #, ##, ...)
+        const headerMatch = line.match(/^(#{1,6})\s+(.*?)\s*#*\s*$/);
+        if (headerMatch) {
+            currentAnchor = pandocHeaderId(headerMatch[2]);
+            continue;
+        }
+
+        const idx = line.indexOf(':question:');
+        if (idx === -1) continue;
+
+        let question = line.slice(idx + ':question:'.length).trim();
+        // Убираем ведущие маркеры списка (-, *, +, 1.)
+        question = question.replace(/^[-*+]\s+/, '').replace(/^\d+\.\s+/, '');
+
+        if (question) {
+            questions.push({ question, anchor: currentAnchor });
+        }
+    }
+
+    return questions;
+}
+
+/**
+ * Экранирует HTML-спецсимволы.
+ */
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+/**
+ * Генерирует question.html в той же папке, где лежит md-файл.
+ * Каждый вопрос — ссылка на соответствующий раздел в целевом html (index.html или имя-конспекта.html).
+ * Если вопросов нет — удаляет старый question.html.
+ */
+function generateQuestionHtml(mdFilePath, questions, targetHtmlName) {
+    const dir = path.dirname(mdFilePath);
+    const questionPath = path.join(dir, 'question.html');
+
+    if (questions.length === 0) {
+        if (fs.existsSync(questionPath)) {
+            fs.unlinkSync(questionPath);
+            console.log(`Удален пустой: ${path.relative(rootDir, questionPath)}`);
+        }
+        return;
+    }
+
+    const templateContent = fs.readFileSync(questionsTemplatePath, 'utf8');
+
+    const startIdx = templateContent.indexOf(QUESTIONS_START_MARKER);
+    const endMarkerStart = templateContent.indexOf(QUESTIONS_END_MARKER);
+    const endIdx = endMarkerStart + QUESTIONS_END_MARKER.length;
+
+    const listItems = questions.map(({ question, anchor }) => {
+        const text = escapeHtml(question);
+        if (anchor) {
+            return `                <li><a href="${targetHtmlName}#${encodeURIComponent(anchor)}">${text}</a></li>`;
+        }
+        return `                <li>${text}</li>`;
+    }).join('\n');
+
+    const newBlock =
+        `${QUESTIONS_START_MARKER}\n` +
+        `            <ul>\n` +
+        `${listItems}\n` +
+        `            </ul>\n` +
+        `            ${QUESTIONS_END_MARKER}`;
+
+    const newContent =
+        templateContent.slice(0, startIdx) +
+        newBlock +
+        templateContent.slice(endIdx);
+
+    fs.writeFileSync(questionPath, newContent, 'utf8');
+    console.log(`Создан: ${path.relative(rootDir, questionPath)} (${questions.length} вопросов)`);
+}
+
+/**
  * Запускает Pandoc для одного файла
  */
 function convertFile(sourcePath, useKeepNameLogic) {
-    let outputFileName;
-
-    if (useKeepNameLogic) {
-        const baseName = path.basename(sourcePath, '.md');
-        outputFileName = baseName + '.html';
-    } else {
-        outputFileName = 'index.html';
-    }
-
+    const outputFileName = getOutputFileName(sourcePath, useKeepNameLogic);
     const outputPath = path.join(path.dirname(sourcePath), outputFileName);
 
     const args = [
@@ -205,8 +353,6 @@ function convertFile(sourcePath, useKeepNameLogic) {
 
 /**
  * Извлекает front matter из markdown-файла.
- * Поддерживает простой YAML-подобный формат (key: value, массивы в [ ... ]).
- * Возвращает объект с полями или null, если front matter не найден.
  */
 function parseFrontMatter(filePath) {
     const content = fs.readFileSync(filePath, 'utf8');
@@ -234,13 +380,11 @@ function parseFrontMatter(filePath) {
         const key = line.slice(0, colonIndex).trim();
         let value = line.slice(colonIndex + 1).trim();
 
-        // Убираем обрамляющие кавычки у строк
         if ((value.startsWith('"') && value.endsWith('"')) ||
             (value.startsWith("'") && value.endsWith("'"))) {
             value = value.slice(1, -1);
         }
 
-        // Массив вида ["a", "b"] или ['a', 'b']
         if (value.startsWith('[') && value.endsWith(']')) {
             const inner = value.slice(1, -1).trim();
             if (inner === '') {
@@ -272,8 +416,6 @@ function toPosix(p) {
 
 /**
  * Формирует href на директорию relDir с завершающим слэшем.
- * Браузер сам подгрузит index.html.
- * relDir — путь относительно rootDir (например, "content/java/spring-webmvc").
  */
 function makeHref(relDir) {
     if (!relDir) return `${SITE_PREFIX}/`;
@@ -282,17 +424,6 @@ function makeHref(relDir) {
 
 /**
  * Собирает иерархию TOC из всех .md файлов в content.
- *
- * Модель:
- *   - path[0]  -> h2 (узел-раздел)
- *   - path[1..] -> промежуточные узлы-папки (<li><a>имя</a>...)
- *   - title    -> отдельный лист-статья, вложенный в последний узел path
- *
- * Узел: { name, children: Map, articles: [], dir: string|null }
- *   - children  — вложенные узлы-папки
- *   - articles  — статьи ({ title, dir }), привязанные к этому узлу
- *   - dir       — относительная директория (от rootDir) последнего md-файла,
- *                 который «прошёл» через этот узел (для ссылки)
  */
 function buildTocTree(files) {
     const rootNode = { name: null, children: new Map(), articles: [], dir: null };
@@ -316,10 +447,10 @@ function buildTocTree(files) {
                 currentNode.children.set(part, { name: part, children: new Map(), articles: [], dir: null });
             }
             currentNode = currentNode.children.get(part);
-            currentNode.dir = relDir;
+            // dir у узлов НЕ назначаем — узлы декоративные.
         }
 
-        // title — отдельная статья, вложенная в последний узел path
+        // title — статья, вложенная в последний узел path
         if (title) {
             currentNode.articles.push({ title, dir: relDir });
         }
@@ -332,19 +463,7 @@ function buildTocTree(files) {
 }
 
 /**
- * Экранирует HTML-спецсимволы.
- */
-function escapeHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
-
-/**
- * Рендерит верхний уровень TOC: каждый узел первого уровня — <section><h2>...</h2><ul>...</ul></section>.
+ * Рендерит верхний уровень TOC.
  */
 function renderTopLevel(node, indent) {
     const pad = ' '.repeat(indent);
@@ -372,8 +491,7 @@ function renderTopLevel(node, indent) {
 }
 
 /**
- * Рендерит содержимое узла (его детей-папки и его статьи) на уровне <ul>.
- * Предполагается, что вызывающий уже открыл <ul>.
+ * Рендерит содержимое узла на уровне <ul>.
  */
 function renderNodeBody(node, indent) {
     const pad = ' '.repeat(indent);
@@ -386,7 +504,16 @@ function renderNodeBody(node, indent) {
 
     for (const child of sortedChildren) {
         html += `${pad}<li>\n`;
-        html += `${childPad}<a href="${escapeHtml(makeHref(child.dir))}">${escapeHtml(child.name)}</a>\n`;
+
+        if (child.dir) {
+            html += `${childPad}<a href="${escapeHtml(makeHref(child.dir))}">${escapeHtml(child.name)}</a>\n`;
+            if (hasQuestionFile(child.dir)) {
+                html += `${childPad}<a href="${escapeHtml(makeQuestionHref(child.dir))}">Вопросы</a>\n`;
+            }
+        } else {
+            // Декоративный промежуточный узел — без ссылки
+            html += `${childPad}<span>${escapeHtml(child.name)}</span>\n`;
+        }
 
         if (child.children.size > 0 || child.articles.length > 0) {
             html += `${childPad}<ul>\n`;
@@ -397,11 +524,13 @@ function renderNodeBody(node, indent) {
         html += `${pad}</li>\n`;
     }
 
-    // Статьи текущего узла — листья
     const sortedArticles = [...node.articles].sort((a, b) => a.title.localeCompare(b.title, 'ru'));
     for (const article of sortedArticles) {
         html += `${pad}<li>\n`;
         html += `${childPad}<a href="${escapeHtml(makeHref(article.dir))}">${escapeHtml(article.title)}</a>\n`;
+        if (hasQuestionFile(article.dir)) {
+            html += `${childPad}<a href="${escapeHtml(makeQuestionHref(article.dir))}">Вопросы</a>\n`;
+        }
         html += `${pad}</li>\n`;
     }
 
@@ -437,7 +566,6 @@ function generateAndInsertToc() {
     const endMarker = '<!-- TOC ENDS HERE -->';
 
     const startIdx = indexContent.indexOf(startMarker);
-    // Ищем КОНЕЦ закрывающего маркера, а не его начало
     const endMarkerStart = indexContent.indexOf(endMarker);
     const endIdx = endMarkerStart + endMarker.length;
 
@@ -446,11 +574,8 @@ function generateAndInsertToc() {
         process.exit(1);
     }
 
-    // Формируем новый блок. 
-    // Важно: добавляем переносы строк (\n) для читаемости HTML.
     const newBlock = `${startMarker}\n${tocHtml}${endMarker}`;
 
-    // Собираем файл: [всё до первого маркера] + [новый блок] + [всё после второго маркера]
     const newContent = 
         indexContent.slice(0, startIdx) + 
         newBlock + 
@@ -462,27 +587,19 @@ function generateAndInsertToc() {
 
 // 5. Логика выбора файлов
 let filesToProcess = [];
+let useKeepNameLogic = false;
 
 if (inputPath) {
-    // Режим: работа с конкретным путем через -i
     filesToProcess = resolveInputPath(inputPath);
-
-    // Определяем логику именования:
-    // Если файлов больше одного -> принудительно сохраняем имена (useKeepNameLogic = true)
-    // Если файл один -> смотрим на флаг --keep-name
-    const useKeepNameLogic = (filesToProcess.length > 1) || (filesToProcess.length === 1 && keepName);
-
-    // Запускаем конвертацию с выбранной логикой
+    useKeepNameLogic = (filesToProcess.length > 1) || (filesToProcess.length === 1 && keepName);
     filesToProcess.forEach(file => convertFile(file, useKeepNameLogic));
 
 } else {
-    // Режим: работа с папкой content (поддерживает --today, --ago и --all)
     if (!fs.existsSync(contentDir)) {
         console.error(`Папка content не найдена в ${rootDir}`);
         process.exit(1);
     }
 
-    // Если передан --all, конвертируем все файлы без фильтрации
     if (convertAll) {
         filesToProcess = findMdFiles(contentDir);
     } else if (agoMinutes !== null || agoDays !== null) {
@@ -490,11 +607,12 @@ if (inputPath) {
     } else if (onlyToday) {
         filesToProcess = findMdFiles(contentDir).filter(isModifiedToday);
     } else if (generateToc) {
-        // Только генерация TOC, без конвертации
         generateAndInsertToc();
         process.exit(0);
+    } else if (generateQuestions) {
+        // --questions без конвертации: обрабатываем все md в content
+        filesToProcess = findMdFiles(contentDir);
     } else {
-        // Если не передан ни -i, ни --all, ни --today, ни --ago — ничего не делаем
         console.log('Не указан режим работы. Используйте -i <path>, --all, --today или --ago -m/-d <value>.');
         process.exit(0);
     }
@@ -514,8 +632,49 @@ if (inputPath) {
         process.exit(0);
     }
 
-    // В режиме content всегда используем логику флага --keep-name
-    filesToProcess.forEach(file => convertFile(file, keepName));
+    useKeepNameLogic = keepName;
+    filesToProcess.forEach(file => convertFile(file, useKeepNameLogic));
+}
+
+
+/**
+ * Проверяет, есть ли question.html в директории relDir (относительно rootDir).
+ */
+function hasQuestionFile(relDir) {
+    if (!relDir) return false;
+    const fullPath = path.join(rootDir, relDir, 'question.html');
+    return fs.existsSync(fullPath);
+}
+
+/**
+ * Возвращает href на question.html для директории relDir.
+ */
+function makeQuestionHref(relDir) {
+    return `${SITE_PREFIX}/${relDir}/question.html`;
+}
+
+
+// Если запрошена генерация вопросов — обрабатываем файлы
+if (generateQuestions) {
+    console.log('\n--- Генерация question.html ---');
+    let questionFiles = filesToProcess;
+    if (questionFiles.length === 0 && inputPath) {
+        questionFiles = resolveInputPath(inputPath);
+    }
+    if (questionFiles.length === 0 && !inputPath) {
+        questionFiles = findMdFiles(contentDir);
+    }
+
+    // Та же логика именования, что и при конвертации
+    const questionUseKeepNameLogic = inputPath
+        ? ((questionFiles.length > 1) || (questionFiles.length === 1 && keepName))
+        : keepName;
+
+    questionFiles.forEach(file => {
+        const questions = extractQuestions(file);
+        const targetHtmlName = getOutputFileName(file, questionUseKeepNameLogic);
+        generateQuestionHtml(file, questions, targetHtmlName);
+    });
 }
 
 // Если запрошена генерация TOC — выполняем её после (или вместо) конвертации

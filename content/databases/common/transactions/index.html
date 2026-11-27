@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc 3.12.1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>ACID, уровни изоляции транзакций, аномалии</title>
+  <title>Транзакции</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -198,6 +198,9 @@
 <div class="layout">
 <div id="oglavlenie"></div>
 <div class="content">
+<header id="title-block-header">
+<h1 class="title">Транзакции</h1>
+</header>
 <h1 id="транзакции">Транзакции</h1>
 <ul>
 <li>Физически, <strong>транзакция</strong> - это последовательность
@@ -228,6 +231,12 @@
 выполнения и только после завершения возвращает соединение в пул.</li>
 </ul>
 <h1 id="acid">ACID</h1>
+<blockquote>
+<ul>
+<li><span class="emoji" data-emoji="question">❓</span> Что означает
+аббревиатура ACID в контексте баз данных?</li>
+</ul>
+</blockquote>
 <h2 id="atomicity---атомарность">Atomicity - Атомарность</h2>
 <ul>
 <li>Означает что “либо все действия, выполненные в транзакции, будут
@@ -302,6 +311,14 @@
 </ul>
 <h1 id="уровни-изоляции-транзакций-и-аномалии">Уровни изоляции
 транзакций и аномалии</h1>
+<blockquote>
+<ul>
+<li><span class="emoji" data-emoji="question">❓</span> Что такое уровни
+изоляции транзакций?</li>
+<li><span class="emoji" data-emoji="question">❓</span> Что такое
+аномалии?</li>
+</ul>
+</blockquote>
 <ul>
 <li>В СУБД транзакции обычно выполняются параллельно для улучшения
 производительности.</li>
@@ -315,6 +332,12 @@
 транзакций.</li>
 </ul>
 <h2 id="аномалии">Аномалии</h2>
+<blockquote>
+<ul>
+<li><span class="emoji" data-emoji="question">❓</span> Какие аномалии
+бывают при параллельном выполнении транзакций?</li>
+</ul>
+</blockquote>
 <ul>
 <li>⚠️ Тема оказалась невероятно мутной. Главным образом потому что на
 100% не понятно, что имеется ввиду под “изменением данных”. То ли
@@ -498,6 +521,12 @@ C &gt; B &gt; A, A &gt; C &gt; B и т.д., любая из возможных
 </ul></li>
 </ul>
 <h2 id="уровни-изоляции">Уровни изоляции</h2>
+<blockquote>
+<ul>
+<li><span class="emoji" data-emoji="question">❓</span> Какие уровни
+изоляции транзакций бывают и от каких аномалий они спасают?</li>
+</ul>
+</blockquote>
 <ul>
 <li>Уровни изоляции стандартизированы в SQL.</li>
 <li>Их 4 вида, каждый последующий дает более жесткие гарантии (гарантии

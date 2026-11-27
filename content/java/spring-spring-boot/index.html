@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc 3.12.1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>spring, spring boot</title>
+  <title>Spring, Spring Boot</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -263,6 +263,9 @@
 <div class="layout">
 <div id="oglavlenie"></div>
 <div class="content">
+<header id="title-block-header">
+<h1 class="title">Spring, Spring Boot</h1>
+</header>
 <h1 id="бины-beans">Бины (beans)</h1>
 <h2 id="что-такое-бины">Что такое бины</h2>
 <ul>
@@ -300,7 +303,19 @@
 созданием занимается спринг</li>
 </ul>
 <h2 id="объявление-бинов">Объявление бинов</h2>
+<blockquote>
+<ul>
+<li><span class="emoji" data-emoji="question">❓</span> Какие есть
+способы для объявления бинов?</li>
+</ul>
+</blockquote>
 <h3 id="аннотированный-класс">Аннотированный класс</h3>
+<blockquote>
+<ul>
+<li><span class="emoji" data-emoji="question">❓</span> Какие аннотации
+для бинов вы знаете?</li>
+</ul>
+</blockquote>
 <ul>
 <li>Просто помечаем классы биновыми аннотациями
 <ul>
@@ -320,6 +335,15 @@
 буквы)</li>
 </ul>
 <h3 id="конфигурационный-класс">Конфигурационный класс</h3>
+<blockquote>
+<ul>
+<li><span class="emoji" data-emoji="question">❓</span> Зачем
+использовать <span class="citation"
+data-cites="Configuration">@Configuration</span> класс для создания
+бинов, если есть обычные аннотации вроде <span class="citation"
+data-cites="Service">@Service</span>?</li>
+</ul>
+</blockquote>
 <ul>
 <li>Комбинация: <code>@Configuration</code> на класс +
 <code>@Bean</code> на метод.

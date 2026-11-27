@@ -400,6 +400,13 @@ tr:nth-child(even) td { background-color: #efefef; }
 }
 
 
+/* ------------------ Подсветить вопросы ------------------ */
+li:has(span.emoji[data-emoji="question"]) {
+  /* background-color: #fff9c4; */
+  background-color: #dcedc8;
+}
+
+
 @media (max-width: 1000px) {
   #toTop { display: block; }
   .layout { flex-direction: column; }
